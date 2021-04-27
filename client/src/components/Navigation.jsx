@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
+import SignUpForm from './SignUpForm';
+import LoginForm from './LoginForm';
 
 function Navigation() {
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    if (showSignUp) {
+      document.getElementById('overlay').addEventListener('click', () => {
+        setShowSignUp(false);
+      });
+    }
+
+    if (showLogin) {
+      document.getElementById('overlay').addEventListener('click', () => {
+        setShowLogin(false);
+      });
+    }
+  }, [showSignUp, showLogin]);
+
   return (
     <div className="navigation grid">
       <div className="header">
@@ -17,8 +36,8 @@ function Navigation() {
           </div>
           <div className="account-cart col l-3">
             <div className="account">
-              <span className="name">Đăng nhập</span>
-              <span className="log-out">Đăng ký</span>
+              <span className="name" onClick={() => setShowLogin(true)}>Đăng nhập</span>
+              <span className="log-out" onClick={() => setShowSignUp(true)}>Đăng ký</span>
             </div>
             <HiOutlineShoppingBag className="cart-icon" />
           </div>
@@ -28,6 +47,9 @@ function Navigation() {
       <div className="nav">
 
       </div>
+
+      {showSignUp ? <SignUpForm /> : null}
+      {showLogin ? <LoginForm /> : null}
     </div>
   );
 }

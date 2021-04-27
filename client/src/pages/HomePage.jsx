@@ -3,9 +3,9 @@ import Navigation from '../components/Navigation';
 
 function HomePage() {
   return (
-    <div>
+    <React.Fragment>
       <Navigation />
-    </div>
+    </React.Fragment>
   );
 }
 

@@ -1,5 +1,4 @@
-@import './all.scss';
-@import './grid.scss';
+@import './color.scss';
 
 .navigation {
   .header {
@@ -20,7 +19,6 @@
         align-items: center;
 
         .search-bar {
-          // background-color: #ccc;
           display: block;
           width: 100%;
           height: 40px;
@@ -72,7 +70,7 @@
 
           &::after {
             position: absolute;
-            border-left: 2px solid #000;
+            border-left: 2px solid $black;
             right: -7px;
             content: "";
             height: 70%;
@@ -107,5 +105,163 @@
   .nav {
     height: 46px;
     background-color: $lightpink;
+  }
+}
+
+// ----- Sign Up Form -----
+#sign-up-form, #login-form {
+  #overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+  }
+
+  .sign-up-form-container, .login-form-container {
+    background-color: $white;
+    width: 400px;
+    border-radius: 8px;
+    z-index: 1;
+    position: fixed;
+    left: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    .form-interface {
+      width: calc(100% - 24*2px);
+      display: flex;
+      flex-direction: column;
+      margin: 26px 24px;
+
+      .name-field {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      label, input {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      label {
+        margin-left: 2px;
+        color: $dimpink;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        height: 40px;
+        border: 2px solid $lightpink;
+        border-radius: 8px;
+        padding: 14px;
+      }
+
+      .form-control, .form-control-half {
+        margin-bottom: 10px;
+      }
+
+      .form-control-half {
+        width: 165px;
+      }
+
+      .form-control {
+        width: 100%;
+      }
+
+      .submit-btn {
+        background: $lightpink;
+        color: $white;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 17px;
+        height: 42px;
+        border-radius: 8px;
+        margin-top: 8px;
+
+        &:hover {
+          background: $lightcoral;
+        }
+      }
+
+      .strike {
+        display: block;
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        font-size: 20px;
+      }
+
+      .strike > span {
+          position: relative;
+          display: inline-block;
+          font-size: 12px;
+          color: $darkgrey;
+          font-weight: 600;
+      }
+
+      .strike {
+        margin-top: 6px;
+        margin-bottom: 10px;
+
+        span:before, span:after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          width: 9999px;
+          /* Here is the modification */
+          border-top: 1px solid $silver;
+        }
+
+        span:before {
+          right: 100%;
+          margin-right: 15px;
+        }
+
+        span:after {
+          left: 100%;
+          margin-left: 15px;
+        }
+      }
+
+      .google-submit-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 42px;
+        border-radius: 8px;
+        border: 1px solid $grey;
+        background-color: $white;
+        cursor: pointer;
+
+        .google-icon {
+          width: 24px;
+          height: 24px;
+          margin-right: 8px;
+        }
+
+        span {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        &:hover {
+          background-color: $lightsilver;
+          border: 1px solid $lightpink;
+        }
+      }
+    }
+  }
+
+  .sign-up-form-container {
+    min-height: 574px;
+  }
+
+  .login-form-container {
+
   }
 }
