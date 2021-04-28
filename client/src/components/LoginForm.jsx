@@ -24,7 +24,7 @@ function LoginForm() {
   return (
     <div id="login-form">
       <div id="overlay"></div>
-      <div className="login-form-container">
+      <div className="form-container">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

@@ -9,14 +9,26 @@ function Navigation() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
+  const logInRightNow = () => {
+    setShowSignUp(false);
+    setShowLogin(true);
+  };
+
+  const closePopup = () => {
+    setShowSignUp(false);
+  };
+
   useEffect(() => {
+    // console.log('vao useeffects');
     if (showSignUp) {
+      console.log('close sign up');
       document.getElementById('overlay').addEventListener('click', () => {
         setShowSignUp(false);
       });
     }
 
     if (showLogin) {
+      console.log('close log in');
       document.getElementById('overlay').addEventListener('click', () => {
         setShowLogin(false);
       });
@@ -48,7 +60,7 @@ function Navigation() {
 
       </div>
 
-      {showSignUp ? <SignUpForm /> : null}
+      {showSignUp ? <SignUpForm logInRightNow={logInRightNow} closePopup={closePopup} /> : null}
       {showLogin ? <LoginForm /> : null}
     </div>
   );
