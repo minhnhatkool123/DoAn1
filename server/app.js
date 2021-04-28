@@ -1,16 +1,15 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const db = require('./configs/connectDB');
-
+const route = require('./routers/root.router');
 const app = express();
+
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cookieParser());
 
-app.use('/user', require('./routes/user.routes'));
-
-app.get('/', (req, res) => {
-	res.send('Hello World!');
-});
+route(app);
 
 db.connectDB;
 
