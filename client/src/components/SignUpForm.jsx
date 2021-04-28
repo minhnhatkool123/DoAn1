@@ -50,7 +50,7 @@ function SignUpForm(props) {
         <div id="overlay"></div>
         <div className="form-container">
           <Formik
-            initialValues={initialValues}
+            initialValues={initialSuggestedValues}
             validationSchema={validationSchema}
             onSubmit={value => {
               console.log('Form data', value);

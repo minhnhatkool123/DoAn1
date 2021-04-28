@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 function SuccessfulRegistration(props) {

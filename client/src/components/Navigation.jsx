@@ -8,6 +8,9 @@ import LoginForm from './LoginForm';
 function Navigation() {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [name, setName] = useState('');
+
+  // const [forceUpdate, setForceUpdate] = useState(true);
 
   const logInRightNow = () => {
     setShowSignUp(false);
@@ -18,17 +21,33 @@ function Navigation() {
     setShowSignUp(false);
   };
 
+  const handleLoginUser = (e) => {
+    if (e.target.innerText === 'Đăng nhập')
+      setShowLogin(true);
+  };
+
+  const handleSignUpEscape = (e) => {
+    if (e.target.innerText === 'Đăng ký')
+      setShowSignUp(true);
+    else {
+      localStorage.removeItem('name');
+      setName(localStorage.getItem('name'));
+    }
+  };
+
   useEffect(() => {
-    // console.log('vao useeffects');
+    localStorage.setItem('name', 'Trinh Trinh');
+    setName(localStorage.getItem('name'));
+  }, []);
+
+  useEffect(() => {
     if (showSignUp) {
-      console.log('close sign up');
       document.getElementById('overlay').addEventListener('click', () => {
         setShowSignUp(false);
       });
     }
 
     if (showLogin) {
-      console.log('close log in');
       document.getElementById('overlay').addEventListener('click', () => {
         setShowLogin(false);
       });
@@ -48,8 +67,8 @@ function Navigation() {
           </div>
           <div className="account-cart col l-3">
             <div className="account">
-              <span className="name" onClick={() => setShowLogin(true)}>Đăng nhập</span>
-              <span className="log-out" onClick={() => setShowSignUp(true)}>Đăng ký</span>
+              <span className="name" onClick={handleLoginUser}>{name || 'Đăng nhập'}</span>
+              <span className="log-out" onClick={handleSignUpEscape}>{name ? 'Thoát' : 'Đăng ký'}</span>
             </div>
             <HiOutlineShoppingBag className="cart-icon" />
           </div>
