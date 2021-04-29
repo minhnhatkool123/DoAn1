@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
@@ -20,11 +21,31 @@ const onSubmit = values => {
   console.log('Form data', values);
 };
 
+const popupVariants = {
+  hidden: {
+    opacity: 0
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 60
+    }
+  }
+}
+
 function LoginForm() {
   return (
     <div id="login-form">
-      <div id="overlay"></div>
-      <div className="form-container">
+      <motion.div id="overlay"
+        variants={popupVariants}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+      ></motion.div>
+      <motion.div className="form-container"
+        variants={popupVariants}
+      >
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -59,7 +80,7 @@ function LoginForm() {
             );
           }}
         </Formik>
-      </div>
+      </motion.div>
     </div>
   );
 }
