@@ -18,7 +18,7 @@ const popupVariants = {
 function SuccessfulRegistration(props) {
   return (
     <div className="successful-registration">
-      <motion.div id="overlay" onClick={() => props.signUpSuccessfully.closePopup()}
+      <motion.div id="overlay" onClick={() => props.signUpSuccessfully.closeSignUp()}
         // variants={popupVariants}
         // initial="hidden"
         // animate="visible"

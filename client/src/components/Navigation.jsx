@@ -17,8 +17,12 @@ function Navigation() {
     setShowLogin(true);
   };
 
-  const closePopup = () => {
+  const closeSignUp = () => {
     setShowSignUp(false);
+  };
+
+  const closeLogin = () => {
+    setShowLogin(false);
   };
 
   const handleLoginUser = (e) => {
@@ -30,15 +34,15 @@ function Navigation() {
     if (e.target.innerText === 'Đăng ký')
       setShowSignUp(true);
     else {
+      localStorage.removeItem('jwt');
       localStorage.removeItem('name');
-      setName(localStorage.getItem('name'));
+      setName('');
     }
   };
 
   useEffect(() => {
-    localStorage.setItem('name', 'Trinh Trinh');
     setName(localStorage.getItem('name'));
-  }, []);
+  }, [name, showLogin]);
 
   useEffect(() => {
     if (showSignUp) {
@@ -79,8 +83,8 @@ function Navigation() {
 
       </div>
 
-      {showSignUp ? <SignUpForm logInRightNow={logInRightNow} closePopup={closePopup} /> : null}
-      {showLogin ? <LoginForm /> : null}
+      {showSignUp ? <SignUpForm logInRightNow={logInRightNow} closeSignUp={closeSignUp} /> : null}
+      {showLogin ? <LoginForm closeLogin={closeLogin} /> : null}
     </div>
   );
 }

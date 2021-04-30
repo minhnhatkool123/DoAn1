@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
 import { FcGoogle } from "react-icons/fc";
+import ErrorLoginMessage from './ErrorLoginMessage';
 
 const initialValues = {
   username: '',
@@ -16,10 +18,6 @@ const validationSchema = Yup.object({
     .min(6, 'Mật khẩu phải có ít nhất 6 kí tự')
     .required('Chưa nhập mật khẩu')
 });
-
-const onSubmit = values => {
-  console.log('Form data', values);
-};
 
 const popupVariants = {
   hidden: {
@@ -34,7 +32,47 @@ const popupVariants = {
   }
 }
 
-function LoginForm() {
+function LoginForm(props) {
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+
+  const closeErrorMessage = () => {
+    setShowErrorMessage(false);
+  };
+
+  const onSubmit = values => {
+    const request = {
+      username: values.username,
+      password: values.password
+    }
+
+    axios.post('http://localhost:5000/user/login', request)
+      .then(response => {
+        const jwt = response.data.accessToken;
+
+        localStorage.setItem('jwt', jwt);
+
+        const config = {
+          headers: {
+            Authorization: jwt
+          }
+        };
+
+        axios.get('http://localhost:5000/user/get-info-user', config)
+          .then(userInfo => {
+            // console.log(userInfo);
+            localStorage.setItem('name', userInfo.data.name);
+            props.closeLogin();
+          })
+          .catch(err => {
+            console.log(err.response.data.message);
+          });
+      })
+      .catch(error => {
+        console.log(error.response.data.message);
+        setShowErrorMessage(true);
+      });
+  };
+
   return (
     <div id="login-form">
       <motion.div id="overlay"
@@ -50,6 +88,7 @@ function LoginForm() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          validateOnBlur={false}
         >
           {formik => {
             return (
@@ -81,6 +120,8 @@ function LoginForm() {
           }}
         </Formik>
       </motion.div>
+
+      {showErrorMessage ? <ErrorLoginMessage closeErrorMessage={closeErrorMessage} /> : null}
     </div>
   );
 }

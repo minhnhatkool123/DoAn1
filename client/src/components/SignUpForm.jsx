@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -20,25 +21,7 @@ const initialSuggestedValues = {
   email: 'petrinhtrinh182@gmail.com',
   password: '123456',
   confirmPassword: '123456'
-}
-
-const validationSchema = Yup.object({
-  fullName: Yup.string().required('*Bắt buộc'),
-  username: Yup.string().required('*Bắt buộc'),
-  email: Yup.string()
-    .email('Email không hợp lệ')
-    .required('*Bắt buộc'),
-  password: Yup.string()
-    .min(6, 'Mật khẩu phải có ít nhất 6 kí tự')
-    .required('*Bắt buộc'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password'), ''], 'Mật khẩu nhập lại không đúng')
-    .required('*Bắt buộc')
-});
-
-// const onSubmit = values => {
-//   console.log('Form data', values);
-// };
+};
 
 const popupVariants = {
   hidden: {
@@ -55,6 +38,53 @@ const popupVariants = {
 
 function SignUpForm(props) {
   const [registerSuccessfully, setRegisterSuccessfully] = useState(false);
+  const [existedUsername, setExistedUsername] = useState(['admin']);
+
+  const validationSchema = Yup.object({
+    fullName: Yup.string().required('*Bắt buộc'),
+    username: Yup.string()
+      .required('*Bắt buộc')
+      .notOneOf(existedUsername, 'Tên đăng nhập đã được sử dụng'),
+    email: Yup.string()
+      .email('Email không hợp lệ')
+      .required('*Bắt buộc'),
+    password: Yup.string()
+      .min(6, 'Mật khẩu phải có ít nhất 6 kí tự')
+      .required('*Bắt buộc'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), ''], 'Mật khẩu nhập lại không đúng')
+      .required('*Bắt buộc')
+  });
+
+  const onSubmit = values => {
+    console.log('Form data', values);
+    const request = {
+      name: values.fullName,
+      username: values.username,
+      email: values.email,
+      password: values.password
+    }
+
+    axios.post('http://localhost:5000/user/register', request)
+      .then(response => {
+        console.log('Response: ', response.data.message);
+        setRegisterSuccessfully(true);
+      })
+      .catch(error => {
+        console.log(error.response.data.message);
+        if (error.response.data.message === 'This username already exist') {
+          const errorUsername = document.querySelector("input[name='username']").value;
+          setExistedUsername([...existedUsername, errorUsername]);
+          const usernameField = document.querySelector("input[name='username']");
+          usernameField.focus();
+          usernameField.blur();
+        }
+      });
+  };
+
+  useEffect(() => {
+    console.log(existedUsername);
+  }, [existedUsername]);
 
   if (registerSuccessfully) {
     return <SuccessfulRegistration signUpSuccessfully={props} />;
@@ -73,10 +103,7 @@ function SignUpForm(props) {
           <Formik
             initialValues={initialSuggestedValues}
             validationSchema={validationSchema}
-            onSubmit={value => {
-              console.log('Form data', value);
-              setRegisterSuccessfully(true);
-            }}
+            onSubmit={onSubmit}
           >
             {formik => {
               return (
