@@ -6,8 +6,8 @@ router.post('/register', userController.register);
 
 router.post('/login', userController.login);
 
-router.get('/refresh-token', userController.refreshToken);
+router.post('/login-google', userController.loginGoogle);
 
-router.get('/get-info-user', auth, userController.getInfoUser);
+router.get('/confirm/:token', userController.confirmMail);
 
 module.exports = router;

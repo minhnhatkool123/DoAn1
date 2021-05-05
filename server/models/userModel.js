@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema(
 		address: String,
 		phone: String,
 		email: String,
+		confirmed: {
+			type: Boolean,
+			default: false,
+		},
 		type: {
 			type: Number,
 			default: 0, //0=user  1=admin

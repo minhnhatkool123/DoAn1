@@ -18,7 +18,12 @@ services:
     networks:
       - mern-app
     volumes:
-      - ./server:/app/server
+      - ./server/configs:/app/server/configs
+      - ./server/controllers:/app/server/controllers
+      - ./server/middleware:/app/server/middleware
+      - ./server/models:/app/server/models
+      - ./server/routers:/app/server/routers
+      - ./server/app.js:/app/server/app.js
     env_file: ./server/.env
     #environment:
     # - PORT= ${PORT}
