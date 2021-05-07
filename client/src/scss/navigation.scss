@@ -1,5 +1,16 @@
 @import './color.scss';
 
+@keyframes bubble {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .navigation {
   .header {
     .container {
@@ -12,6 +23,9 @@
         margin: auto;
         text-align: center;
         font-weight: 800;
+        img {
+          height: 64px;
+        }
       }
 
       .search {
@@ -49,7 +63,7 @@
           align-items: center;
 
           &:hover {
-            background-color: $lightcoral;
+            background-color: $coralpink;
           }
 
           .search-icon {
@@ -93,10 +107,27 @@
           }
         }
 
-        .cart-icon {
-          width: 70px;
-          height: 28px;
-          margin-top: -5px;
+        .cart-group {
+          position: relative;
+
+          .cart-icon {
+            width: 70px;
+            height: 28px;
+            margin-top: 1px;
+          }
+
+          .cart-notice {
+            position: absolute;
+            color: $white;
+            background-color: $sweetindianred;
+            border-radius: 50%;
+            font-size: 14px;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            right: 15px;
+            top: 1px;
+          }
         }
       }
     }
@@ -105,6 +136,62 @@
   .nav {
     height: 46px;
     background-color: $lightpink;
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      list-style: none;
+      max-width: 1140px;
+      margin: 0 auto;
+
+      li {
+        cursor: pointer;
+        display: block;
+        height: 46px;
+        position: relative;
+
+        &:hover {
+          > a {
+            color: $indianred;
+          }
+
+          .sub-nav {
+            display: block;
+            animation: bubble ease 0.3s;
+          }
+        }
+
+        a {
+          text-decoration: none;
+          color: $dimpink;
+          font-weight: 700;
+          font-size: 20px;
+          line-height: 48px;
+        }
+
+        .sub-nav {
+          position: absolute;
+          width: 144px;
+          left: -6px;
+          top: 100%;
+          z-index: 1;
+          display: none;
+
+          li {
+            background-color: $mistyrose;
+            border-bottom: 1px solid $white;
+            height: 40px;
+
+            a {
+              font-size: 16px;
+              font-weight: 500;
+              margin-left: 8px;
+              line-height: 40px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -139,6 +226,7 @@
 
   .form-container {
     @include common-popup(400px);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     .form-interface {
       width: calc(100% - 24*2px);
@@ -167,9 +255,6 @@
 
       .form-control {
         margin-bottom: 10px;
-      }
-
-      .form-control {
         width: 100%;
       }
 
@@ -184,7 +269,7 @@
         margin-top: 8px;
 
         &:hover {
-          background: $lightcoral;
+          background: $coralpink;
         }
       }
 

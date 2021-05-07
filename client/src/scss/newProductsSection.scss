@@ -1,1 +1,122 @@
 @import './color.scss';
+
+.new-products-section {
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+
+    .section-title {
+      font-weight: 900;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .product-container {
+      padding-bottom: 30px;
+
+      .product-interface {
+        position: relative;
+        cursor: pointer;
+        width: 100%;
+        border-radius: 5px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: rgba(171, 119, 126, 0.19) 0px 10px 20px, rgba(255, 100, 120, 0.23) 0px 6px 6px;
+          // box-shadow: rgba(199, 79, 118, 0.28) 0px 2px 1px, rgba(162, 76, 108, 0.2) 0px 4px 2px, rgba(184, 77, 126, 0.26) 0px 8px 4px, rgba(160, 72, 109, 0.09) 0px 16px 8px, rgba(185, 92, 126, 0.1) 0px 32px 16px;
+          .product-name {
+            color: $lightpink;
+          }
+
+          // .product-image {
+          //   background: {
+          //     size: 110% 110%;
+          //     position: center center;
+          //   }
+          // }
+        }
+
+        .product-image {
+          padding-top: 100%;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          background: {
+            size: contain;
+            repeat: no-repeat;
+          }
+        }
+
+        .product-info {
+          padding: 10px 8px;
+
+          .product-name {
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 22px;
+            height: 44px;
+          }
+
+          .product-price {
+            margin-top: 4px;
+            font-weight: 900;
+            font-size: 17px;
+            color: $sweetindianred;
+          }
+
+          .product-original-price {
+            text-decoration: line-through;
+            font-size: 14px;
+            margin-top: 1px;
+            color: $darkgrey;
+          }
+        }
+
+        .product-new-label {
+          position: absolute;
+          top: 10px;
+          left: -6px;
+          background-color: $lightpink;
+          color: $white;
+          font-weight: 700;
+          font-size: 15px;
+          padding: 0 8px;
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+
+          &:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            border-top: 6px solid $lightpink;
+            border-left: 5px solid transparent;
+            filter: brightness(70%);
+          }
+        }
+      }
+    }
+
+    .load-more-btn {
+      cursor: pointer;
+      text-transform: uppercase;
+      color: $white;
+      background-color: $lightpink;
+      width: 108px;
+      padding: 10px 0;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 16px;
+      margin: {
+        left: auto;
+        right: auto;
+        bottom: 50px;
+        top: 4px;
+      }
+
+      &:hover {
+        background-color: $coralpink;
+      }
+    }
+  }
+}

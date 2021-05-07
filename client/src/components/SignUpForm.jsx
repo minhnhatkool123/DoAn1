@@ -101,7 +101,7 @@ function SignUpForm(props) {
           variants={popupVariants}
         >
           <Formik
-            initialValues={initialSuggestedValues}
+            initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >

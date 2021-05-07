@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import TextError from './TextError';
 import { FcGoogle } from "react-icons/fc";
 import ErrorLoginMessage from './ErrorLoginMessage';
+import GoogleLogin from 'react-google-login';
 
 const initialValues = {
   username: '',
@@ -21,7 +22,7 @@ const validationSchema = Yup.object({
 
 const popupVariants = {
   hidden: {
-    opacity: 0
+    opacity: 0,
   },
   visible: {
     opacity: 1,
@@ -38,6 +39,19 @@ function LoginForm(props) {
   const closeErrorMessage = () => {
     setShowErrorMessage(false);
   };
+
+  const responseSuccessGoogle = (res) => {
+    console.log(res);
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/user/login-google',
+      data: { tokenId: res.tokenId },
+    }).then((res) => {
+      console.log(res);
+    });
+  };
+
+  const responseErrorGoogle = (res) => { };
 
   const onSubmit = values => {
     const request = {
@@ -59,7 +73,7 @@ function LoginForm(props) {
 
         axios.get('http://localhost:5000/user/get-info-user', config)
           .then(userInfo => {
-            // console.log(userInfo);
+            console.log(userInfo);
             localStorage.setItem('name', userInfo.data.name);
             props.closeLogin();
           })
@@ -115,6 +129,13 @@ function LoginForm(props) {
                   <FcGoogle className="google-icon" />
                   <span>Đăng nhập với Google</span>
                 </div>
+                {/* <GoogleLogin
+                  clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
+                  buttonText="Login with gg"
+                  onSuccess={responseSuccessGoogle}
+                  onFailure={responseErrorGoogle}
+                  cookiePolicy={'single_host_origin'}
+                /> */}
               </Form>
             );
           }}
