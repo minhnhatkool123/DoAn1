@@ -2,6 +2,7 @@ const Users = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
 const register = async (req, res) => {
 	try {
 		const { username, password, name, address, phone, email } = req.body;
@@ -20,11 +21,12 @@ const register = async (req, res) => {
 				.status(400)
 				.json({ message: 'Password must be at least 6 characters' });
 
-		if (email.length != 0 && !validateEmail(email))
+		console.log(email.length);
+		if (!email || !validateEmail(email))
 			return res.status(400).json({ message: 'Invalid email' });
 
-		if (phone.length < 10)
-			return res.status(400).json({ message: 'Phone number too short' });
+		//if (!phone || phone.length < 10)
+		//return res.status(400).json({ message: 'Phone number too short' });
 
 		const passwordHash = await bcrypt.hash(password, 10);
 		const newUser = new Users({
