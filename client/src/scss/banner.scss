@@ -1,0 +1,53 @@
+@import './color.scss';
+
+.banner {
+  .container {
+    // width: 100%;
+    max-width: 1140px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 18px auto;
+  }
+
+  // .slider, .banner-top, .banner-bottom {
+  //   // padding-top: 100%;
+  //   width: 100%;
+  //   // height: 300px;
+  //   background: {
+  //     // size: contain;
+  //     size: 100% auto;
+  //     repeat: no-repeat;
+  //   }
+  // }
+
+  .slider-container {
+  }
+
+  .slider {
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding-top: 38%;
+  }
+
+  .banner-top {
+    // height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding-top: 50%;
+    padding-bottom: 8px;
+  }
+
+  .banner-bottom {
+    // height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding-top: 50%;
+  }
+
+  .banner-group {
+    // padding-top: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 4px;
+  }
+}

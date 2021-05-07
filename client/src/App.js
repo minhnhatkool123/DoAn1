@@ -1,8 +1,7 @@
-import logo from './logo.svg';
-import './App.css';
-import './kool.scss';
-import './qwe.scss';
-import './lp.scss';
+import './scss/App.scss';
+import HomePage from './pages/HomePage';
+import AccountInfoPage from './pages/AccountInfoPage';
+import Test from './pages/Test';
 
 //import GoogleLogin from 'react-google-login';
 //import axios from 'axios';
@@ -23,6 +22,7 @@ function App() {
 
 	return (
 		<div className="App">
+<<<<<<< HEAD
 			<header className="App-header">
 				{/* <GoogleLogin
 					clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
@@ -47,6 +47,11 @@ function App() {
 					Learn React
 				</a>
 			</header>
+=======
+			{/* <HomePage /> */}
+			<AccountInfoPage />
+			{/* <Test /> */}
+>>>>>>> master
 		</div>
 	);
 }
