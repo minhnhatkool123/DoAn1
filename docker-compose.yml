@@ -1,7 +1,7 @@
-version: "3.5"
+version: '3.5'
 services:
   react-app:
-    container_name: "reactfrontend"
+    container_name: 'reactfrontend'
     build:
       context: ./client
       dockerfile: dockerfile.react
@@ -9,21 +9,19 @@ services:
     image: react-app
     stdin_open: true
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - mern-app
     volumes:
-      - ./client/src:/app/client/src
-      - ./client/public:/app/client/public
-      - /app/client/node_modules
+      - ./client:/app/client
   api-server:
-    container_name: "nodebackend"
+    container_name: 'nodebackend'
     build:
       context: ./server
       dockerfile: dockerfile.node
     image: api-server
     ports:
-      - "5000:5000"
+      - '5000:5000'
     networks:
       - mern-app
     volumes:
@@ -33,13 +31,8 @@ services:
       - ./server/models:/app/server/models
       - ./server/routers:/app/server/routers
       - ./server/app.js:/app/server/app.js
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     env_file: ./server/.env
-    environment:
-      - COMPOSE_CONVERT_WINDOWS_PATHS=1
+    #environment:
     # - PORT= ${PORT}
     # - ACCESS_TOKEN_SECRET=$${ACCESS_TOKEN_SECRET}
 
