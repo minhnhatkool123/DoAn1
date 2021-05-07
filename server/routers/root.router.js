@@ -5,5 +5,4 @@ function route(app) {
 		res.send('Hello World1!23');
 	});
 }
-
 module.exports = route;
