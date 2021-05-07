@@ -4,19 +4,19 @@ import './kool.scss';
 import './qwe.scss';
 import './lp.scss';
 
-import GoogleLogin from 'react-google-login';
-import axios from 'axios';
+//import GoogleLogin from 'react-google-login';
+//import axios from 'axios';
 
 function App() {
 	const responseSuccessGoogle = (res) => {
 		console.log(res);
-		axios({
-			method: 'POST',
-			url: 'http://localhost:5000/user/login-google',
-			data: { tokenId: res.tokenId },
-		}).then((res) => {
-			console.log(res);
-		});
+		// axios({
+		// 	method: 'POST',
+		// 	url: 'http://localhost:5000/user/login-google',
+		// 	data: { tokenId: res.tokenId },
+		// }).then((res) => {
+		// 	console.log(res);
+		// });
 	};
 
 	const responseErrorGoogle = (res) => {};
@@ -24,13 +24,13 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<GoogleLogin
+				{/* <GoogleLogin
 					clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
 					buttonText="Login with gg"
 					onSuccess={responseSuccessGoogle}
 					onFailure={responseErrorGoogle}
 					cookiePolicy={'single_host_origin'}
-				/>
+				/> */}
 
 				<img src={logo} className="App-logo" alt="logo" />
 				<p className="lp">minhnhat</p>
