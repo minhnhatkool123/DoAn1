@@ -13,7 +13,8 @@ services:
     networks:
       - mern-app
     volumes:
-      - ./client:/app/client
+      - ./client/src:/app/client/src
+      - ./client/public:/app/client/public
   api-server:
     container_name: 'nodebackend'
     build:

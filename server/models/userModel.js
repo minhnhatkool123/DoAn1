@@ -12,10 +12,31 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: [true, 'Please enter your password'],
 		},
+		email: {
+			type: String,
+			unique: true,
+			require: true,
+		},
 		name: String,
-		address: String,
+		district: {
+			type: String,
+			default: '',
+		},
+		city: {
+			type: String,
+			default: '',
+		},
+		address: {
+			type: String,
+			default: '',
+		},
+		mute: {
+			type: Boolean,
+			default: false,
+		},
+
 		phone: String,
-		email: String,
+
 		confirmed: {
 			type: Boolean,
 			default: false,
