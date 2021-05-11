@@ -1,4 +1,3 @@
-const { datacatalog } = require('googleapis/build/src/apis/datacatalog');
 const Products = require('../models/productModel');
 
 class ProductFeatures {
@@ -10,11 +9,18 @@ class ProductFeatures {
 	filterStatus() {
 		const queryObj = { ...this.queryString };
 		if (queryObj.status) {
-			//console.log(queryObj);
+			console.log(queryObj);
 			const removeProperties = ['sort', 'limit', 'page', 'type'];
 			removeProperties.forEach((e) => delete queryObj[e]);
-			//console.log(queryObj);
-			this.listProducts.find(queryObj);
+
+			if (queryObj.status.length === 1) {
+				let oneElement = parseInt(queryObj.status[0]);
+				this.listProducts.find({ status: { $all: [oneElement] } });
+			} else {
+				let a = queryObj.status;
+				let manyElements = a.map(Number);
+				this.listProducts.find({ status: { $all: manyElements } });
+			}
 		}
 
 		return this;
@@ -22,29 +28,8 @@ class ProductFeatures {
 
 	sortPrice() {
 		if (this.queryString.sort) {
-			// if (JSON.stringify(this.queryString.status) === JSON.stringify('2')) {
-			// 	console.log('status = 2');
-			// 	const queryObj = { ...this.queryString };
-			// 	const removeProperties = ['sort', 'limit', 'page'];
-			// 	removeProperties.forEach((e) => delete queryObj[e]);
-			// 	this.listProducts
-			// 		.find(
-			// 			{ queryObj },
-			// 			{
-			// 				_id: 0,
-			// 				name: 1,
-			// 				discount: 1,
-			// 				price: {
-			// 					$subtract: ['$price', '$discount'],
-			// 				},
-			// 				hello: 1,
-			// 			}
-			// 		)
-			// 		.sort(this.queryString.sort);
-			// } else {
 			console.log(this.queryString.sort);
 			this.listProducts.sort(this.queryString.sort);
-			//}
 		}
 		return this;
 	}
@@ -66,7 +51,7 @@ const getProductHomePage = async (req, res) => {
 		// 	return res.status(400).json({ message: 'Error index small than 0' });
 		// }
 
-		const products = await Products.find({ status: 1 })
+		const products = await Products.find({ status: { $all: [1] } })
 			.skip(startIndex)
 			.limit(limit);
 		console.log(products.length);
@@ -76,24 +61,23 @@ const getProductHomePage = async (req, res) => {
 	}
 };
 
+const getProductAll = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+
+		const startIndex = (page - 1) * limit;
+
+		const products = await Products.find({}).skip(startIndex).limit(limit);
+		console.log(products.length);
+		res.json(products);
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 const getProductCategory = async (req, res) => {
 	try {
-		// const category = convertCategory(req.params.category);
-		// let product = await Products.find(
-		// 	{ status: 2 },
-		// 	{
-		// 		_id: 0,
-		// 		name: 1,
-		// 		price: 1,
-		// 		discount: 1,
-		// 		price: {
-		// 			$subtract: ['$price', '$discount'],
-		// 		},
-		// 	}
-		// )
-		// 	.limit(5)
-		// 	.sort('price');
-
 		const category = convertCategory(req.params.category);
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
@@ -118,6 +102,7 @@ const getProductCategory = async (req, res) => {
 						discount: 1,
 						images: 1,
 						colors: 1,
+						status: 1,
 						size: 1,
 						discount: 1,
 						quantity: 1,
@@ -144,6 +129,7 @@ const getProductCategory = async (req, res) => {
 						discount: 1,
 						images: 1,
 						colors: 1,
+						status: 1,
 						size: 1,
 						discount: 1,
 						quantity: 1,
@@ -192,6 +178,55 @@ const getProductCategory = async (req, res) => {
 		res.json({ products: pageIndex, totalpage: totalPage, page: page });
 	} catch (error) {
 		console.log('Loi');
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const getProductDetail = async (req, res) => {
+	try {
+		const product = await Products.findById({ _id: req.params.id });
+		res.json(product);
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const addProduct = async (req, res) => {
+	try {
+		const { name, status } = req.body;
+
+		console.log(typeof status);
+		const newProduct = Products({
+			name,
+			status: status,
+		});
+		console.log(newProduct);
+		res.json({ message: 'success' });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const searchProduct = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
+		const searchText = req.query.name;
+
+		//const countProducts=await Products.
+
+		const products = await Products.find({
+			name: { $regex: searchText, $options: '$i' },
+		});
+		const totalPage = Math.ceil(products.length / limit);
+		const listProducts = products.slice(startIndex, endIndex);
+
+		console.log(products.length);
+		res.json({ products: listProducts, totalpage: totalPage, page });
+	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
 };
@@ -247,12 +282,13 @@ const convertCategory = (x) => {
 		default:
 			break;
 	}
-	// const obj = {
-	// 	'dam-vay': 'Đầm Váy',
-	// 	ao: 'Áo',
-	// 	quan: 'Quần',
-	// };
-	// return obj[x.toLowerCase()];
 };
 
-module.exports = { getProductHomePage, getProductCategory };
+module.exports = {
+	getProductHomePage,
+	getProductCategory,
+	getProductAll,
+	getProductDetail,
+	addProduct,
+	searchProduct,
+};

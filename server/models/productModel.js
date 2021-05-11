@@ -24,18 +24,16 @@ const productSchema = new mongoose.Schema({
 		trim: true,
 		require: true,
 	},
-	color: [String],
+	colors: Array,
 	discount: {
 		type: Number,
 		default: 0,
 	},
-	image: [
-		{
-			type: String,
-			require: true,
-		},
-	],
-	status: Number,
+	images: {
+		type: Array,
+		require: true,
+	},
+	status: [Number],
 	quantity: Number,
 });
 
