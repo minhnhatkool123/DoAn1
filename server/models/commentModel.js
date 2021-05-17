@@ -9,10 +9,23 @@ const commentSchema = mongoose.Schema({
 	productId: String,
 	content: String,
 	date: Date,
-	reply: {
-		type: Array,
-		default: [],
-	},
+	//parentId: {
+	// 	type: String,
+	// 	default: '',
+	// },
+	reply: [
+		{
+			userRep: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Users',
+			},
+			content: String,
+			date: Date,
+		},
+	],
+
+	//type: Array,
+	//default: [],
 });
 
 module.exports = mongoose.model('Comments', commentSchema);

@@ -4,16 +4,16 @@ const addComment = async (req, res) => {
 	try {
 		const { productId, content, user } = req.body;
 
-		// let date = new Date();
-		// let dateFormat = `${date.getDate()}-${
-		// 	date.getMonth() + 1
-		// }-${date.getFullYear()} ${date.getHours()}-${date.getMinutes()}`.toString();
 		const newComment = new Comments({
 			user,
 			content,
 			productId,
 			date: Date.now(),
 		});
+		// let date = new Date();
+		// let dateFormat = `${date.getDate()}-${
+		// 	date.getMonth() + 1
+		// }-${date.getFullYear()} ${date.getHours()}-${date.getMinutes()}`.toString();
 
 		if (req.query.reply) {
 			console.log('REPLY');
@@ -22,7 +22,7 @@ const addComment = async (req, res) => {
 			const comment = await Comments.findById({ _id: req.query.id });
 			//console.log('comment', comment);
 			if (comment) {
-				comment.reply.push({ _id, user, date, content });
+				comment.reply.push({ _id, userRep: user, date, content });
 				await comment.save();
 				console.log(comment);
 			}
@@ -43,18 +43,15 @@ const getComment = async (req, res) => {
 
 		const listComment = await Comments.find({
 			productId: req.query.productId,
-		}).populate({
-			path: 'user',
-			select: 'name type',
-		});
-		// const newComment = await Comments({
-		// 	user,
-		// 	content,
-		// 	productId,
-		// 	date: Date.now(),
-		// });
-
-		//console.log(listComment);
+		})
+			.populate({
+				path: 'reply.userRep',
+				select: 'name type',
+			})
+			.populate({
+				path: 'user',
+				select: 'name type',
+			});
 
 		res.json(listComment);
 	} catch (error) {

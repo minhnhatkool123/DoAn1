@@ -68,9 +68,47 @@ const getProductAll = async (req, res) => {
 
 		const startIndex = (page - 1) * limit;
 
-		const products = await Products.find({}).skip(startIndex).limit(limit);
-		console.log(products.length);
-		res.json(products);
+		let productFeatures = new ProductFeatures(
+			Products.find(
+				{},
+				{
+					_id: 1,
+					name: 1,
+					category: 1,
+					type: 1,
+					real_price: {
+						$sum: ['$price', 0],
+					},
+					price: {
+						$subtract: ['$price', '$discount'],
+					},
+					discount: 1,
+					images: 1,
+					colors: 1,
+					status: 1,
+					size: 1,
+					discount: 1,
+					quantity: 1,
+				}
+			),
+			req.query,
+			0
+		)
+			.filterStatus()
+			.sortPrice();
+
+		const products = await productFeatures.listProducts;
+		const totalPage = Math.ceil(products.length / limit);
+		const pageIndex = await productFeatures.listProducts
+			.skip(startIndex)
+			.limit(limit);
+		console.log('So sp 1 trang:', pageIndex.length);
+		console.log('Tong so sp:', products.length);
+		console.log('Tong so trang:', totalPage);
+
+		//const products = await Products.find({}).skip(startIndex).limit(limit);
+		//console.log(products.length);
+		res.json({ products: pageIndex, totalpage: totalPage, page: page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -216,16 +254,52 @@ const searchProduct = async (req, res) => {
 		const endIndex = page * limit;
 		const searchText = req.query.name;
 
-		//const countProducts=await Products.
+		let productFeatures = new ProductFeatures(
+			Products.find(
+				{ name: { $regex: searchText, $options: '$i' } },
+				{
+					_id: 1,
+					name: 1,
+					category: 1,
+					type: 1,
+					real_price: {
+						$sum: ['$price', 0],
+					},
+					price: {
+						$subtract: ['$price', '$discount'],
+					},
+					discount: 1,
+					images: 1,
+					colors: 1,
+					status: 1,
+					size: 1,
+					discount: 1,
+					quantity: 1,
+				}
+			),
+			req.query,
+			0
+		)
+			.filterStatus()
+			.sortPrice();
 
-		const products = await Products.find({
-			name: { $regex: searchText, $options: '$i' },
-		});
+		const products = await productFeatures.listProducts;
 		const totalPage = Math.ceil(products.length / limit);
-		const listProducts = products.slice(startIndex, endIndex);
+		const pageIndex = await productFeatures.listProducts
+			.skip(startIndex)
+			.limit(limit);
+		console.log('So sp 1 trang:', pageIndex.length);
+		console.log('Tong so sp:', products.length);
+		console.log('Tong so trang:', totalPage);
+
+		// const products = await Products.find({
+		// 	name: { $regex: searchText, $options: '$i' },
+		// });
+		// const totalPage = Math.ceil(products.length / limit);
+		// const listProducts = products.slice(startIndex, endIndex);
 
 		console.log(products.length);
-		res.json({ products: listProducts, totalpage: totalPage, page });
+		res.json({ products: pageIndex, totalpage: totalPage, page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}

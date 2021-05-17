@@ -34,6 +34,10 @@ const productSchema = new mongoose.Schema({
 		require: true,
 	},
 	status: [Number],
+	soldQuantity: {
+		type: Number,
+		default: 0,
+	},
 	quantity: Number,
 });
 

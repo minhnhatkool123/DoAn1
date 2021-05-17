@@ -180,6 +180,96 @@ const confirmMail = async (req, res) => {
 	return res.redirect(process.env.CLIENT_URL);
 };
 
+const updateInfo = async (req, res) => {
+	try {
+		const userUpdate = await Users.findByIdAndUpdate(
+			{ _id: req.user.id },
+			req.body,
+			{ new: true }
+		).select('-password');
+
+		if (userUpdate) {
+			res.json({ message: 'Update Info success', user: userUpdate });
+		} else {
+			res.json({ message: 'Update Info fail' });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const updatePass = async (req, res) => {
+	try {
+		const { newPassword, currentPassword } = req.body;
+		const user = await Users.findById({ _id: req.user.id });
+		const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+		if (!isMatch)
+			return res.status(400).json({ message: 'Incorrect password' });
+
+		const passwordHash = await bcrypt.hash(newPassword, 10);
+		const userUpdate = await Users.findByIdAndUpdate(
+			{ _id: req.user.id },
+			{ password: passwordHash },
+			{ new: true }
+		);
+
+		if (userUpdate) {
+			res.json({ message: 'Update Pass success' });
+		} else {
+			res.json({ message: 'Update Pass fail' });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const updateEmail = async (req, res) => {
+	try {
+		const userUpdate = await Users.findById({ _id: req.user.id });
+
+		if (userUpdate) {
+			//req.mail = userUpdate.email;
+
+			const newToken = createAccessToken({
+				id: userUpdate._id,
+				email: req.body.newEmail,
+			});
+			const url = `http://localhost:5000/user/confirm-update-mail/${newToken}`;
+			sendMail(req.body.newEmail, url);
+			res.json({ message: 'Please confirm in new email' });
+		} else {
+			res.json({ message: 'Update Info fail' });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const confirmUpdateEmail = async (req, res) => {
+	try {
+		//console.log(req.params.token);
+		let verifyUser = {};
+		jwt.verify(
+			req.params.token,
+			process.env.ACCESS_TOKEN_SECRET,
+			(error, user) => {
+				//if (error) return res.status(401).json({ message: 'token sai' });
+
+				verifyUser = user;
+			}
+		);
+		console.log(verifyUser);
+		await Users.findByIdAndUpdate(
+			{ _id: verifyUser.id },
+			{ email: verifyUser.email }
+		);
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+	return res.redirect(process.env.CLIENT_URL);
+};
+
 // const refreshToken = (req, res) => {
 // 	try {
 // 		const rf_token = req.cookies.refresh_token;
@@ -201,15 +291,19 @@ const createAccessToken = (user) => {
 	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
 };
 
-// const createRefreshToken = (user) => {
-// 	return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {
-// 		expiresIn: process.env.TOKEN_REFRESH_LIFE,
-// 	});
-// };
-
 function validateEmail(email) {
-	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	const re =
+		/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(email);
 }
 
-module.exports = { register, login, loginGoogle, confirmMail };
+module.exports = {
+	register,
+	login,
+	loginGoogle,
+	confirmMail,
+	confirmUpdateEmail,
+	updateInfo,
+	updatePass,
+	updateEmail,
+};
