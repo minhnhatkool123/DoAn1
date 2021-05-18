@@ -1,16 +1,16 @@
 import React from 'react';
 import Footer from '../components/Footer';
+import FullCart from '../components/FullCart';
 import Navigation from '../components/Navigation';
-import SearchSection from '../components/SearchSection';
 
-function SearchPage() {
+function CartPage() {
   return (
     <React.Fragment>
       <Navigation />
-      <SearchSection />
+      <FullCart />
       <Footer />
     </React.Fragment>
   );
 }
 
-export default SearchPage;
+export default CartPage;

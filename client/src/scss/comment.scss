@@ -1,0 +1,56 @@
+@import './color.scss';
+
+.comment {
+  .original-comment, .reply-comment {
+    display: flex;
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      background-color: #ffb0bd;
+      color: #fff;
+      border-radius: 50%;
+      text-align: center;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 36px;
+    }
+
+    .comment-content {
+      background-color: $lightsilver;
+      border-radius: 12px;
+      margin-left: 12px;
+      padding: 10px 14px;
+      max-width: 54%;
+      position: relative;
+
+      .author {
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+    }
+  }
+
+  .original-comment {
+    margin-top: 34px;
+    margin-bottom: 32px;
+  }
+
+  .reply-comment {
+    margin-left: 48px;
+    margin-top: 16px;
+  }
+
+  .reply-btn {
+    color: $lightpink;
+    position: absolute;
+    cursor: pointer;
+    top: calc(100% + 4px);
+    left: 4px;
+    font-size: 14px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

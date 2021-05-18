@@ -1,0 +1,75 @@
+@import './color.scss';
+
+.full-cart {
+  max-width: 1140px;
+  min-height: 100vh;
+  margin: 0 auto;
+
+  table {
+    width: 100%;
+    margin-top: 24px;
+    border-collapse: collapse;
+
+    tr {
+      height: 116px;
+      border: 1px solid $divider;
+      // white-space: nowrap;
+
+      td:not(:first-child) {
+        text-align: center;
+      }
+    }
+  }
+
+  .image-color-container {
+    padding: 4px;
+
+    .image-color {
+      padding-top: 100%;
+      background: {
+        size: contain;
+        repeat: no-repeat;
+      }
+    }
+  }
+
+  .product-name {
+    padding: 0 24px;
+  }
+
+  .unit-price {
+
+  }
+
+  .quantity-adjustment {
+    .increment-btn, .decrement-btn {
+      border: 1px solid $divider;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .decrement-btn {
+      padding: 0 7.1px;
+    }
+
+    .quantity {
+      padding: 0 14px;
+    }
+
+    .increment-btn {
+      padding: 0 6px;
+    }
+  }
+
+  .product-total-price {
+
+  }
+
+  .remove-btn {
+    cursor: pointer;
+
+    &:hover {
+      color: $lightpink;
+    }
+  }
+}

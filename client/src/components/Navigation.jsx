@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import '../scss/navigation.scss';
@@ -8,6 +9,8 @@ import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 
 function Navigation() {
+  const numOfProducts = useSelector(state => state.cart.numOfProducts);
+
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [name, setName] = useState('');
@@ -78,7 +81,7 @@ function Navigation() {
             </div>
             <div className="cart-group">
               <HiOutlineShoppingBag className="cart-icon" />
-              <div className="cart-notice">0</div>
+              <div className="cart-notice">{numOfProducts}</div>
             </div>
           </div>
         </div>

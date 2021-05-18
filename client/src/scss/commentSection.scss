@@ -1,0 +1,90 @@
+@import './color.scss';
+
+.comment-section {
+  max-width: 1140px;
+  margin: 0 auto 48px auto;
+  padding: {
+    left: 14px;
+    right: 14px;
+  }
+
+  .title {
+    color: $lightpink;
+    border-bottom: 2px solid $lightpink;
+    font-size: 20px;
+    font-weight: 700;
+    padding-bottom: 2px;
+  }
+
+  .comment-posting-area {
+    width: 60%;
+    margin-top: 26px;
+
+    .comment-typing-area {
+      display: flex;
+
+      .avatar {
+        width: 37px;
+        height: 34px;
+        background-color: #ffb0bd;
+        color: #fff;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 36px;
+        margin-top: -4px;
+      }
+
+      [contentEditable=true]:empty:before{
+        content:attr(data-placeholder);
+        color: $grey;
+        cursor: text;
+      }
+
+      .comment-typing {
+        border-bottom: 1px solid $grey;
+        min-height: 30px;
+        width: 100%;
+        margin-left: 10px;
+        word-break: break-all;
+        line-height: 22px;
+      }
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: flex-end;
+      text-transform: uppercase;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+
+      .cancel-btn, .submit-btn {
+        padding: 8px 10px 4px 10px;
+        cursor: pointer;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .cancel-btn {
+        color: $lightpink;
+        border: 1px solid $lightpink;
+        margin-right: 6px;
+
+        &:hover {
+          background-color: $whitesmoke;
+        }
+      }
+
+      .submit-btn {
+        color: $white;
+        background: $lightpink;
+
+        &:hover {
+          background-color: $coralpink;
+        }
+      }
+    }
+  }
+}
