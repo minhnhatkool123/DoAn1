@@ -1,0 +1,18 @@
+@import './color.scss';
+
+.empty-cart {
+  img {
+    height: auto;
+    width: 320px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .message {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    color: $peru;
+    margin-bottom: 24px;
+  }
+}

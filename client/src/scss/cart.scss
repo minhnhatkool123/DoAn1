@@ -72,4 +72,49 @@
       color: $lightpink;
     }
   }
+
+  .totalPrice {
+    text-align: right;
+    color: $lightpink;
+    margin-top: 52px;
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .btn-group {
+    margin-top: 28px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 20px;
+    font-weight: 600;
+
+    .continue-shopping-btn, .checkout-btn {
+      height: 44px;
+      line-height: 44px;
+      text-align: center;
+      border-radius: 22px;
+      padding: 0 22px;
+      cursor: pointer;
+    }
+
+    .continue-shopping-btn {
+      margin-right: 12px;
+      color: $lightpink;
+      border: 1px solid $lightpink;
+
+      &:hover {
+        background-color: $lightpink;
+        color: $white;
+      }
+    }
+
+    .checkout-btn {
+      background-color: $lightpink;
+      color: $white;
+
+      &:hover {
+        background-color: $coralpink;
+      }
+    }
+  }
 }

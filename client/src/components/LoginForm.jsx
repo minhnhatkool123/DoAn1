@@ -125,17 +125,18 @@ function LoginForm(props) {
                   <span>HOẶC</span>
                 </div>
 
-                <div className="google-submit-btn">
-                  <FcGoogle className="google-icon" />
-                  <span>Đăng nhập với Google</span>
-                </div>
-                {/* <GoogleLogin
+                <GoogleLogin
                   clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
-                  buttonText="Login with gg"
+                  render={renderProps => (
+                    <div onClick={renderProps.onClick} className="google-submit-btn">
+                      <FcGoogle className="google-icon" />
+                      <span>Đăng nhập với Google</span>
+                    </div>
+                  )}
                   onSuccess={responseSuccessGoogle}
                   onFailure={responseErrorGoogle}
                   cookiePolicy={'single_host_origin'}
-                /> */}
+                />
               </Form>
             );
           }}

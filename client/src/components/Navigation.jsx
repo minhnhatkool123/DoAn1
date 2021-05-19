@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useRecoilValue } from 'recoil';
+import { cartTotalQuantity, cartState } from '../recoil/cartState';
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import '../scss/navigation.scss';
@@ -9,7 +10,8 @@ import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 
 function Navigation() {
-  const numOfProducts = useSelector(state => state.cart.numOfProducts);
+  const cart = useRecoilValue(cartState);
+  const totalQuantity = useRecoilValue(cartTotalQuantity);
 
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -81,7 +83,7 @@ function Navigation() {
             </div>
             <div className="cart-group">
               <HiOutlineShoppingBag className="cart-icon" />
-              <div className="cart-notice">{numOfProducts}</div>
+              <div className="cart-notice">{totalQuantity}</div>
             </div>
           </div>
         </div>

@@ -1,5 +1,3 @@
-import { Provider } from 'react-redux';
-import store from './redux/store';
 import './scss/App.scss';
 import HomePage from './pages/HomePage';
 import AccountInfoPage from './pages/AccountInfoPage';
@@ -13,16 +11,14 @@ import CartPage from './pages/CartPage';
 
 function App() {
 	return (
-		<Provider store={store}>
-			<div className="App">
-				{/* <HomePage /> */}
-				{/* <SearchPage /> */}
-				{/* <AccountInfoPage /> */}
-				{/* <Test /> */}
-				{/* <ProductDetailPage /> */}
-				<CartPage />
-			</div>
-		</Provider>
+		<div className="App">
+			{/* <HomePage /> */}
+			{/* <SearchPage /> */}
+			{/* <AccountInfoPage /> */}
+			{/* <Test /> */}
+			{/* <ProductDetailPage /> */}
+			<CartPage />
+		</div>
 	);
 }
 

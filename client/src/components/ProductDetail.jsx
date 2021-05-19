@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { addProductToCart } from '../redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { addToCart, cartState } from '../recoil/cartState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
 import '../scss/productDetail.scss';
@@ -27,11 +27,12 @@ const product = {
 };
 
 function ProductDetail(props) {
-  const dispatch = useDispatch();
+  const priceRef = useRef(null);
+
+  const [cart, setCart] = useRecoilState(cartState);
 
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState(product.images[0]);
-  const [size, setSize] = useState('');
   const [color, setColor] = useState('');
 
   const handleSubImageClick = (e, image) => {
@@ -49,10 +50,39 @@ function ProductDetail(props) {
       subImage.classList.remove('active');
     });
     e.target.classList.add('active');
+    console.log(e.target.style.backgroundImage.slice(5, -2));
+    setColor(e.target.style.backgroundImage.slice(5, -2));
   }
 
   const handleAddCartClick = () => {
-    dispatch(addProductToCart(quantity));
+    console.log({ cart });
+    // console.log(priceRef.current.innerText.slice(0, -1));
+    const sizeLabel = document.querySelector('input[name="size"]:checked');
+    // console.log(item);
+    if (!sizeLabel) {
+      alert('Bạn chưa chọn size cho sản phẩm');
+    } else if (!color) {
+      alert('Bạn chưa chọn màu cho sản phẩm');
+    } else {
+      const item = {
+        name: product.name,
+        price: parseInt(priceRef.current.innerText.replace('.', '')),
+        size: sizeLabel.value,
+        color,
+        id: product.id + document.querySelector('input[name="size"]:checked').value + color
+      }
+      const newCart = addToCart(cart, item, quantity);
+      setCart(newCart);
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      console.log({ newCart });
+      alert(`Đã thêm sản phẩm ${item.name} vào giỏ hàng!`);
+    }
+  }
+
+  const handleProductDecrement = () => {
+    if (quantity >= 2) {
+      setQuantity(prevValue => prevValue - 1);
+    }
   }
 
   return (
@@ -75,13 +105,10 @@ function ProductDetail(props) {
       <div className="product-detail-info col l-6">
         <div className="product-title">{product.name}</div>
         <div className="product-price">{(product.price - product.discount).toLocaleString()}đ</div>
-        <div className="product-original-price">{parseInt(product.price).toLocaleString()}đ</div>
+        <div className="product-original-price" ref={priceRef}>{parseInt(product.price).toLocaleString()}đ</div>
 
         <div className="size-group">
           <div className="size-title">Size</div>
-          {/* <ul className="size-selection">
-            {product.sizes.map(size => <li className="size-option" key={product.id}>{size}</li>)}
-          </ul> */}
           <div className="size-selection">
             {product.sizes.map((size, index) => (
               <div className="size-options">
@@ -102,7 +129,7 @@ function ProductDetail(props) {
         <div className="quantity-group">
           <div className="quantity-title">Số lượng</div>
           <ul className="quantity-btn-group">
-            <li onClick={() => setQuantity(quantity - 1)}> - </li>
+            <li onClick={handleProductDecrement}> - </li>
             <li>{quantity}</li>
             <li onClick={() => setQuantity(quantity + 1)}> + </li>
           </ul>
