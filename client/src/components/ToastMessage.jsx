@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { toastDisplayState } from '../recoil/toastDisplayState';
+import { toastDisplayState, closeToastMessage } from '../recoil/toastDisplayState';
 import '../scss/toast.scss';
 
 function ToastMessage() {
@@ -12,7 +12,7 @@ function ToastMessage() {
     toastRef.current.classList.add('disabled');
     console.log('click overlay')
     setTimeout(() => {
-      setToastDisplay({...toastDisplay, show: false})
+      setToastDisplay({...toastDisplay, show: false});
     }, 400);
   }
 

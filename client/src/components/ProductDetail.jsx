@@ -4,6 +4,7 @@ import { addToCart, cartState } from '../recoil/cartState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
+import { useHistory } from 'react-router-dom';
 import '../scss/productDetail.scss';
 
 const product = {
@@ -29,6 +30,7 @@ const product = {
 
 function ProductDetail(props) {
   const priceRef = useRef(null);
+  const history = useHistory();
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
 
@@ -91,6 +93,37 @@ function ProductDetail(props) {
     }
   }
 
+  const handleBuyNowClick = () => {
+    console.log({ cart });
+
+    const sizeLabel = document.querySelector('input[name="size"]:checked');
+
+    if (!sizeLabel) {
+      setToastDisplay({
+        show: true,
+        message: 'Bạn chưa chọn size cho sản phẩm'
+      });
+    } else if (!color) {
+      setToastDisplay({
+        show: true,
+        message: 'Bạn chưa chọn màu cho sản phẩm'
+      });
+    } else {
+      const item = {
+        name: product.name,
+        price: parseInt(priceRef.current.innerText.replace('.', '')),
+        size: sizeLabel.value,
+        color,
+        id: product.id + document.querySelector('input[name="size"]:checked').value + color
+      }
+      const newCart = addToCart(cart, item, quantity);
+      setCart(newCart);
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      console.log({ newCart });
+      history.push('/cart');
+    }
+  }
+
   const handleProductDecrement = () => {
     if (quantity >= 2) {
       setQuantity(prevValue => prevValue - 1);
@@ -149,7 +182,7 @@ function ProductDetail(props) {
 
         <div className="btn-group">
           <div className="add-cart-btn" onClick={handleAddCartClick}>Thêm vào giỏ hàng</div>
-          <div className="buy-now-btn">Mua ngay</div>
+          <div className="buy-now-btn" onClick={handleBuyNowClick}>Mua ngay</div>
         </div>
 
         <div className="shipping-policy">

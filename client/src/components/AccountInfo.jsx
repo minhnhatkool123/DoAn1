@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -6,6 +6,8 @@ import * as Yup from 'yup';
 import TextError from './TextError';
 import '../scss/accountInfo.scss';
 import { IoPersonCircle } from "react-icons/io5";
+import Profile from './Profile';
+import ChangePassword from './ChangePassword';
 
 const initialValues = {
   fullName: '',
@@ -42,6 +44,14 @@ let accordingDistricts = [];
 function AccountInfo() {
   const [provinceId, setProvinceId] = useState(0);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [catalogOption, setCatalogOption] = useState('profile');
+
+  const catalogOptionInfo = {
+    profile: <Profile />,
+    changePassword: <ChangePassword />
+  }
+
+  const catalogRef = useRef(null);
 
   useEffect(() => {
     axios.get('https://dc.tintoc.net/app/api-customer/public/provinces?size=64')
@@ -78,96 +88,29 @@ function AccountInfo() {
     accordingDistricts = districts.filter(district => district.provinceId == provinceId);
   }, [provinceId]);
 
+  const handleCatalogClick = (e, option) => {
+    const catalogItems = catalogRef.current.childNodes;
+    catalogItems.forEach((catalogItem) => {
+      catalogItem.classList.remove('active');
+    });
+    e.target.classList.add('active');
+    setCatalogOption(option);
+  };
+
   return (
     <div className="account-info grid">
       <div className="row">
         <div className="catalog-container l-2-4">
           <IoPersonCircle className="account-icon" />
-          <ul>
-            <li>Thông tin tài khoản</li>
-            <li>Lịch sử đơn hàng</li>
-            <li>Đổi mật khẩu</li>
+          <ul className="catalog" ref={catalogRef}>
+            <li className="active" onClick={(e) => handleCatalogClick(e, 'profile')}>Thông tin tài khoản</li>
+            <li onClick={(e) => handleCatalogClick(e, 'orderHistory')}>Lịch sử đơn hàng</li>
+            <li onClick={(e) => handleCatalogClick(e, 'changePassword')}>Đổi mật khẩu</li>
           </ul>
         </div>
 
         <div className="info-container l-8">
-          <div className="info-title">Hồ sơ của tôi</div>
-          <div className="divider"></div>
-
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-          >
-            {formik => {
-              return (
-                <Form className="form-interface">
-                  <div className="form-control">
-                    <label htmlFor="fullName">Họ tên:</label>
-                    <div className="input-container">
-                      <Field type="text" id="fullName" name="fullName" />
-                      <ErrorMessage name="fullName" component={TextError} />
-                    </div>
-                  </div>
-
-                  <div className="form-control">
-                    <label htmlFor="email">Email:</label>
-                    <div className="input-container">
-                      <Field type="email" id="email" name="email" />
-                      <ErrorMessage name="email" component={TextError} />
-                    </div>
-                  </div>
-
-                  <div className="form-control">
-                    <label htmlFor="phone">Điện thoại:</label>
-                    <div className="input-container">
-                      <Field type="text" id="phone" name="phone" />
-                      <ErrorMessage name="phone" component={TextError} />
-                    </div>
-
-                  </div>
-
-                  <div className="form-control">
-                    <label htmlFor="province">Tỉnh/Thành phố:</label>
-                    <Field as='select' id='province' name='province' onClick={(e) => setProvinceId(e.target.selectedOptions[0].value)}>
-                      {provinces.map(province => {
-                        return (
-                          <option key={province.id} value={province.id}>
-                            {province.name}
-                          </option>
-                        );
-                      })}
-                    </Field>
-                    <ErrorMessage name="province" component={TextError} />
-                  </div>
-
-                  <div className="form-control">
-                    <label htmlFor="district">Quận/Huyện:</label>
-                    <Field as='select' id='district' name='district'>
-                      {accordingDistricts.map(district => {
-                        return (
-                          <option key={district.id} value={district.id}>
-                            {district.name}
-                          </option>
-                        );
-                      })}
-                    </Field>
-                    <ErrorMessage name="district" component={TextError} />
-                  </div>
-
-                  <div className="form-control">
-                    <label htmlFor="addressDetail">Địa chỉ chi tiết:</label>
-                    <div className="input-container">
-                      <Field type="text" id="addressDetail" name="addressDetail" />
-                      <ErrorMessage name="addressDetail" component={TextError} />
-                    </div>
-                  </div>
-
-                  <button className="update-btn" type='submit'>Cập nhật</button>
-                </Form>
-              )
-            }}
-          </Formik>
+          {catalogOptionInfo[catalogOption]}
         </div>
       </div>
     </div>

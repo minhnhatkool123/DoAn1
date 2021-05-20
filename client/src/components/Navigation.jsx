@@ -87,15 +87,17 @@ function Navigation() {
           <div className="account-cart col l-3">
             <div className="account">
               <span className="name" onClick={handleLoginUser}>
-                <ConditionalLink to='/account/profile' condition={name}>
+                <ConditionalLink to='/account' condition={name}>
                   {name || 'Đăng nhập'}
                 </ConditionalLink>
               </span>
               <span className="log-out" onClick={handleSignUpEscape}>{name ? 'Thoát' : 'Đăng ký'}</span>
             </div>
             <div className="cart-group">
-              <HiOutlineShoppingBag className="cart-icon" />
-              <div className="cart-notice">{totalQuantity}</div>
+              <Link to='/cart'>
+                <HiOutlineShoppingBag className="cart-icon" />
+                <div className="cart-notice">{totalQuantity}</div>
+              </Link>
             </div>
           </div>
         </div>
@@ -112,7 +114,7 @@ function Navigation() {
                 <li><Link to='/category/ao-thun-nu'>Áo thun nữ</Link></li>
                 <li><Link to='/category/ao-kieu-nu'>Áo kiểu nữ</Link></li>
                 <li><Link to='/category/ao-so-mi-nu'>Áo sơ mi nữ</Link></li>
-                <li><Link to='ao-khoac-nu'>Áo khoác nữ</Link></li>
+                <li><Link to='/ao-khoac-nu'>Áo khoác nữ</Link></li>
               </ul>
             </li>
             <li className="pants">

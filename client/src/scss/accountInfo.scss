@@ -9,7 +9,7 @@
     border: 1px solid $lightpink;
     padding: 16px;
     border-radius: 5px;
-    margin: 0 18px 174px 68px;
+    margin: 0 18px 0 68px;
 
     .account-icon {
       color: $lightpink;
@@ -35,7 +35,7 @@
           color: $lightpink;
         }
 
-        .active {
+        &.active {
           color: $lightpink;
         }
       }
@@ -75,7 +75,7 @@
         margin-top: 6px;
         margin-right: 12px;
         font-weight: 600;
-        width: 152px;
+        width: 170px;
         text-align: right;
       }
 
@@ -111,7 +111,7 @@
         height: 34px;
         border-radius: 4px;
         width: 86px;
-        margin-left: 163px;
+        margin-left: 181px;
         margin-top: -3px;
 
         &:hover {

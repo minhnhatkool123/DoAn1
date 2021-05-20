@@ -24,7 +24,7 @@ function App() {
 					<Route path='/cart' component={CartPage} />
 					<Route path='/category/:name' component={SearchPage} />
 					<Route path='/product/:id' component={ProductDetailPage} />
-					<Route path='/account/:info' component={AccountInfoPage} />
+					<Route path='/account' component={AccountInfoPage} />
 				</Switch>
 				<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
 				{toastDisplay.show && <ToastMessage />}
