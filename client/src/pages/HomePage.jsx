@@ -8,11 +8,9 @@ import MessengerCustomerChat from 'react-messenger-customer-chat';
 function HomePage() {
   return (
     <React.Fragment>
-      <Navigation />
       <Banner />
       <NewProductsSection />
-      <MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
-      <Footer />
+      {/* <MessengerCustomerChat pageId="107987698119089" appId="466417401239652" /> */}
     </React.Fragment>
   );
 }

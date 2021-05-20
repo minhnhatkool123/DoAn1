@@ -7,10 +7,8 @@ import ProductDetail from '../components/ProductDetail';
 function ProductDetailPage() {
   return (
     <React.Fragment>
-      <Navigation />
       <ProductDetail />
       <CommentSection />
-      <Footer />
     </React.Fragment>
   );
 }

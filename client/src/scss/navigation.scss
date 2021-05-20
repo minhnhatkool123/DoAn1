@@ -20,6 +20,7 @@
       display: flex;
 
       .logo {
+        cursor: pointer;
         margin: auto;
         text-align: center;
         font-weight: 800;
@@ -92,7 +93,7 @@
             transform: translateY(-50%);
           }
 
-          &:hover {
+          &:hover a, &:hover {
             color: $lightpink;
             cursor: pointer;
           }
@@ -145,7 +146,6 @@
       margin: 0 auto;
 
       li {
-        cursor: pointer;
         display: block;
         height: 46px;
         position: relative;
@@ -162,6 +162,7 @@
         }
 
         a {
+          cursor: pointer;
           text-decoration: none;
           color: $dimpink;
           font-weight: 700;

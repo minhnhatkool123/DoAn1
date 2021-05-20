@@ -9,6 +9,10 @@ import { FaSearch } from "react-icons/fa";
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
 
+const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
+  ? <Link to={to}>{children}</Link>
+  : <>{children}</>;
+
 function Navigation() {
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
@@ -69,7 +73,11 @@ function Navigation() {
     <div className="navigation grid">
       <div className="header">
         <div className="container">
-          <div className="logo col l-3"><img src="/img/textlogo.png" /></div>
+          <div className="logo col l-3">
+            <Link to='/'>
+              <img src="/img/textlogo.png" alt="logo" />
+            </Link>
+          </div>
           <div className="search col l-6">
             <input className="search-bar" type="text" placeholder="Tìm kiếm sản phẩm" />
             <div className="search-btn">
@@ -78,7 +86,11 @@ function Navigation() {
           </div>
           <div className="account-cart col l-3">
             <div className="account">
-              <span className="name" onClick={handleLoginUser}>{name || 'Đăng nhập'}</span>
+              <span className="name" onClick={handleLoginUser}>
+                <ConditionalLink to='/account/profile' condition={name}>
+                  {name || 'Đăng nhập'}
+                </ConditionalLink>
+              </span>
               <span className="log-out" onClick={handleSignUpEscape}>{name ? 'Thoát' : 'Đăng ký'}</span>
             </div>
             <div className="cart-group">
@@ -92,36 +104,36 @@ function Navigation() {
       <div className="nav">
         <div className="nav-bar-container">
           <ul className="nav-bar">
-            <li className="all"><a href="#">Tất cả</a></li>
+            <li className="all"><Link to='/category/all'>Tất cả</Link></li>
             <li className="shirt">
-              <a href="#">Áo</a>
+              <Link to='/category/ao'>Áo</Link>
               <ul className="sub-nav">
-                <li><a href="#">Áo thể thao</a></li>
-                <li><a href="#">Áo thun nữ</a></li>
-                <li><a href="#">Áo kiểu nữ</a></li>
-                <li><a href="#">Áo sơ mi nữ</a></li>
-                <li><a href="#">Áo khoác nữ</a></li>
+                <li><Link to='/category/ao-the-thao'>Áo thể thao</Link></li>
+                <li><Link to='/category/ao-thun-nu'>Áo thun nữ</Link></li>
+                <li><Link to='/category/ao-kieu-nu'>Áo kiểu nữ</Link></li>
+                <li><Link to='/category/ao-so-mi-nu'>Áo sơ mi nữ</Link></li>
+                <li><Link to='ao-khoac-nu'>Áo khoác nữ</Link></li>
               </ul>
             </li>
             <li className="pants">
-              <a href="#">Quần</a>
+              <Link to='/category/quan'>Quần</Link>
               <ul className="sub-nav">
-                <li><a href="#">Quần dài</a></li>
-                <li><a href="#">Quần short nữ</a></li>
-                <li><a href="#">Quần legging</a></li>
+                <li><Link to='/category/quan-dai'>Quần dài</Link></li>
+                <li><Link to='/category/quan-short-nu'>Quần short nữ</Link></li>
+                <li><Link to='/category/quan-legging'>Quần legging</Link></li>
               </ul>
             </li>
             <li className="dress-skirt">
-              <a href="#">Đầm váy</a>
+              <Link to='/category/dam-vay'>Đầm váy</Link>
               <ul className="sub-nav">
-                <li><a href="#">Chân váy</a></li>
-                <li><a href="#">Đầm nữ</a></li>
-                <li><a href="#">Yếm</a></li>
+                <li><Link to='/category/chan-vay'>Chân váy</Link></li>
+                <li><Link to='/category/dam-nu'>Đầm nữ</Link></li>
+                <li><Link to='/category/yem'>Yếm</Link></li>
               </ul>
             </li>
-            <li className="extra"><a href="#">Set - Jumpsuit</a></li>
-            <li className="hot"><a href="#">Bán chạy</a></li>
-            <li className="sale"><a href="#">Khuyến mãi</a></li>
+            <li className="set"><Link to='/category/set'>Set - Jumpsuit</Link></li>
+            <li className="hot"><Link to='/category/hot'>Bán chạy</Link></li>
+            <li className="sale"><Link to='/category/sale'>Khuyến mãi</Link></li>
           </ul>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { addToCart, cartState } from '../recoil/cartState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
 import '../scss/productDetail.scss';
@@ -28,6 +29,8 @@ const product = {
 
 function ProductDetail(props) {
   const priceRef = useRef(null);
+
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
 
   const [cart, setCart] = useRecoilState(cartState);
 
@@ -60,9 +63,15 @@ function ProductDetail(props) {
     const sizeLabel = document.querySelector('input[name="size"]:checked');
     // console.log(item);
     if (!sizeLabel) {
-      alert('Bạn chưa chọn size cho sản phẩm');
+      setToastDisplay({
+        show: true,
+        message: 'Bạn chưa chọn size cho sản phẩm'
+      });
     } else if (!color) {
-      alert('Bạn chưa chọn màu cho sản phẩm');
+      setToastDisplay({
+        show: true,
+        message: 'Bạn chưa chọn màu cho sản phẩm'
+      });
     } else {
       const item = {
         name: product.name,
@@ -75,7 +84,10 @@ function ProductDetail(props) {
       setCart(newCart);
       localStorage.setItem('cart', JSON.stringify(newCart));
       console.log({ newCart });
-      alert(`Đã thêm sản phẩm ${item.name} vào giỏ hàng!`);
+      setToastDisplay({
+        show: true,
+        message: <span>Bạn đã thêm sản phẩm <strong>{item.name}</strong> vào giỏ hàng!</span>
+      });
     }
   }
 

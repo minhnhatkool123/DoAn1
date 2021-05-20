@@ -1,0 +1,82 @@
+@import "./color.scss";
+
+#toast {
+  #overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    animation: fadeOut linear 0.4s 5s forwards;
+  }
+
+  .toast-message-container {
+    background-color: $white;
+    width: 50vw;
+    min-width: 584px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 3px;
+    z-index: 1;
+    position: fixed;
+    top: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    animation: flyOut ease-in 0.4s 5s forwards;
+
+    .message {
+      font-size: 19px;
+      margin: 22px 28px;
+      text-align: center;
+    }
+
+    .progress-bar {
+      left: 0;
+      bottom: 0;
+      height: 4px;
+      width: 100%;
+      background-color: $lightpink;
+      animation: shrink linear 4s 1s forwards;
+    }
+  }
+
+  &.disabled {
+    .progress-bar {
+      animation: none;
+      width: 0;
+    }
+
+    .toast-message-container {
+      top: -300px;
+      transition: 0.4s;
+    }
+
+    #overlay {
+      opacity: 0;
+      transition: 0.4s;
+    }
+  }
+
+  @keyframes shrink {
+    to {
+      width: 0%;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes flyOut {
+    to {
+      top: -300px;
+    }
+  }
+}

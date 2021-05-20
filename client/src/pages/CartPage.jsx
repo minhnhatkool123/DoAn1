@@ -11,9 +11,7 @@ function CartPage() {
 
   return (
     <React.Fragment>
-      <Navigation />
       {totalQuantity ? <FullCart /> : <EmptyCart />}
-      <Footer />
     </React.Fragment>
   );
 }

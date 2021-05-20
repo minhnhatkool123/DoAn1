@@ -6,9 +6,7 @@ import SearchSection from '../components/SearchSection';
 function SearchPage() {
   return (
     <React.Fragment>
-      <Navigation />
       <SearchSection />
-      <Footer />
     </React.Fragment>
   );
 }

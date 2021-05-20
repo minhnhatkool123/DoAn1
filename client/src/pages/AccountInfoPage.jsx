@@ -8,10 +8,7 @@ function AccountInfoPage() {
   return (
     <div>
       <React.Fragment>
-        <Navigation />
         <AccountInfo />
-        {/* <MessengerCustomerChat pageId="719242094786181" appId="466417401239652" /> */}
-        <Footer />
       </React.Fragment>
     </div>
   );

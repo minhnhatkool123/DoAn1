@@ -1,5 +1,9 @@
 @import './color.scss';
 
+a {
+  text-decoration: none;
+}
+
 .product-container {
   padding-bottom: 30px;
 
@@ -13,16 +17,10 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: rgba(171, 119, 126, 0.19) 0px 10px 20px, rgba(255, 100, 120, 0.23) 0px 6px 6px;
-      .product-name {
-        color: $lightpink;
-      }
 
-      // .product-image {
-      //   background: {
-      //     size: 110% 110%;
-      //     position: center center;
-      //   }
-      // }
+      .product-name {
+        color: $lightpink !important;
+      }
     }
 
     .product-image {
@@ -43,6 +41,7 @@
         margin-bottom: 6px;
         line-height: 22px;
         height: 44px;
+        color: $black;
       }
 
       .product-price {
