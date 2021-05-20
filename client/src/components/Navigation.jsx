@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
-import { cartTotalQuantity, cartState } from '../recoil/cartState';
+import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import '../scss/navigation.scss';
@@ -16,6 +16,9 @@ const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
 function Navigation() {
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
+  const totalPrice = useRecoilValue(cartTotalPrice);
+
+  const cartPreviewRef = useRef(null);
 
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -97,6 +100,34 @@ function Navigation() {
               <Link to='/cart'>
                 <HiOutlineShoppingBag className="cart-icon" />
                 <div className="cart-notice">{totalQuantity}</div>
+                <div className="cart-preview" ref={cartPreviewRef}>
+                  <div className="empty-cart-container">
+                    <img src="/img/cart-empty.png" alt="" className="empty-cart-img" />
+                    <div className="empty-cart-message">Chưa có sản phẩm nào</div>
+                  </div>
+
+                  <div className="cart-list">
+                    <div className="cart-items">
+                      {cart.map(item => (
+                        <div className="cart-product-container">
+                          <div className="product-info">
+                            <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
+                            <div className="product-description">
+                              <div className="product-name">{item.product.name}</div>
+                              <div className="product-quantity">x{item.quantity}</div>
+                            </div>
+                          </div>
+                          <div className="product-price">{(item.product.price * item.quantity).toLocaleString()}đ</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="cart-total-price">
+                      <span className="text-label">Thành tiền:</span>
+                      <span className="total-price">{totalPrice.toLocaleString()}đ</span>
+                    </div>
+                    <div className="view-cart-btn"><Link to='/cart'>Xem giỏ hàng</Link></div>
+                  </div>
+                </div>
               </Link>
             </div>
           </div>

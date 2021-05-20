@@ -45,7 +45,7 @@ export const addToCart = (cart, product, quantity = 1) => {
   // Add new item
   newCart.push({
     product,
-    id: product.id,
+    id: product.id, // ???
     quantity: quantity,
   });
   return newCart;
