@@ -108,7 +108,7 @@ function Navigation() {
 
                   <div className="cart-list">
                     <div className="cart-items">
-                      {cart.map(item => (
+                      {[...cart].reverse().slice(0, 3).map(item => (
                         <div className="cart-product-container">
                           <div className="product-info">
                             <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>

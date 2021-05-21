@@ -6,11 +6,9 @@ import Navigation from '../components/Navigation';
 
 function AccountInfoPage() {
   return (
-    <div>
-      <React.Fragment>
-        <AccountInfo />
-      </React.Fragment>
-    </div>
+    <React.Fragment>
+      <AccountInfo />
+    </React.Fragment>
   );
 }
 

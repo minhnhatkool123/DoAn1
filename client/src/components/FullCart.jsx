@@ -1,7 +1,8 @@
 import React from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice ,cartState } from '../recoil/cartState';
+import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
 import '../scss/cart.scss';
+import { Link } from 'react-router-dom';
 
 function FullCart() {
   const totalPrice = useRecoilValue(cartTotalPrice);
@@ -65,8 +66,8 @@ function FullCart() {
       <div className="totalPrice">Tổng: {totalPrice.toLocaleString()}đ</div>
 
       <div className="btn-group">
-        <div className="continue-shopping-btn">Tiếp tục mua sắm</div>
-        <div className="checkout-btn">Thanh toán</div>
+        <Link to='/'><div className="continue-shopping-btn">Tiếp tục mua sắm</div></Link>
+        <Link to='/checkout'><div className="checkout-btn">Thanh toán</div></Link>
       </div>
     </div>
   );

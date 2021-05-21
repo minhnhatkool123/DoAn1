@@ -1,0 +1,53 @@
+@import './color.scss';
+
+#overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.order-detail {
+  width: 1000px;
+  background-color: $white;
+  border-radius: 8px;
+  z-index: 1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 12px;
+
+  .order-cart-list {
+    .order-cart-detail {
+      td {
+        text-align: center;
+      }
+
+      .product-color-container {
+        padding: 12px;
+
+        .product-color {
+          padding-top: 100%;
+          background: {
+            size: contain;
+            repeat: no-repeat;
+          }
+        }
+      }
+    }
+  }
+
+  .extra-info {
+    .buyer-info {
+
+    }
+
+    .payment-info {
+
+    }
+  }
+}

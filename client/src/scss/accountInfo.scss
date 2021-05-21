@@ -1,4 +1,4 @@
-@import './color.scss';
+@import "./color.scss";
 
 .account-info {
   max-width: 1140px;
@@ -28,7 +28,8 @@
         cursor: pointer;
 
         &:not(:last-child) {
-          box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+          box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px,
+            rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
         }
 
         &:hover {
@@ -66,7 +67,8 @@
       margin-top: 26px;
       margin-left: 24px;
 
-      label, input {
+      label,
+      input {
         display: block;
         margin-bottom: 2px;
       }
@@ -79,7 +81,8 @@
         text-align: right;
       }
 
-      input, select {
+      input,
+      select {
         height: 34px;
         border: 1px solid $lightpink;
         border-radius: 4px;
@@ -116,6 +119,48 @@
 
         &:hover {
           background: $coralpink;
+        }
+      }
+    }
+
+    .order-history {
+      border-collapse: collapse;
+      margin-top: 22px;
+
+      th, td {
+        width: 20%;
+
+        &:first-child {
+          text-align: left;
+        }
+      }
+
+      th {
+        font-size: 17px;
+        border-bottom: 1px solid #a2a2a2;
+        padding-bottom: 4px;
+      }
+
+      td {
+        text-align: center;
+      }
+
+      tbody {
+        td {
+          border-bottom: 1px solid #dee2e6;
+          padding: 12px 0;
+
+          &:nth-child(1), &:nth-child(5) {
+            color: $lightskyblue;
+          }
+
+          &:nth-child(4) {
+            color: $lightpink;
+          }
+
+          .view-detail-btn {
+            cursor: pointer;
+          }
         }
       }
     }

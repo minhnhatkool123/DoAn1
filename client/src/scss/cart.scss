@@ -95,6 +95,10 @@
       border-radius: 22px;
       padding: 0 22px;
       cursor: pointer;
+
+      a, a:active, a:visited {
+        color: inherit;
+      }
     }
 
     .continue-shopping-btn {
