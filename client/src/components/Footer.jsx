@@ -1,10 +1,14 @@
 import React from 'react';
 import '../scss/footer.scss';
+import { useRouteMatch } from 'react-router-dom';
 import { RiYoutubeFill, RiInstagramFill } from "react-icons/ri";
 import { FaFacebookSquare, FaPhoneSquareAlt } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 
 function Footer() {
+  const match = useRouteMatch('/admin');
+  if (match) return null;
+
   return (
     <div className="footer">
       <div className="container grid">

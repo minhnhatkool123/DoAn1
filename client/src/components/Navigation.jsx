@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom';
+import { Link, useRouteMatch, useHistory, HashRouter } from 'react-router-dom';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
@@ -14,11 +14,14 @@ const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
   : <>{children}</>;
 
 function Navigation() {
+  const history = useHistory();
+
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
   const totalPrice = useRecoilValue(cartTotalPrice);
 
   const cartPreviewRef = useRef(null);
+  const searchRef = useRef(null);
 
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -54,6 +57,13 @@ function Navigation() {
     }
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const keyword = searchRef.current.value;
+    if (keyword)
+      history.push(`/search?q=${keyword}`);
+  }
+
   useEffect(() => {
     setName(localStorage.getItem('name'));
   }, [name, showLogin]);
@@ -72,6 +82,9 @@ function Navigation() {
     }
   }, [showSignUp, showLogin]);
 
+  const match = useRouteMatch('/admin');
+  if (match) return null;
+
   return (
     <div className="navigation grid">
       <div className="header">
@@ -81,12 +94,12 @@ function Navigation() {
               <img src="/img/textlogo.png" alt="logo" />
             </Link>
           </div>
-          <div className="search col l-6">
-            <input className="search-bar" type="text" placeholder="Tìm kiếm sản phẩm" />
-            <div className="search-btn">
+          <form className="search col l-6">
+            <input className="search-bar" type="text" placeholder="Tìm kiếm sản phẩm" ref={searchRef} />
+            <button type="submit" className="search-btn" onClick={onSubmit}>
               <FaSearch className="search-icon" />
-            </div>
-          </div>
+            </button>
+          </form>
           <div className="account-cart col l-3">
             <div className="account">
               <span className="name" onClick={handleLoginUser}>
