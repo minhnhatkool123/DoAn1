@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
+import { cartPreviewDisplayState } from '../recoil/cartPreviewDisplayState';
 import { motion } from "framer-motion";
-import { Link, useRouteMatch, useHistory, HashRouter } from 'react-router-dom';
+import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
@@ -19,6 +20,8 @@ function Navigation() {
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
   const totalPrice = useRecoilValue(cartTotalPrice);
+
+  const cartPreviewDisplay = useRecoilValue(cartPreviewDisplayState);
 
   const cartPreviewRef = useRef(null);
   const searchRef = useRef(null);
@@ -113,7 +116,7 @@ function Navigation() {
               <Link to='/cart'>
                 <HiOutlineShoppingBag className="cart-icon" />
                 <div className="cart-notice">{totalQuantity}</div>
-                <div className="cart-preview" ref={cartPreviewRef}>
+                {cartPreviewDisplay && <div className="cart-preview" ref={cartPreviewRef}>
                   <div className="empty-cart-container">
                     <img src="/img/cart-empty.png" alt="" className="empty-cart-img" />
                     <div className="empty-cart-message">Chưa có sản phẩm nào</div>
@@ -121,8 +124,8 @@ function Navigation() {
 
                   <div className="cart-list">
                     <div className="cart-items">
-                      {[...cart].reverse().slice(0, 3).map(item => (
-                        <div className="cart-product-container">
+                      {[...cart].reverse().slice(0, 5).map((item, index) => (
+                        <div className="cart-product-container" key={index}>
                           <div className="product-info">
                             <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
                             <div className="product-description">
@@ -140,7 +143,7 @@ function Navigation() {
                     </div>
                     <div className="view-cart-btn"><Link to='/cart'>Xem giỏ hàng</Link></div>
                   </div>
-                </div>
+                </div>}
               </Link>
             </div>
           </div>
@@ -158,7 +161,7 @@ function Navigation() {
                 <li><Link to='/category/ao-thun-nu'>Áo thun nữ</Link></li>
                 <li><Link to='/category/ao-kieu-nu'>Áo kiểu nữ</Link></li>
                 <li><Link to='/category/ao-so-mi-nu'>Áo sơ mi nữ</Link></li>
-                <li><Link to='/ao-khoac-nu'>Áo khoác nữ</Link></li>
+                <li><Link to='/category/ao-khoac-nu'>Áo khoác nữ</Link></li>
               </ul>
             </li>
             <li className="pants">

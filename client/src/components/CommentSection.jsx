@@ -106,7 +106,7 @@ function CommentSection() {
       <div className="comment-posting-area">
         <div className="comment-typing-area">
           <div className="avatar">P</div>
-          <div contenteditable="true" className="comment-typing" data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn." />
+          <div contentEditable="true" className="comment-typing" data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn." />
         </div>
 
         <div className="btn-group">

@@ -136,9 +136,9 @@ function ProductDetail(props) {
         <div className="main-image" style={{ backgroundImage: `url(${currentImage})` }}></div>
         <div className="sub-images">
           <div className="row">
-            {product.images.map(image => {
+            {product.images.map((image, index) => {
               return (
-                <div className="l-2 sub-image-container" key={product.id}>
+                <div className="l-2 sub-image-container" key={index}>
                   <div className="sub-image" style={{ backgroundImage: `url(${image})` }} onClick={(e) => handleSubImageClick(e, image)}></div>
                 </div>
               )
@@ -156,9 +156,9 @@ function ProductDetail(props) {
           <div className="size-title">Size</div>
           <div className="size-selection">
             {product.sizes.map((size, index) => (
-              <div className="size-options">
-                <input className="radio-option" type="radio" id={size} name="size" value={size} key={index} />
-                <label for={size} className="size-option">{size}</label>
+              <div className="size-options" key={index}>
+                <input className="radio-option" type="radio" id={size} name="size" value={size} />
+                <label htmlFor={size} className="size-option">{size}</label>
               </div>
             ))}
           </div>
@@ -167,7 +167,7 @@ function ProductDetail(props) {
         <div className="color-group">
           <div className="color-title">Màu sắc</div>
           <ul className="color-selection">
-            {product.colors.map(color => <li className="color-option" key={product.id} style={{ backgroundImage: `url(${color})` }} onClick={handleColorClick}></li>)}
+            {product.colors.map((color, index) => <li className="color-option" key={index} style={{ backgroundImage: `url(${color})` }} onClick={handleColorClick}></li>)}
           </ul>
         </div>
 

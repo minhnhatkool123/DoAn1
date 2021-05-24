@@ -1,22 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation, useParams, Link } from 'react-router-dom';
+import queryString from 'query-string';
 import '../scss/searchSection.scss';
 import products from '../data2';
 import ProductCard from './ProductCard';
+import ReactPaginate from "react-paginate";
 
-const initialCatalog = [
-  'Quần dài',
-  'Quần short nữ',
-  'Quần legging'
-];
+function SearchSection() {
+  const { search } = useLocation();
+  const { q } = queryString.parse(search);
+  const { category } = useParams();
+  const catalog = getCatalog(category);
 
-function SearchSection(props) {
-  const catalog = initialCatalog.map(item => {
-    let i = 1;
-    return {
-      key: i++,
-      value: item
-    }
-  });
+  const [page, setPage] = useState(0);
+  const productsPerPage = 16;
+  const pagesVisited = page * productsPerPage;
+  const pageCount = Math.ceil(products.length / productsPerPage);
+
+  const handlePageChange = ({ selected }) => {
+    console.log('page click: ', selected);
+    setPage(selected);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <div className="search-section">
@@ -24,7 +29,9 @@ function SearchSection(props) {
         <div className="product-catalog col fl-20">
           <div className="title">Danh mục sản phẩm</div>
           <ul className="catalog-detail">
-            {catalog.map(item => <li key={item.key}>{item.value}</li>)}
+            {catalog.map((item, index) => (
+              <li key={index}><Link to={`${item.key}`}>{item.value}</Link></li>
+            ))}
           </ul>
         </div>
 
@@ -48,16 +55,22 @@ function SearchSection(props) {
           </div>
 
           <div className="row products-list">
-            {products.map(product => <ProductCard product={product} key={product.id} />)}
+            {products.slice(pagesVisited, pagesVisited + productsPerPage).map(product => <ProductCard product={product} key={product.id} />)}
           </div>
 
-          <ul className="pagination">
-            <li><a href="#">Prev</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">6</a></li>
-            <li><a href="#">Next</a></li>
-          </ul>
+          <ReactPaginate
+            previousLabel={"Prev"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={handlePageChange}
+            containerClassName={"pagination"}
+            pageClassName={"paginated-btn"}
+            breakClassName={"paginated-btn"}
+            previousClassName={"prev-btn"}
+            nextClassName={"next-btn"}
+            disabledClassName={"disabled-btn"}
+            activeClassName={"active-btn"}
+          />
         </div>
       </div>
     </div>
@@ -65,3 +78,90 @@ function SearchSection(props) {
 }
 
 export default SearchSection;
+
+const getCatalog = (category) => {
+  switch (category) {
+    case 'ao':
+    case 'ao-the-thao':
+    case 'ao-thun-nu':
+    case 'ao-kieu-nu':
+    case 'ao-so-mi-nu':
+    case 'ao-khoac-nu':
+      return [
+        {
+          key: 'ao-the-thao',
+          value: 'Áo thể thao'
+        },
+        {
+          key: 'ao-thun-nu',
+          value: 'Áo thun nữ'
+        },
+        {
+          key: 'ao-kieu-nu',
+          value: 'Áo kiểu nữ'
+        },
+        {
+          key: 'ao-so-mi-nu',
+          value: 'Áo sơ mi nữ'
+        },
+        {
+          key: 'ao-khoac-nu',
+          value: 'Áo khoác nữ'
+        }
+      ];
+
+    case 'quan':
+    case 'quan-dai':
+    case 'quan-short-nu':
+    case 'quan-legging':
+      return [
+        {
+          key: 'quan-dai',
+          value: 'Quần dài'
+        },
+        {
+          key: 'quan-short-nu',
+          value: 'Quần short nữ'
+        },
+        {
+          key: 'quan-legging',
+          value: 'Quần legging'
+        }
+      ];
+
+    case 'dam-vay':
+    case 'chan-vay':
+    case 'dam-nu':
+    case 'yem':
+      return [
+        {
+          key: 'chan-vay',
+          value: 'Chân váy'
+        },
+        {
+          key: 'dam-nu',
+          value: 'Đầm nữ'
+        },
+        {
+          key: 'yem',
+          value: 'Yếm'
+        }
+      ];
+
+    default:
+      return [
+        {
+          key: 'ao',
+          value: 'Áo'
+        },
+        {
+          key: 'quan',
+          value: 'Quần'
+        },
+        {
+          key: 'dam-vay',
+          value: 'Đầm váy'
+        }
+      ];
+  }
+}

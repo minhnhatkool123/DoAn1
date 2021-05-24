@@ -28,6 +28,13 @@ export const cartTotalQuantity = selector({
   }
 })
 
+function* idGenerator() {
+  let i = 0;
+
+  while (true) {
+    yield i++;
+  }
+}
 
 export const addToCart = (cart, product, quantity = 1) => {
   const newCart = [...cart];
@@ -45,7 +52,7 @@ export const addToCart = (cart, product, quantity = 1) => {
   // Add new item
   newCart.push({
     product,
-    id: product.id, // ???
+    id: product.id,
     quantity: quantity,
   });
   return newCart;

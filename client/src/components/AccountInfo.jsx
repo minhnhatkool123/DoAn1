@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { motion } from "framer-motion";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import TextError from './TextError';
 import '../scss/accountInfo.scss';
 import { IoPersonCircle } from "react-icons/io5";
 import Profile from './Profile';

@@ -10,6 +10,7 @@
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
     animation: fadeIn ease 0.4s, fadeOut linear 0.4s 5s forwards;
+    will-change: opacity;
   }
 
   .toast-message-container {
@@ -25,6 +26,7 @@
     transform: translateX(-50%);
     overflow: hidden;
     animation: flyIn ease 0.4s, flyOut ease-in 0.4s 5s forwards;
+    will-change: top;
 
     .message {
       font-size: 19px;
@@ -39,6 +41,7 @@
       width: 100%;
       background-color: $lightpink;
       animation: shrink linear 4s 1s forwards;
+      will-change: width;
     }
   }
 

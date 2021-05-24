@@ -15,6 +15,8 @@ import MessengerCustomerChat from 'react-messenger-customer-chat';
 import ToastMessage from './components/ToastMessage';
 import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
+import CartPreviewDisplayHandling from './components/CartPreviewDisplayHandling';
+import Test2 from './pages/Test2';
 
 const PrivateRoute = ({ children, ...rest }) => {
 	let auth = localStorage.getItem('name');
@@ -33,17 +35,19 @@ function App() {
 	return (
 		<Router>
 			<ScrollToTop />
+			<CartPreviewDisplayHandling />
 			<div className="App">
 				<Navigation />
 				<Switch>
 					<Route path='/' exact component={HomePage} />
 					<Route path='/cart' component={CartPage} />
-					<Route path='/category/:name' component={SearchPage} />
+					<Route path='/category/:category' component={SearchPage} />
 					<Route path='/search' component={SearchPage} />
 					<Route path='/product/:id' component={ProductDetailPage} />
 					<Route path='/account' component={AccountInfoPage} />
 					<Route path='/checkout' component={CheckoutPage} />
 					<Route path='/admin/login' component={AdminAuthenticationPage} />
+					<Route path='/test' component={Test2} />
 					<PrivateRoute path='/admin'>
 						<DashboardPage />
 					</PrivateRoute>

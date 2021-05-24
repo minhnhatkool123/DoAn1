@@ -1,0 +1,60 @@
+@import "./color.scss";
+
+.pagination {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+
+  .paginated-btn,
+  .prev-btn,
+  .next-btn {
+    a {
+      cursor: pointer;
+      border: 1px solid $silver;
+      font-size: 16px;
+      min-width: 20px;
+      text-align: center;
+      display: block;
+    }
+
+    &:not(.disabled-btn) {
+      a:hover {
+        background: $lightpink;
+        color: $white;
+      }
+    }
+  }
+
+  .paginated-btn a {
+    padding: 5px 8px;
+    border-left: none;
+  }
+
+  .prev-btn,
+  .next-btn {
+    a {
+      padding: 5px 10px;
+    }
+  }
+
+  .prev-btn a {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .next-btn a {
+    border-left: none;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  .disabled-btn a {
+    cursor: default;
+    opacity: 0.3;
+  }
+
+  .active-btn a {
+    background: $lightpink;
+    color: $white;
+  }
+}
