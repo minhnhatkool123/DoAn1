@@ -214,7 +214,7 @@ function CheckoutSection() {
 
                 <tr>
                   <td width="60%">Phí vận chuyển</td>
-                  <td width="40%">25000đ</td>
+                  <td width="40%">25.000đ</td>
                 </tr>
 
                 <tr>

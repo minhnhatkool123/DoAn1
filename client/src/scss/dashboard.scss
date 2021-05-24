@@ -1,14 +1,34 @@
-@import './color.scss';
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import "./color.scss";
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap");
+
+.full-screen-background {
+  width: 100%;
+  height: 100vh;
+  background: {
+    repeat: no-repeat;
+    size: cover;
+    position: center;
+    attachment: fixed;
+  }
+}
 
 .dashboard {
+  * {
+    font-family: "Roboto", sans-serif;
+  }
+
   overflow: auto;
-  font-family: unset;
+
+  .dashboard-container {
+    max-width: 1224px;
+    margin: 0 auto;
+    padding: 0 12px;
+  }
 
   .dashboard-navigation {
     position: relative;
     background-color: $white;
-    width: 1140px;
+    width: 100%;
     height: 80px;
     margin: 40px auto 0 auto;
     display: flex;
@@ -16,8 +36,9 @@
     align-items: center;
     padding: 0 20px;
     color: $dimgrey;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
-    font-family: 'Roboto', sans-serif;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.05) 0px 8px 32px;
+
     .dashboard-logo {
       display: flex;
       align-items: center;
@@ -28,7 +49,6 @@
       }
 
       .logo-title {
-        font-family: 'Roboto', sans-serif;
         margin-left: 12px;
         font-size: 36px;
         text-transform: uppercase;
@@ -40,14 +60,13 @@
       display: flex;
       justify-content: space-between;
       list-style: none;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 300;
       width: 500px;
 
       li {
         cursor: pointer;
-        padding: 12px 24px;
-        font-family: 'Roboto', sans-serif;
+        padding: 11px 24px;
 
         &:hover {
           background-color: $lightsilver;
@@ -75,10 +94,9 @@
       }
 
       .log-out-title {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 300;
         margin-left: 6px;
-        font-family: 'Roboto', sans-serif;
       }
     }
   }
@@ -86,20 +104,108 @@
   .dashboard-body {
     position: relative;
     background-color: $white;
-    width: 1140px;
+    padding: 16px 24px;
+    width: 100%;
     height: 500px;
     margin: 60px auto 40px auto;
-    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.05) 0px 8px 32px;
+
+    .add-new-product-btn {
+      background-color: $mediumgrey;
+      cursor: pointer;
+      color: $white;
+      text-align: center;
+      float: right;
+      // border-radius: 5px;
+      padding: 14px 12px;
+      font-size: 18px;
+      font-weight: 600;
+
+      &:hover {
+        background-color: $dimgrey;
+      }
+    }
   }
 }
 
-.full-screen-background {
-  width: 100%;
-  height: 100vh;
-  background: {
-    repeat: no-repeat;
-    size: cover;
-    position: center;
-    attachment: fixed;
+// ----- Authentication -----
+
+.admin-auth {
+  * {
+    font-family: "Roboto", sans-serif;
+  }
+
+  .login-container {
+    width: 540px;
+    background-color: $white;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 32px 32px 44px 32px;
+    display: flex;
+    flex-direction: column;
+
+    .logo-icon {
+      margin: 0 auto;
+      display: block;
+      width: 104px;
+      height: 104px;
+      color: $dimgrey;
+      margin-bottom: 24px;
+    }
+
+    .form-container {
+      .error {
+        font-size: 16px;
+      }
+
+      label,
+      input {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      label {
+        margin-left: 2px;
+        color: $dimgrey;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        height: 58px;
+        border: 1px solid $divider;
+        padding: 14px 20px;
+        font-size: 20px;
+
+        &::placeholder {
+          font-size: 20px;
+          color: $grey;
+          margin-top: 4px;
+        }
+      }
+
+      .form-control {
+        margin-bottom: 22px;
+        width: 100%;
+      }
+
+      .submit-btn {
+        background: $dimgrey;
+        color: $white;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 22px;
+        height: 62px;
+        margin-top: 2px;
+        width: 100%;
+
+        &:hover {
+          background: $darkslategrey;
+        }
+      }
+    }
   }
 }

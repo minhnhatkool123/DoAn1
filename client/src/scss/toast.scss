@@ -42,6 +42,10 @@
       background-color: $lightpink;
       animation: shrink linear 4s 1s forwards;
       will-change: width;
+
+      &.admin-mode {
+        background-color: $mediumgrey;
+      }
     }
   }
 

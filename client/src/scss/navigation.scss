@@ -51,6 +51,7 @@
           border-radius: 8px;
           border: 2px solid $lightpink;
           position: relative;
+          font-size: 17px;
           border-bottom-right-radius: 0;
           border-top-right-radius: 0;
           padding: {
@@ -60,6 +61,7 @@
 
           &::placeholder {
             font-weight: 600;
+            font-size: 17px;
           }
         }
 

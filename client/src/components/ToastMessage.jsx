@@ -1,12 +1,21 @@
 import React, { useRef, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { toastDisplayState, closeToastMessage } from '../recoil/toastDisplayState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
+import { useRouteMatch } from 'react-router-dom';
 import '../scss/toast.scss';
 
 function ToastMessage() {
   const toastRef = useRef(null);
+  let progressClassName = '';
 
   const [toastDisplay, setToastDisplay] = useRecoilState(toastDisplayState);
+
+  const match = useRouteMatch('/admin');
+  if (match) {
+    progressClassName = 'progress-bar admin-mode';
+  } else {
+    progressClassName = 'progress-bar';
+  }
 
   const disableToast = () => {
     toastRef.current.classList.add('disabled');
@@ -29,7 +38,7 @@ function ToastMessage() {
       <div id="overlay" onClick={disableToast}></div>
       <div className="toast-message-container">
         <div className="message">{toastDisplay.message}</div>
-        <div className="progress-bar"></div>
+        <div className={progressClassName}></div>
       </div>
     </div>
   )

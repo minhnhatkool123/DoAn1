@@ -45,7 +45,7 @@ function FullCart() {
 
               <td width="30%" className="product-name">{`${item.product.name} - ${item.product.size}`}</td>
 
-              <td width="15%" className="unit-price">{item.product.price}</td>
+              <td width="15%" className="unit-price">{item.product.price.toLocaleString()}đ</td>
 
               <td width="15%" className="quantity-adjustment">
                 <span className="decrement-btn" onClick={() => handleProductDecrement(item.id, item.quantity)}>-</span>
@@ -53,7 +53,7 @@ function FullCart() {
                 <span className="increment-btn" onClick={() => handleProductIncrement(item.id)}>+</span>
               </td>
 
-              <td width="15%" className="product-total-price">{item.product.price * item.quantity}</td>
+              <td width="15%" className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</td>
 
               <td width="15%" className="remove">
                 <span className="remove-btn" onClick={() => handleRemoveProduct(item.id)}>Xóa</span>

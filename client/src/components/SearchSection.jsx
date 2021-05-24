@@ -13,14 +13,17 @@ function SearchSection() {
   const catalog = getCatalog(category);
 
   const [page, setPage] = useState(0);
-  const productsPerPage = 16;
+  const productsPerPage = 12;
   const pagesVisited = page * productsPerPage;
   const pageCount = Math.ceil(products.length / productsPerPage);
 
   const handlePageChange = ({ selected }) => {
     console.log('page click: ', selected);
     setPage(selected);
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
