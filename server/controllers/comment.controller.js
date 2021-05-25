@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Comments = require('../models/commentModel');
 const { ObjectId } = require('mongodb');
 const addComment = async (req, res) => {
