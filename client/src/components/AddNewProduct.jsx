@@ -60,7 +60,7 @@ const AddNewProduct = React.forwardRef((props, ref) => {
 
             <div className="form-control">
               <label htmlFor="product-price">Hình ảnh/màu sắc</label>
-              <input type="file" multiple id="file" onChange={handleImagesChoose} />
+              <input type="file" multiple id="file" onChange={handleImagesChoose} accept="image/*" />
               <div className="product-color">
                 <div className="img-row">
                   {selectedImages.map(image => (
