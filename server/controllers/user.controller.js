@@ -182,6 +182,10 @@ const confirmMail = async (req, res) => {
 
 const updateInfo = async (req, res) => {
 	try {
+		if (req.body.username) {
+			return res.status(400).json({ message: 'Do not update username' });
+		}
+
 		const userUpdate = await Users.findByIdAndUpdate(
 			{ _id: req.user.id },
 			req.body,

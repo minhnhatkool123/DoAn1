@@ -231,15 +231,51 @@ const getProductDetail = async (req, res) => {
 
 const addProduct = async (req, res) => {
 	try {
-		const { name, status } = req.body;
+		//const { name,category,type,price,size,colors,discount,i status, } = req.body;
+		if (!req.body.images || req.body.images.length === 0) {
+			return res.status(400).json({ message: 'Images length = 0' });
+		}
 
-		console.log(typeof status);
-		const newProduct = Products({
-			name,
-			status: status,
+		const newProduct = Products(req.body);
+		await newProduct.save();
+		res.json(newProduct);
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const editProduct = async (req, res) => {
+	try {
+		if (!req.body.images || req.body.images.length === 0) {
+			return res.status(400).json({ message: 'Images length = 0' });
+		}
+		const productUpdate = await Products.findByIdAndUpdate(
+			{ _id: req.params.id },
+			req.body,
+			{ new: true }
+		);
+
+		if (productUpdate) {
+			res.json({ message: 'Update product success', product: productUpdate });
+		} else {
+			res.json({ message: 'Update product fail' });
+		}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const deleteProduct = async (req, res) => {
+	try {
+		const productUpdate = await Products.findByIdAndDelete({
+			_id: req.params.id,
 		});
-		console.log(newProduct);
-		res.json({ message: 'success' });
+
+		if (productUpdate) {
+			res.json({ message: 'Delete product success' });
+		} else {
+			res.json({ message: 'Delete product fail' });
+		}
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -364,5 +400,7 @@ module.exports = {
 	getProductAll,
 	getProductDetail,
 	addProduct,
+	editProduct,
+	deleteProduct,
 	searchProduct,
 };

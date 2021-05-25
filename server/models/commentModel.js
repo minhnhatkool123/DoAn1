@@ -23,9 +23,6 @@ const commentSchema = mongoose.Schema({
 			date: Date,
 		},
 	],
-
-	//type: Array,
-	//default: [],
 });
 
 module.exports = mongoose.model('Comments', commentSchema);

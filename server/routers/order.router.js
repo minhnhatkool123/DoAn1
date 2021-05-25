@@ -5,4 +5,8 @@ router.post('/add', orderController.addOrder);
 
 router.get('/gettotalonemonth', orderController.getTotalOneMonth);
 
+router.get('/gettotalcategory', orderController.getTotalCategory);
+
+router.get('/gettotalsoldcategory', orderController.getNumberSoldCategory);
+
 module.exports = router;

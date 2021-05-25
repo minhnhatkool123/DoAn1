@@ -104,15 +104,6 @@ const getTotalOneMonth = async (req, res) => {
 				dataTotal.push(fakeResult);
 			}
 		}
-
-		//let fakeResult = {
-		// 	_id: {
-		// 		year: 2021,
-		// 		month: 5,
-		// 	},
-		// 	total: 0,
-		// };
-		// dataTotal.push(fakeResult);
 		console.log(dataTotal);
 
 		res.json({ message: 'Done' });
@@ -121,7 +112,91 @@ const getTotalOneMonth = async (req, res) => {
 	}
 };
 
+const getTotalCategory = async (req, res) => {
+	try {
+		const allPrice = await Orders.aggregate([
+			// {
+			// 	$match: {
+			// 		products: {
+			// 			$elemMatch: {
+			// 				category: 'Quần',
+			// 			},
+			// 		},
+			// 	},
+			// },
+			{
+				$unwind: '$products',
+			},
+		]);
+
+		let result = [];
+		let totalAo = 0;
+		let totalQuan = 0;
+		for (let i = 0; i < allPrice.length; i++) {
+			let product = allPrice[i].products;
+
+			if (JSON.stringify(product.category) === JSON.stringify('Áo')) {
+				if (product.status.includes(2))
+					totalAo += (product.price - product.discount) * product.soldQuantity;
+				else {
+					totalAo += product.price * product.soldQuantity;
+				}
+			}
+			if (JSON.stringify(product.category) === JSON.stringify('Quần')) {
+				if (product.status.includes(2))
+					totalQuan +=
+						(product.price - product.discount) * product.soldQuantity;
+				else {
+					totalQuan += product.price * product.soldQuantity;
+				}
+			}
+		}
+
+		result.push({ category: 'Áo', total: totalAo });
+		result.push({ category: 'Quần', total: totalQuan });
+		//console.log(totalQuan);
+
+		res.json({ result });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const getNumberSoldCategory = async (req, res) => {
+	try {
+		const allPrice = await Orders.aggregate([
+			{
+				$unwind: '$products',
+			},
+		]);
+
+		let result = [];
+		let totalAo = 0;
+		let totalQuan = 0;
+		for (let i = 0; i < allPrice.length; i++) {
+			let product = allPrice[i].products;
+
+			if (JSON.stringify(product.category) === JSON.stringify('Áo')) {
+				totalAo += product.soldQuantity;
+			}
+			if (JSON.stringify(product.category) === JSON.stringify('Quần')) {
+				totalQuan += product.soldQuantity;
+			}
+		}
+
+		result.push({ category: 'Áo', total: totalAo });
+		result.push({ category: 'Quần', total: totalQuan });
+		//console.log(totalQuan);
+
+		res.json({ result });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	addOrder,
 	getTotalOneMonth,
+	getTotalCategory,
+	getNumberSoldCategory,
 };
