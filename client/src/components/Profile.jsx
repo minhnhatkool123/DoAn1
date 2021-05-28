@@ -46,7 +46,7 @@ function Profile() {
     axios.get('https://dc.tintoc.net/app/api-customer/public/provinces?size=64')
       .then((response) => {
         response.data.shift();
-        response.data.sort((a, b) => parseFloat(a.id) - parseFloat(b.id)).forEach(item => {
+        response.data.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
           provinces.push({
             id: item.id,
             name: item.name
@@ -67,7 +67,7 @@ function Profile() {
           })
         });
         console.log('districts', districts);
-        setProvinceId(1);
+        setProvinceId(57);
         setForceUpdate(value => !value);
       })
       .catch(error => console.log(error))
@@ -139,13 +139,11 @@ function Profile() {
               <div className="form-control">
                 <label htmlFor="district">Quận/Huyện:</label>
                 <Field as='select' id='district' name='district'>
-                  {accordingDistricts.map(district => {
-                    return (
-                      <option key={district.id} value={district.id}>
-                        {district.name}
-                      </option>
-                    );
-                  })}
+                  {accordingDistricts.map(district => (
+                    <option key={district.id} value={district.id}>
+                      {district.name}
+                    </option>
+                  ))}
                 </Field>
                 <ErrorMessage name="district" component={TextError} />
               </div>

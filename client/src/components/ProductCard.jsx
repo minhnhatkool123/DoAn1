@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import '../scss/productCard.scss';
 
 const calcSalePrice = (originalPrice, discount) => {
-  return (parseInt((originalPrice.replace(',', ''))) - discount).toLocaleString();
+  return (originalPrice - discount).toLocaleString();
 };
 
 function ProductCard(props) {
@@ -11,14 +11,15 @@ function ProductCard(props) {
 
   return (
     <div className="product-container col l-3">
-      <Link to={`/product/${product.id}`}>
+      <Link to={`/product/${product._id}`}>
         <div className="product-interface">
           <div className="product-image" style={{ backgroundImage: `url(${product.images[0]})` }}></div>
 
           <div className="product-info">
             <div className="product-name">{product.name}</div>
+            {product.discount === 0 && <div className="empty"></div>}
             <div className="product-price">{calcSalePrice(product.price, product.discount)}đ</div>
-            <div className="product-original-price">{product.price}đ</div>
+            {product.discount > 0 && <div className="product-original-price">{product.price.toLocaleString()}đ</div>}
           </div>
 
           <div className="product-new-label">New</div>

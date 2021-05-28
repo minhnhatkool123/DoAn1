@@ -23,7 +23,7 @@ function OrderDetail({ order }) {
 
           <tbody className="order-cart-detail">
             {order.cart.map(item => (
-              <tr>
+              <tr key={item.id}>
                 <td className="product-color-container">
                   <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
                 </td>

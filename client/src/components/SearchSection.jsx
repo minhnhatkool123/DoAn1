@@ -13,7 +13,7 @@ function SearchSection() {
   const catalog = getCatalog(category);
 
   const [page, setPage] = useState(0);
-  const productsPerPage = 12;
+  const productsPerPage = 4;
   const pagesVisited = page * productsPerPage;
   const pageCount = Math.ceil(products.length / productsPerPage);
 

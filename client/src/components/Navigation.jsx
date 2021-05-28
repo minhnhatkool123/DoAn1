@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
-import { cartPreviewDisplayState } from '../recoil/cartPreviewDisplayState';
-import { motion } from "framer-motion";
 import { Link, useRouteMatch, useHistory } from 'react-router-dom';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
@@ -20,8 +18,6 @@ function Navigation() {
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
   const totalPrice = useRecoilValue(cartTotalPrice);
-
-  const cartPreviewDisplay = useRecoilValue(cartPreviewDisplayState);
 
   const cartPreviewRef = useRef(null);
   const searchRef = useRef(null);
@@ -85,8 +81,10 @@ function Navigation() {
     }
   }, [showSignUp, showLogin]);
 
-  const match = useRouteMatch('/admin');
-  if (match) return null;
+  const isInDashboard = useRouteMatch('/admin');
+  const isInCartPage = useRouteMatch('/cart');
+
+  if (isInDashboard) return null;
 
   return (
     <div className="navigation grid">
@@ -116,7 +114,7 @@ function Navigation() {
               <Link to='/cart'>
                 <HiOutlineShoppingBag className="cart-icon" />
                 <div className="cart-notice">{totalQuantity}</div>
-                {cartPreviewDisplay && <div className="cart-preview" ref={cartPreviewRef}>
+                {!isInCartPage && <div className="cart-preview" ref={cartPreviewRef}>
                   <div className="empty-cart-container">
                     <img src="/img/cart-empty.png" alt="" className="empty-cart-img" />
                     <div className="empty-cart-message">Chưa có sản phẩm nào</div>

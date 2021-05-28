@@ -15,13 +15,15 @@ import MessengerCustomerChat from 'react-messenger-customer-chat';
 import ToastMessage from './components/ToastMessage';
 import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
-import CartPreviewDisplayHandling from './components/CartPreviewDisplayHandling';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children, ...rest }) => {
 	let auth = localStorage.getItem('name');
 
 	return (
-		<Route {...rest} render={({location}) =>
+		<Route {...rest} render={({ location }) =>
 			auth ? children : <Redirect to={{ pathname: location.pathname + '/login' }} />
 		} />
 	);
@@ -34,29 +36,30 @@ function App() {
 	return (
 		<Router>
 			<ScrollToTop />
-			<CartPreviewDisplayHandling />
-			<div className="App">
-				<Navigation />
-				<Switch>
-					<Route path='/' exact component={HomePage} />
-					<Route path='/cart' component={CartPage} />
-					<Route path='/category/:category' component={SearchPage} />
-					<Route path='/search' component={SearchPage} />
-					<Route path='/product/:id' component={ProductDetailPage} />
-					<Route path='/account' component={AccountInfoPage} />
-					<Route path='/checkout' component={CheckoutPage} />
-					<Route path='/admin/login' component={AdminAuthenticationPage} />
-					<PrivateRoute path='/admin'>
-						<DashboardPage />
-					</PrivateRoute>
-					{/* <Route path='/admin'>
+			<QueryClientProvider client={queryClient}>
+				<div className="App">
+					<Navigation />
+					<Switch>
+						<Route path='/' exact component={HomePage} />
+						<Route path='/cart' component={CartPage} />
+						<Route path='/category/:category' component={SearchPage} />
+						<Route path='/search' component={SearchPage} />
+						<Route path='/product/:id' component={ProductDetailPage} />
+						<Route path='/account' component={AccountInfoPage} />
+						<Route path='/checkout' component={CheckoutPage} />
+						<Route path='/admin/login' component={AdminAuthenticationPage} />
+						<PrivateRoute path='/admin'>
+							<DashboardPage />
+						</PrivateRoute>
+						{/* <Route path='/admin'>
 						{!loggedIn ? <Redirect to='/admin/login' /> : <DashboardPage />}
 					</Route> */}
-				</Switch>
-				<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
-				{toastDisplay.show && <ToastMessage />}
-				<Footer />
-			</div>
+					</Switch>
+					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
+					{toastDisplay.show && <ToastMessage />}
+					<Footer />
+				</div>
+			</QueryClientProvider>
 		</Router>
 	);
 }

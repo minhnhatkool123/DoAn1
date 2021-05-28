@@ -7,7 +7,7 @@ const orders = [
   {
     id: 19898498,
     date: '21/01/2021',
-    totalPrice: 597000,
+    totalPrice: 199000,
     status: 3,
     cart: [
       {
@@ -19,7 +19,7 @@ const orders = [
           price: 199000,
           size: "M"
         },
-        quantity: 3
+        quantity: 1
       }
     ]
   },

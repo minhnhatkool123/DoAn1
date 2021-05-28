@@ -52,14 +52,16 @@
       color: $sweetindianred;
       font-weight: 900;
       font-size: 26px;
-      margin-top: 18px;
+      margin-top: 24px;
+      margin-bottom: 32px;
     }
 
     .product-original-price {
       text-decoration: line-through;
       color: $darkgrey;
       font-size: 20px;
-      margin-top: 22px;
+      margin-top: -4px;
+      margin-bottom: 28px;
     }
 
     ul {
@@ -82,6 +84,7 @@
         .radio-option {
           -webkit-appearance: none;
           appearance: none;
+          display: none;
 
           &:checked ~ label {
             box-shadow: $lightpink 0px 4px 6px -1px, $lightpink 0px 2px 4px -1px;
@@ -101,6 +104,7 @@
           border-radius: 3px;
           min-width: 32px;
           text-align: center;
+          display: block;
 
           &:first-child {
             background-color: $lightpink;

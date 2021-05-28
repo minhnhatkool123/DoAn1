@@ -1,3 +1,4 @@
+import '../scss/productDetail.scss';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { addToCart, cartState } from '../recoil/cartState';
@@ -5,30 +6,22 @@ import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
 import { useHistory } from 'react-router-dom';
-import '../scss/productDetail.scss';
+import { useParams } from "react-router-dom";
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
-const product = {
-  id: 5,
-  name: "Áo Thun Tay Dài Hình Gấu K204",
-  price: "199000",
-  colors: [
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309180730_1159735690.jpg",
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309183555_1159735690.jpg"
-  ],
-  sizes: ["Freesize", "M"],
-  status: 0,
-  discount: 10000,
-  category: "Áo",
-  type: "Áo Kiểu Nữ",
-  images: [
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/750-atnu.jpg",
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309183555_1159735690.jpg",
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309180730_1159735690.jpg"
-  ],
-  quantity: 5
-};
+const getProduct = async (id) => {
+  const response = await axios.get(`http://localhost:5000/api/product/get-product/${id}`);
+  return response.data;
+}
 
 function ProductDetail(props) {
+  const { id } = useParams();
+
+  const { data, isLoading, isError } = useQuery('productDetail', () => getProduct(id));
+
+  const product = data;
+
   const priceRef = useRef(null);
   const history = useHistory();
 
@@ -37,7 +30,7 @@ function ProductDetail(props) {
   const [cart, setCart] = useRecoilState(cartState);
 
   const [quantity, setQuantity] = useState(1);
-  const [currentImage, setCurrentImage] = useState(product.images[0]);
+  const [currentImage, setCurrentImage] = useState('');
   const [color, setColor] = useState('');
 
   const handleSubImageClick = (e, image) => {
@@ -130,10 +123,12 @@ function ProductDetail(props) {
     }
   }
 
+  if (!product) return null;
+
   return (
     <div className="product-detail row">
       <div className="product-images col l-6">
-        <div className="main-image" style={{ backgroundImage: `url(${currentImage})` }}></div>
+        <div className="main-image" style={{ backgroundImage: `url(${currentImage || product.images[0]})` }}></div>
         <div className="sub-images">
           <div className="row">
             {product.images.map((image, index) => {
@@ -149,8 +144,8 @@ function ProductDetail(props) {
 
       <div className="product-detail-info col l-6">
         <div className="product-title">{product.name}</div>
-        <div className="product-price">{(product.price - product.discount).toLocaleString()}đ</div>
-        <div className="product-original-price" ref={priceRef}>{parseInt(product.price).toLocaleString()}đ</div>
+        <div className="product-price" ref={priceRef}>{(product.price - product.discount).toLocaleString()}đ</div>
+        {product.discount > 0 && <div className="product-original-price">{parseInt(product.price).toLocaleString()}đ</div>}
 
         <div className="size-group">
           <div className="size-title">Size</div>
