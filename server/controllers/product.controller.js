@@ -172,9 +172,10 @@ const getProductCategory = async (req, res) => {
 				0
 			);
 		} else {
+			console.log(category);
 			productFeatures = new ProductFeatures(
 				Products.find(
-					{ category },
+					{ category: category, price: { $gt: 0 } },
 					{
 						_id: 1,
 						name: 1,
@@ -410,6 +411,7 @@ const convertCategory = (x) => {
 		case 'ao':
 			return 'Áo';
 		case 'quan':
+			console.log('Vao Quan');
 			return 'Quần';
 		default:
 			break;
