@@ -60,7 +60,7 @@ function Navigation() {
     e.preventDefault();
     const keyword = searchRef.current.value;
     if (keyword)
-      history.push(`/search?q=${keyword}`);
+      history.push(`/search?name=${keyword}`);
   }
 
   useEffect(() => {

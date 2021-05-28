@@ -54,6 +54,12 @@
 
     .products-list {
       margin-top: 14px;
+      position: relative;
+    }
+
+    .no-result {
+      font-size: 18px;
+      height: 70vh;
     }
 
     .pagination {

@@ -6,9 +6,7 @@ const calcSalePrice = (originalPrice, discount) => {
   return (originalPrice - discount).toLocaleString();
 };
 
-function ProductCard(props) {
-  const product = props.product;
-
+function ProductCard({ product }) {
   return (
     <div className="product-container col l-3">
       <Link to={`/product/${product._id}`}>
@@ -22,7 +20,7 @@ function ProductCard(props) {
             {product.discount > 0 && <div className="product-original-price">{product.price.toLocaleString()}đ</div>}
           </div>
 
-          <div className="product-new-label">New</div>
+          {product.status.includes(1) && <div className="product-new-label">New</div>}
         </div>
       </Link>
     </div>

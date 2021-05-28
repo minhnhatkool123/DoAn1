@@ -19,8 +19,8 @@ const productSchema = new mongoose.Schema({
 		require: true,
 		default: 0,
 	},
-	size: {
-		type: String,
+	sizes: {
+		type: [String],
 		trim: true,
 		require: true,
 	},

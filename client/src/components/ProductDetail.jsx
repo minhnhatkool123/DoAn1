@@ -9,6 +9,8 @@ import { useHistory } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import { EatLoading } from 'react-loadingg';
+import FetchError from './FetchError';
 
 const getProduct = async (id) => {
   const response = await axios.get(`http://localhost:5000/api/product/get-product/${id}`);
@@ -123,76 +125,80 @@ function ProductDetail(props) {
     }
   }
 
-  if (!product) return null;
+  // if (!product) return <EatLoading color='#ffb0bd' />;
 
   return (
-    <div className="product-detail row">
-      <div className="product-images col l-6">
-        <div className="main-image" style={{ backgroundImage: `url(${currentImage || product.images[0]})` }}></div>
-        <div className="sub-images">
-          <div className="row">
-            {product.images.map((image, index) => {
-              return (
-                <div className="l-2 sub-image-container" key={index}>
-                  <div className="sub-image" style={{ backgroundImage: `url(${image})` }} onClick={(e) => handleSubImageClick(e, image)}></div>
+    <React.Fragment>
+      {isLoading && <div style={{ height: '80vh' }}><EatLoading color='#ffb0bd' /></div>}
+      {isError && <FetchError />}
+      {product && <div className="product-detail row">
+        <div className="product-images col l-6">
+          <div className="main-image" style={{ backgroundImage: `url(${currentImage || product.images[0]})` }}></div>
+          <div className="sub-images">
+            <div className="row">
+              {product.images.map((image, index) => {
+                return (
+                  <div className="l-2 sub-image-container" key={index}>
+                    <div className="sub-image" style={{ backgroundImage: `url(${image})` }} onClick={(e) => handleSubImageClick(e, image)}></div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="product-detail-info col l-6">
+          <div className="product-title">{product.name}</div>
+          <div className="product-price" ref={priceRef}>{(product.price - product.discount).toLocaleString()}đ</div>
+          {product.discount > 0 && <div className="product-original-price">{parseInt(product.price).toLocaleString()}đ</div>}
+
+          <div className="size-group">
+            <div className="size-title">Size</div>
+            <div className="size-selection">
+              {product.sizes.map((size, index) => (
+                <div className="size-options" key={index}>
+                  <input className="radio-option" type="radio" id={size} name="size" value={size} />
+                  <label htmlFor={size} className="size-option">{size}</label>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="product-detail-info col l-6">
-        <div className="product-title">{product.name}</div>
-        <div className="product-price" ref={priceRef}>{(product.price - product.discount).toLocaleString()}đ</div>
-        {product.discount > 0 && <div className="product-original-price">{parseInt(product.price).toLocaleString()}đ</div>}
-
-        <div className="size-group">
-          <div className="size-title">Size</div>
-          <div className="size-selection">
-            {product.sizes.map((size, index) => (
-              <div className="size-options" key={index}>
-                <input className="radio-option" type="radio" id={size} name="size" value={size} />
-                <label htmlFor={size} className="size-option">{size}</label>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="color-group">
-          <div className="color-title">Màu sắc</div>
-          <ul className="color-selection">
-            {product.colors.map((color, index) => <li className="color-option" key={index} style={{ backgroundImage: `url(${color})` }} onClick={handleColorClick}></li>)}
-          </ul>
-        </div>
-
-        <div className="quantity-group">
-          <div className="quantity-title">Số lượng</div>
-          <ul className="quantity-btn-group">
-            <li onClick={handleProductDecrement}> - </li>
-            <li>{quantity}</li>
-            <li onClick={() => setQuantity(quantity + 1)}> + </li>
-          </ul>
-        </div>
-
-        <div className="btn-group">
-          <div className="add-cart-btn" onClick={handleAddCartClick}>Thêm vào giỏ hàng</div>
-          <div className="buy-now-btn" onClick={handleBuyNowClick}>Mua ngay</div>
-        </div>
-
-        <div className="shipping-policy">
-          <div className="extra-info">
-            <MdLocalShipping className="icon" />
-            <div className="info">Giao hàng toàn quốc đơn hàng từ 100k</div>
+              ))}
+            </div>
           </div>
 
-          <div className="extra-info">
-            <GiTwoCoins className="icon" />
-            <div className="info">COD nội thành Hà Nội, Hồ Chí Minh</div>
+          <div className="color-group">
+            <div className="color-title">Màu sắc</div>
+            <ul className="color-selection">
+              {product.colors.map((color, index) => <li className="color-option" key={index} style={{ backgroundImage: `url(${color})` }} onClick={handleColorClick}></li>)}
+            </ul>
+          </div>
+
+          <div className="quantity-group">
+            <div className="quantity-title">Số lượng</div>
+            <ul className="quantity-btn-group">
+              <li onClick={handleProductDecrement}> - </li>
+              <li>{quantity}</li>
+              <li onClick={() => setQuantity(quantity + 1)}> + </li>
+            </ul>
+          </div>
+
+          <div className="btn-group">
+            <div className="add-cart-btn" onClick={handleAddCartClick}>Thêm vào giỏ hàng</div>
+            <div className="buy-now-btn" onClick={handleBuyNowClick}>Mua ngay</div>
+          </div>
+
+          <div className="shipping-policy">
+            <div className="extra-info">
+              <MdLocalShipping className="icon" />
+              <div className="info">Giao hàng toàn quốc đơn hàng từ 100k</div>
+            </div>
+
+            <div className="extra-info">
+              <GiTwoCoins className="icon" />
+              <div className="info">COD nội thành Hà Nội, Hồ Chí Minh</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>}
+    </React.Fragment>
   );
 }
 
