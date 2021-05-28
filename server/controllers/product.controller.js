@@ -50,12 +50,35 @@ const getProductHomePage = async (req, res) => {
 		// if (startIndex <= 0) {
 		// 	return res.status(400).json({ message: 'Error index small than 0' });
 		// }
-
-		const products = await Products.find({ status: { $all: [1] } })
+		const productsLength = await Products.find({
+			status: { $all: [1] },
+		});
+		const totalPage = Math.ceil(productsLength.length / limit);
+		const products = await Products.find(
+			{ status: { $all: [1] } },
+			{
+				_id: 1,
+				name: 1,
+				category: 1,
+				type: 1,
+				real_price: {
+					$sum: ['$price', 0],
+				},
+				price: {
+					$subtract: ['$price', '$discount'],
+				},
+				discount: 1,
+				images: 1,
+				colors: 1,
+				status: 1,
+				sizes: 1,
+				discount: 1,
+				quantity: 1,
+			}
+		)
 			.skip(startIndex)
 			.limit(limit);
-		console.log(products.length);
-		res.json(products);
+		res.json({ products, totalpage: totalPage, page: page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -67,10 +90,9 @@ const getProductAll = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 
 		const startIndex = (page - 1) * limit;
-
 		let productFeatures = new ProductFeatures(
 			Products.find(
-				{},
+				{ price: { $gt: 0 } },
 				{
 					_id: 1,
 					name: 1,
@@ -86,7 +108,7 @@ const getProductAll = async (req, res) => {
 					images: 1,
 					colors: 1,
 					status: 1,
-					size: 1,
+					sizes: 1,
 					discount: 1,
 					quantity: 1,
 				}
@@ -141,7 +163,7 @@ const getProductCategory = async (req, res) => {
 						images: 1,
 						colors: 1,
 						status: 1,
-						size: 1,
+						sizes: 1,
 						discount: 1,
 						quantity: 1,
 					}
@@ -168,7 +190,7 @@ const getProductCategory = async (req, res) => {
 						images: 1,
 						colors: 1,
 						status: 1,
-						size: 1,
+						sizes: 1,
 						discount: 1,
 						quantity: 1,
 					}
@@ -308,7 +330,7 @@ const searchProduct = async (req, res) => {
 					images: 1,
 					colors: 1,
 					status: 1,
-					size: 1,
+					sizes: 1,
 					discount: 1,
 					quantity: 1,
 				}
