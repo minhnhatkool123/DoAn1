@@ -139,6 +139,7 @@ const getProductAll = async (req, res) => {
 
 const getProductCategory = async (req, res) => {
 	try {
+		// console.log(req.params.category === 'ao');
 		const category = convertCategory(req.params.category);
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
@@ -148,7 +149,7 @@ const getProductCategory = async (req, res) => {
 			const type = convertType(req.query.type);
 			productFeatures = new ProductFeatures(
 				Products.find(
-					{ category, type },
+					{ category, type, price: { $gt: 0 } },
 					{
 						_id: 1,
 						name: 1,
@@ -171,11 +172,13 @@ const getProductCategory = async (req, res) => {
 				),
 				req.query,
 				0
-			);
+			).filterStatus()
+				.sortPrice();
 		} else {
+			console.log(category);
 			productFeatures = new ProductFeatures(
 				Products.find(
-					{ category },
+					{ category: category, price: { $gt: 0 } },
 					{
 						_id: 1,
 						name: 1,
@@ -315,7 +318,7 @@ const searchProduct = async (req, res) => {
 
 		let productFeatures = new ProductFeatures(
 			Products.find(
-				{ name: { $regex: searchText, $options: '$i' } },
+				{ name: { $regex: searchText, $options: '$i' }, price: { $gt: 0 } },
 				{
 					_id: 1,
 					name: 1,
@@ -411,6 +414,7 @@ const convertCategory = (x) => {
 		case 'ao':
 			return 'Áo';
 		case 'quan':
+			console.log('Vao Quan');
 			return 'Quần';
 		default:
 			break;

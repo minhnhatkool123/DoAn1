@@ -49,7 +49,7 @@ function CheckoutSection() {
     axios.get('https://dc.tintoc.net/app/api-customer/public/provinces?size=64')
       .then((response) => {
         response.data.shift();
-        response.data.sort((a, b) => parseFloat(a.id) - parseFloat(b.id)).forEach(item => {
+        response.data.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
           provinces.push({
             id: item.id,
             name: item.name
@@ -69,7 +69,7 @@ function CheckoutSection() {
             provinceId: item.provinceId
           })
         });
-        console.log('districts', districts);
+        // console.log('districts', districts);
         setProvinceId(1);
         setForceUpdate(value => !value);
       })

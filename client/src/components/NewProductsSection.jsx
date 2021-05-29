@@ -37,7 +37,7 @@ function NewProductsSection() {
           {products && products.map(product => <ProductCard product={product} key={product.id} />)}
         </div>
 
-        {(!isLoading || !data || page < data.totalpage) && <div className="load-more-btn" onClick={showMoreItems}>Xem thêm</div>}
+        {(!data || page < data.totalpage) && <div className="load-more-btn" onClick={showMoreItems}>Xem thêm</div>}
       </div>
     </div>
   );

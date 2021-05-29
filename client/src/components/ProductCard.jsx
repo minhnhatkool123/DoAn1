@@ -16,11 +16,14 @@ function ProductCard({ product }) {
           <div className="product-info">
             <div className="product-name">{product.name}</div>
             {product.discount === 0 && <div className="empty"></div>}
-            <div className="product-price">{calcSalePrice(product.price, product.discount)}đ</div>
-            {product.discount > 0 && <div className="product-original-price">{product.price.toLocaleString()}đ</div>}
+            <div className="product-price">{product.price.toLocaleString()}đ</div>
+            {product.discount > 0 && <div className="product-original-price">{product.real_price.toLocaleString()}đ</div>}
           </div>
 
           {product.status.includes(1) && <div className="product-new-label">New</div>}
+          {product.status.includes(3) && <div className="product-hot-label-container">
+            <div className="hot-label">Hot</div>
+          </div>}
         </div>
       </Link>
     </div>

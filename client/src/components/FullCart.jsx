@@ -8,27 +8,30 @@ function FullCart() {
   const totalPrice = useRecoilValue(cartTotalPrice);
 
   const [cart, setCart] = useRecoilState(cartState);
-  console.log(cart)
 
   const handleRemoveProduct = (id) => {
     const newCart = removeFromCart(cart, id);
+
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
   }
 
   const handleProductIncrement = (id) => {
     const newCart = increaseCartItem(cart, id);
+
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
   }
 
   const handleProductDecrement = (id, quantity) => {
     let newCart = [];
+
     if (quantity === 1) {
       newCart = removeFromCart(cart, id);
     } else {
       newCart = decreaseCartItem(cart, id);
     }
+
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
   }

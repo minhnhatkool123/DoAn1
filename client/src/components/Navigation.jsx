@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
-import { Link, useRouteMatch, useHistory } from 'react-router-dom';
+import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
@@ -14,6 +14,7 @@ const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
 
 function Navigation() {
   const history = useHistory();
+  const { pathname } = useLocation();
 
   const cart = useRecoilValue(cartState);
   const totalQuantity = useRecoilValue(cartTotalQuantity);
@@ -80,6 +81,20 @@ function Navigation() {
       });
     }
   }, [showSignUp, showLogin]);
+
+  useEffect(() => {
+    if (pathname !== '/search') {
+      searchRef.current.value = '';
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    if (cart.length) {
+      cartPreviewRef.current.classList.remove('empty');
+    } else {
+      cartPreviewRef.current.classList.add('empty');
+    }
+  }, [cart]);
 
   const isInDashboard = useRouteMatch('/admin');
   const isInCartPage = useRouteMatch('/cart');
@@ -151,36 +166,36 @@ function Navigation() {
       <div className="nav">
         <div className="nav-bar-container">
           <ul className="nav-bar">
-            <li className="all"><Link to='/category/all'>Tất cả</Link></li>
+            <li className="all"><Link to={{ pathname: '/category/all', state: 'Tất cả sản phẩm' }}>Tất cả</Link></li>
             <li className="shirt">
-              <Link to='/category/ao'>Áo</Link>
+              <Link to={{ pathname: '/category/ao', state: 'Áo' }}>Áo</Link>
               <ul className="sub-nav">
-                <li><Link to='/category/ao-the-thao'>Áo thể thao</Link></li>
-                <li><Link to='/category/ao-thun-nu'>Áo thun nữ</Link></li>
-                <li><Link to='/category/ao-kieu-nu'>Áo kiểu nữ</Link></li>
-                <li><Link to='/category/ao-so-mi-nu'>Áo sơ mi nữ</Link></li>
-                <li><Link to='/category/ao-khoac-nu'>Áo khoác nữ</Link></li>
+                <li><Link to={{ pathname: '/category/ao-the-thao', state: 'Áo thể thao' }}>Áo thể thao</Link></li>
+                <li><Link to={{ pathname: '/category/ao-thun-nu', state: 'Áo thun nữ' }}>Áo thun nữ</Link></li>
+                <li><Link to={{ pathname: '/category/ao-kieu-nu', state: 'Áo kiểu nữ' }}>Áo kiểu nữ</Link></li>
+                <li><Link to={{ pathname: '/category/ao-so-mi-nu', state: 'Áo sơ mi nữ' }}>Áo sơ mi nữ</Link></li>
+                <li><Link to={{ pathname: '/category/ao-khoac-nu', state: 'Áo khoác nữ' }}>Áo khoác nữ</Link></li>
               </ul>
             </li>
             <li className="pants">
-              <Link to='/category/quan'>Quần</Link>
+              <Link to={{ pathname: '/category/quan', state: 'Quần' }}>Quần</Link>
               <ul className="sub-nav">
-                <li><Link to='/category/quan-dai'>Quần dài</Link></li>
-                <li><Link to='/category/quan-short-nu'>Quần short nữ</Link></li>
-                <li><Link to='/category/quan-legging'>Quần legging</Link></li>
+                <li><Link to={{ pathname: '/category/quan-dai', state: 'Quần dài' }}>Quần dài</Link></li>
+                <li><Link to={{ pathname: '/category/quan-short-nu', state: 'Quần jean nữ' }}>Quần jean nữ</Link></li>
+                <li><Link to={{ pathname: '/category/quan-legging', state: 'Quần legging' }}>Quần legging</Link></li>
               </ul>
             </li>
             <li className="dress-skirt">
-              <Link to='/category/dam-vay'>Đầm váy</Link>
+              <Link to={{ pathname: '/category/dam-vay', state: 'Đầm váy' }}>Đầm váy</Link>
               <ul className="sub-nav">
-                <li><Link to='/category/chan-vay'>Chân váy</Link></li>
-                <li><Link to='/category/dam-nu'>Đầm nữ</Link></li>
-                <li><Link to='/category/yem'>Yếm</Link></li>
+                <li><Link to={{ pathname: '/category/chan-vay', state: 'Chân váy' }}>Chân váy</Link></li>
+                <li><Link to={{ pathname: '/category/dam-nu', state: 'Đầm nữ' }}>Đầm nữ</Link></li>
+                <li><Link to={{ pathname: '/category/yem', state: 'Yếm' }}>Yếm</Link></li>
               </ul>
             </li>
-            <li className="set"><Link to='/category/set'>Set - Jumpsuit</Link></li>
-            <li className="hot"><Link to='/category/hot'>Bán chạy</Link></li>
-            <li className="sale"><Link to='/category/sale'>Khuyến mãi</Link></li>
+            <li className="set"><Link to={{ pathname: '/category/set', state: 'Set - Jumpsuit' }}>Set - Jumpsuit</Link></li>
+            <li className="hot"><Link to={{ pathname: '/category/hot', state: 'Sản phẩm bán chạy' }}>Bán chạy</Link></li>
+            <li className="sale"><Link to={{ pathname: '/category/sale', state: 'Sản phẩm khuyến mãi' }}>Khuyến mãi</Link></li>
           </ul>
         </div>
       </div>

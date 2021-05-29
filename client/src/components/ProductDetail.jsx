@@ -13,6 +13,7 @@ import { EatLoading } from 'react-loadingg';
 import FetchError from './FetchError';
 
 const getProduct = async (id) => {
+  console.log(`http://localhost:5000/api/product/get-product/${id}`)
   const response = await axios.get(`http://localhost:5000/api/product/get-product/${id}`);
   return response.data;
 }
@@ -36,63 +37,61 @@ function ProductDetail(props) {
   const [color, setColor] = useState('');
 
   const handleSubImageClick = (e, image) => {
-    setCurrentImage(image);
+    // deactivate all the sub-images, then activate the selected sub-image
     const subImages = document.querySelectorAll('.sub-image.active');
     subImages.forEach((subImage) => {
       subImage.classList.remove('active');
     });
     e.target.classList.add('active');
+
+    // set current image as selected sub-image
+    setCurrentImage(image);
   }
 
   const handleColorClick = (e) => {
+    // deactivate all the image-colors, then activate the selected image-color
     const subImages = document.querySelectorAll('.color-option.active');
     subImages.forEach((subImage) => {
       subImage.classList.remove('active');
     });
     e.target.classList.add('active');
-    console.log(e.target.style.backgroundImage.slice(5, -2));
+
+    // set current color as selected image-color
     setColor(e.target.style.backgroundImage.slice(5, -2));
   }
 
-  const handleAddCartClick = () => {
-    console.log({ cart });
-    // console.log(priceRef.current.innerText.slice(0, -1));
-    const sizeLabel = document.querySelector('input[name="size"]:checked');
-    // console.log(item);
-    if (!sizeLabel) {
-      setToastDisplay({
-        show: true,
-        message: 'Bạn chưa chọn size cho sản phẩm'
-      });
-    } else if (!color) {
-      setToastDisplay({
-        show: true,
-        message: 'Bạn chưa chọn màu cho sản phẩm'
-      });
-    } else {
-      const item = {
-        name: product.name,
-        price: parseInt(priceRef.current.innerText.replace('.', '')),
-        size: sizeLabel.value,
-        color,
-        id: product.id + document.querySelector('input[name="size"]:checked').value + color
-      }
-      const newCart = addToCart(cart, item, quantity);
-      setCart(newCart);
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      console.log({ newCart });
+  const addProductToCart = (sizeLabel, buttonType) => {
+    //create a product object from existing information
+    const item = {
+      name: product.name,
+      price: parseInt(priceRef.current.innerText.replace('.', '')),
+      size: sizeLabel.value,
+      color,
+      id: product.id + document.querySelector('input[name="size"]:checked').value + color
+    }
+    // create new cart from the product just created and product quantity
+    const newCart = addToCart(cart, item, quantity);
+    // update cart state with new cart
+    setCart(newCart);
+    // save new cart to the local storage
+    localStorage.setItem('cart', JSON.stringify(newCart));
+
+    // if press the 'add_to_cart' button, then show the toast message
+    // if press the 'buy_now' button, then go to the Cart Page
+    if (buttonType === 'add_to_cart') {
       setToastDisplay({
         show: true,
         message: <span>Bạn đã thêm sản phẩm <strong>{item.name}</strong> vào giỏ hàng!</span>
       });
+    } else {
+      history.push('/cart');
     }
   }
 
-  const handleBuyNowClick = () => {
-    console.log({ cart });
-
+  const handleAddProductToCart = (buttonType) => {
+    // get selected size from checked size label
     const sizeLabel = document.querySelector('input[name="size"]:checked');
-
+    // check if the product information is not complete, then show the toast message, otherwise add the product to cart
     if (!sizeLabel) {
       setToastDisplay({
         show: true,
@@ -104,28 +103,15 @@ function ProductDetail(props) {
         message: 'Bạn chưa chọn màu cho sản phẩm'
       });
     } else {
-      const item = {
-        name: product.name,
-        price: parseInt(priceRef.current.innerText.replace('.', '')),
-        size: sizeLabel.value,
-        color,
-        id: product.id + document.querySelector('input[name="size"]:checked').value + color
-      }
-      const newCart = addToCart(cart, item, quantity);
-      setCart(newCart);
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      console.log({ newCart });
-      history.push('/cart');
+      addProductToCart(sizeLabel, buttonType);
     }
   }
 
   const handleProductDecrement = () => {
-    if (quantity >= 2) {
+    if (quantity > 1) {
       setQuantity(prevValue => prevValue - 1);
     }
   }
-
-  // if (!product) return <EatLoading color='#ffb0bd' />;
 
   return (
     <React.Fragment>
@@ -181,8 +167,8 @@ function ProductDetail(props) {
           </div>
 
           <div className="btn-group">
-            <div className="add-cart-btn" onClick={handleAddCartClick}>Thêm vào giỏ hàng</div>
-            <div className="buy-now-btn" onClick={handleBuyNowClick}>Mua ngay</div>
+            <div className="add-cart-btn" onClick={() => handleAddProductToCart('add_to_cart')}>Thêm vào giỏ hàng</div>
+            <div className="buy-now-btn" onClick={() => handleAddProductToCart('buy_now')}>Mua ngay</div>
           </div>
 
           <div className="shipping-policy">

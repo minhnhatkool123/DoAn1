@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
 import queryString from 'query-string';
 import '../scss/searchSection.scss';
@@ -10,13 +10,31 @@ import axios from 'axios';
 import { EatLoading } from 'react-loadingg';
 import FetchError from './FetchError';
 
-const getFilteredProducts = async (page, limit, category, name) => {
+const getFilteredProducts = async (page, limit, category, name, filter) => {
   let categoryKey;
   if (getCategoryKey(category)) {
     categoryKey = getCategoryKey(category);
   } else {
     categoryKey = `search?name=${name}&`;
   }
+
+  switch (filter) {
+    case 'new':
+      categoryKey += 'status=1&';
+      break;
+    case 'ascending':
+      categoryKey += 'sort=price&';
+      break;
+    case 'descending':
+      categoryKey += 'sort=-price&';
+      break;
+    case 'sale':
+      categoryKey += 'status=2&';
+      break;
+    default:
+      break;
+  }
+
   console.log(categoryKey)
   console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`)
   const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`);
@@ -24,21 +42,23 @@ const getFilteredProducts = async (page, limit, category, name) => {
 }
 
 function SearchSection() {
-  const { search } = useLocation();
+  const { search, state, pathname } = useLocation();
   const { name } = queryString.parse(search);
   const { category } = useParams();
   const catalog = getCatalog(category);
 
-  const [totalPages, setTotalPages] = useState(1)
+  const filterRef = useRef(null);
 
+  const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(0);
   const [products, setProducts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  const { data, isLoading, isError } = useQuery(['filteredProducts', page, category, name], () => getFilteredProducts(page, 16, category, name));
+  const { data, isLoading, isError } = useQuery(['filteredProducts', page, category, name, filter], () => getFilteredProducts(page, 16, category, name, filter));
 
   useEffect(() => {
     if (data) {
-      console.log(data)
+      // console.log(data)
       setTotalPages(data.totalpage);
       setProducts(data.products);
     }
@@ -58,66 +78,75 @@ function SearchSection() {
     });
   };
 
-  return (
-    <React.Fragment>
-      {/* {isLoading && <div style={{ height: '80vh' }}><EatLoading color='#ffb0bd' /></div>}
-      {isError && <FetchError />} */}
-      <div className="search-section">
-        <div className="row">
-          <div className="product-catalog col fl-20">
-            <div className="title">Danh mục sản phẩm</div>
-            <ul className="catalog-detail">
-              {catalog.map((item, index) => (
-                <li key={index}><Link to={`${item.key}`}>{item.value}</Link></li>
-              ))}
-            </ul>
-          </div>
+  useEffect(() => {
+    setFilter('');
+    filterRef.current.selectedIndex = 0;
+  }, [pathname, category])
 
-          <div className="search-result col fl-80">
-            <div className="row">
-              <div className="title-and-filters col l-12">
-                <div className="row">
-                  <div className="col fl-80">
-                    <div className="title">Áo kiểu nữ</div>
-                  </div>
-                  <div className="col fl-20">
-                    <select name="filters" id="filters">
-                      <option value="new">Mới nhất</option>
-                      <option value="ascending">Giá tăng dần</option>
-                      <option value="descending">Giá giảm dần</option>
-                      <option value="sale">Sale</option>
-                    </select>
-                  </div>
+  const handleFilter = (e) => {
+    // console.log(e.target.value);
+    setFilter(e.target.value);
+  };
+
+  return (
+    <div className="search-section">
+      <div className="row">
+        <div className="product-catalog col fl-20">
+          <div className="title">Danh mục sản phẩm</div>
+          <ul className="catalog-detail">
+            {catalog.map((item, index) => (
+              <li key={index}><Link to={{ pathname: item.key, state: item.value }}>{item.value}</Link></li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="search-result col fl-80">
+          <div className="row">
+            <div className="title-and-filters col l-12">
+              <div className="row">
+                <div className="col fl-80">
+                  <div className="title">{state || `Tìm kiếm: ${name}`}</div>
+                </div>
+                <div className="col fl-20">
+                  <select name="filters" id="filters" onChange={handleFilter} ref={filterRef}>
+                    <option value="option">------ Lọc -----</option>
+                    <option value="new">Mới nhất</option>
+                    <option value="ascending">Giá tăng dần</option>
+                    <option value="descending">Giá giảm dần</option>
+                    <option value="sale">Sale</option>
+                  </select>
                 </div>
               </div>
             </div>
-
-            <div className="row products-list">
-              {isLoading && <div style={{ height: '60vh' }}><EatLoading color='#ffb0bd' /></div>}
-              {isError && <FetchError />}
-              {data && products.length > 0 && products.map(product => <ProductCard product={product} key={product.id} />)}
-            </div>
-
-            {data && products.length === 0 && <div className="no-result">Không có kết quả phù hợp với từ khóa "{name}"</div>}
-
-            {products.length > 0 && <ReactPaginate
-              previousLabel={"Prev"}
-              nextLabel={"Next"}
-              pageCount={totalPages}
-              onPageChange={handlePageChange}
-              containerClassName={"pagination"}
-              pageClassName={"paginated-btn"}
-              breakClassName={"paginated-btn"}
-              previousClassName={"prev-btn"}
-              nextClassName={"next-btn"}
-              disabledClassName={"disabled-btn"}
-              activeClassName={"active-btn"}
-              forcePage={page}
-            />}
           </div>
+
+          <div className="row products-list">
+            {isLoading && <div style={{ height: '60vh' }}><EatLoading color='#ffb0bd' /></div>}
+            {isError && <FetchError />}
+            {data && products.length > 0 && products.map(product => <ProductCard product={product} key={product._id} />)}
+          </div>
+
+          {category === 'set' && <div className="no-set">Hiện chưa có sản phẩm này</div>}
+
+          {category !== 'set' && data && products.length === 0 && <div className="no-result">Không có kết quả phù hợp với từ khóa "{name}"</div>}
+
+          {products.length > 0 && <ReactPaginate
+            previousLabel={"Prev"}
+            nextLabel={"Next"}
+            pageCount={totalPages}
+            onPageChange={handlePageChange}
+            containerClassName={"pagination"}
+            pageClassName={"paginated-btn"}
+            breakClassName={"paginated-btn"}
+            previousClassName={"prev-btn"}
+            nextClassName={"next-btn"}
+            disabledClassName={"disabled-btn"}
+            activeClassName={"active-btn"}
+            forcePage={page}
+          />}
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 
@@ -165,7 +194,7 @@ const getCatalog = (category) => {
         },
         {
           key: 'quan-short-nu',
-          value: 'Quần short nữ'
+          value: 'Quần jean nữ'
         },
         {
           key: 'quan-legging',
