@@ -67,7 +67,7 @@ function SearchSection() {
   useEffect(() => {
     console.log('set page 0')
     setPage(0);
-  }, [category]);
+  }, [category, filter]);
 
   const handlePageChange = ({ selected }) => {
     console.log('page click: ', selected);

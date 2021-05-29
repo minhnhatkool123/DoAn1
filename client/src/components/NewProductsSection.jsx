@@ -13,7 +13,7 @@ function NewProductsSection() {
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
 
-  const { data, isLoading, isError } = useQuery(['newProducts', page], () => getNewProducts(page, 16));
+  const { data } = useQuery(['newProducts', page], () => getNewProducts(page, 16));
 
   useEffect(() => {
     if (data && data.products) {
@@ -34,7 +34,7 @@ function NewProductsSection() {
         </div>
 
         <div className="row">
-          {products && products.map(product => <ProductCard product={product} key={product.id} />)}
+          {products && products.map(product => <ProductCard product={product} key={product._id} />)}
         </div>
 
         {(!data || page < data.totalpage) && <div className="load-more-btn" onClick={showMoreItems}>Xem thêm</div>}

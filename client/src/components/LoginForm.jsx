@@ -35,6 +35,7 @@ const popupVariants = {
 
 function LoginForm(props) {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const closeErrorMessage = () => {
     setShowErrorMessage(false);
@@ -46,8 +47,10 @@ function LoginForm(props) {
       method: 'POST',
       url: 'http://localhost:5000/user/login-google',
       data: { tokenId: res.tokenId },
-    }).then((res) => {
-      console.log(res);
+    }).then((userInfo) => {
+      console.log(userInfo);
+      localStorage.setItem('name', userInfo.data.user.name);
+      props.closeLogin();
     });
   };
 
@@ -83,6 +86,11 @@ function LoginForm(props) {
       })
       .catch(error => {
         console.log(error.response.data.message);
+        if (error.response.data.message === 'Please active account') {
+          setErrorMsg('Vui lòng xác thực tài khoản trước khi đăng nhập');
+        } else {
+          setErrorMsg('Tài khoản hoặc mật khẩu không đúng');
+        }
         setShowErrorMessage(true);
       });
   };
@@ -143,7 +151,7 @@ function LoginForm(props) {
         </Formik>
       </motion.div>
 
-      {showErrorMessage ? <ErrorLoginMessage closeErrorMessage={closeErrorMessage} /> : null}
+      {showErrorMessage && <ErrorLoginMessage closeErrorMessage={closeErrorMessage} message={errorMsg} />}
     </div>
   );
 }

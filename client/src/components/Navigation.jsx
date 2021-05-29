@@ -89,6 +89,8 @@ function Navigation() {
   }, [pathname]);
 
   useEffect(() => {
+    if (pathname === '/cart') return;
+
     if (cart.length) {
       cartPreviewRef.current.classList.remove('empty');
     } else {

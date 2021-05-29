@@ -15,6 +15,9 @@ const popupVariants = {
   }
 }
 
+const googleSuccessMsg = 'Một email đã được gửi đến bạn. Vui lòng kiểm tra và xác thực tài khoản để hoàn tất đăng ký.'
+const normalSuccessMsg = 'Chúc mừng bạn đã đăng ký tài khoản thành công tại ZShop.'
+
 function SuccessfulRegistration(props) {
   return (
     <div className="successful-registration">
@@ -32,8 +35,11 @@ function SuccessfulRegistration(props) {
       >
         <div className="interface">
           <IoIosCheckmarkCircleOutline className="success-icon" />
-          <div className="success-message">Chúc mừng bạn đã đăng ký thành công</div>
-          <div className="login-right-now-btn" onClick={() => props.signUpSuccessfully.logInRightNow()}>Đăng nhập ngay</div>
+          <div className="success-message">
+            <div>Một email đã được gửi đến bạn.</div>
+            <div>Vui lòng kiểm tra và xác thực tài khoản để hoàn tất đăng ký.</div>
+          </div>
+          {/* <div className="login-right-now-btn" onClick={() => props.signUpSuccessfully.logInRightNow()}>Đăng nhập ngay</div> */}
         </div>
       </motion.div>
     </div>

@@ -19,12 +19,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children, ...rest }) => {
+const PrivateRoute = ({ children, redirect, ...rest }) => {
 	let auth = localStorage.getItem('name');
 
 	return (
-		<Route {...rest} render={({ location }) =>
-			auth ? children : <Redirect to={{ pathname: location.pathname + '/login' }} />
+		<Route {...rest} render={() =>
+			auth ? children : <Redirect to={{ pathname: redirect }} />
 		} />
 	);
 }
@@ -48,7 +48,7 @@ function App() {
 						<Route path='/account' component={AccountInfoPage} />
 						<Route path='/checkout' component={CheckoutPage} />
 						<Route path='/admin/login' component={AdminAuthenticationPage} />
-						<PrivateRoute path='/admin'>
+						<PrivateRoute path='/admin' redirect='/admin/login'>
 							<DashboardPage />
 						</PrivateRoute>
 						{/* <Route path='/admin'>

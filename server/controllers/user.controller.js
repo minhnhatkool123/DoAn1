@@ -65,8 +65,13 @@ const register = async (req, res) => {
 };
 
 const sendMail = (to, url) => {
+	console.log("do gui mail");
 	const smtpTransport = nodemailer.createTransport({
-		service: 'gmail',
+		//service: 'gmail',
+		host: 'smtp.gmail.com',
+		port: 587,
+		ignoreTLS: false,
+		secure: false,
 		auth: {
 			user: process.env.USERNAME_GMAIL,
 			pass: process.env.PASS_GMAIL,
@@ -88,10 +93,10 @@ const sendMail = (to, url) => {
 
 	smtpTransport.sendMail(mailOptions, (err, info) => {
 		if (err) {
-			//console.log(err);
+			console.log(err);
 			return err;
 		}
-		//console.log(info);
+		console.log(info);
 		return info;
 	});
 };
