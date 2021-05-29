@@ -35,6 +35,18 @@ class ProductFeatures {
 	}
 }
 
+const filterStatus = (query) => {
+	const queryObj = { ...query };
+	if (queryObj.status.length === 1) {
+		let oneElement = parseInt(queryObj.status[0]);
+		return { status: { $all: [oneElement] } };
+	} else {
+		let a = queryObj.status;
+		let manyElements = a.map(Number);
+		return { status: { $all: manyElements } };
+	}
+};
+
 const getProductHomePage = async (req, res) => {
 	try {
 		const page = parseInt(req.query.page) || 1;
@@ -43,42 +55,76 @@ const getProductHomePage = async (req, res) => {
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
 
-		// if (endIndex > (await Products.countDocuments())) {
-		// 	return res.status(400).json({ message: 'Error out of product' });
-		// }
+		// const productsLength = await Products.find({
+		// 	status: { $all: [1] },
+		// });
+		// const totalPage = Math.ceil(productsLength.length / limit);
+		// const products = await Products.find(
+		// 	{ status: { $all: [1] } },
+		// 	{
+		// 		_id: 1,
+		// 		name: 1,
+		// 		category: 1,
+		// 		type: 1,
+		// 		real_price: {
+		// 			$sum: ['$price', 0],
+		// 		},
+		// 		price: {
+		// 			$subtract: ['$price', '$discount'],
+		// 		},
+		// 		discount: 1,
+		// 		images: 1,
+		// 		colors: 1,
+		// 		status: 1,
+		// 		sizes: 1,
+		// 		discount: 1,
+		// 		quantity: 1,
+		// 	}
+		// )
+		// 	.skip(startIndex)
+		// 	.limit(limit);
 
-		// if (startIndex <= 0) {
-		// 	return res.status(400).json({ message: 'Error index small than 0' });
-		// }
-		const productsLength = await Products.find({
-			status: { $all: [1] },
-		});
-		const totalPage = Math.ceil(productsLength.length / limit);
-		const products = await Products.find(
-			{ status: { $all: [1] } },
+		const productsAll = await await Products.aggregate([
 			{
-				_id: 1,
-				name: 1,
-				category: 1,
-				type: 1,
-				real_price: {
-					$sum: ['$price', 0],
+				$match: {
+					$and: [{ status: { $all: [1] } }, { price: { $gt: 0 } }],
 				},
-				price: {
-					$subtract: ['$price', '$discount'],
+			},
+		]);
+		const totalPage = Math.ceil(productsAll.length / limit);
+
+		const products = await Products.aggregate([
+			{
+				$match: {
+					$and: [{ status: { $all: [1] } }, { price: { $gt: 0 } }],
 				},
-				discount: 1,
-				images: 1,
-				colors: 1,
-				status: 1,
-				sizes: 1,
-				discount: 1,
-				quantity: 1,
-			}
-		)
-			.skip(startIndex)
-			.limit(limit);
-		res.json({ products, totalpage: totalPage, page: page });
+			},
+			{
+				$project: {
+					_id: 1,
+					name: 1,
+					category: 1,
+					type: 1,
+					real_price: {
+						$sum: ['$price', 0],
+					},
+					new_price: {
+						$subtract: ['$price', '$discount'],
+					},
+					discount: 1,
+					images: 1,
+					colors: 1,
+					status: 1,
+					sizes: 1,
+					discount: 1,
+					quantity: 1,
+				},
+			},
+			{ $skip: startIndex },
+			{ $limit: limit },
+		]);
+
+		res.json({ products, totalPages: totalPage, page: page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -90,46 +136,136 @@ const getProductAll = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 
 		const startIndex = (page - 1) * limit;
-		let productFeatures = new ProductFeatures(
-			Products.find(
-				{ price: { $gt: 0 } },
-				{
-					_id: 1,
-					name: 1,
-					category: 1,
-					type: 1,
-					real_price: {
-						$sum: ['$price', 0],
-					},
-					price: {
-						$subtract: ['$price', '$discount'],
-					},
-					discount: 1,
-					images: 1,
-					colors: 1,
-					status: 1,
-					sizes: 1,
-					discount: 1,
-					quantity: 1,
-				}
-			),
-			req.query,
-			0
-		)
-			.filterStatus()
-			.sortPrice();
+		// let productFeatures = new ProductFeatures(
+		// 	Products.find(
+		// 		{ price: { $gt: 0 } },
+		// 		{
+		// 			_id: 1,
+		// 			name: 1,
+		// 			category: 1,
+		// 			type: 1,
+		// 			real_price: {
+		// 				$sum: ['$price', 0],
+		// 			},
+		// 			price: {
+		// 				$subtract: ['$price', '$discount'],
+		// 			},
+		// 			discount: 1,
+		// 			images: 1,
+		// 			colors: 1,
+		// 			status: 1,
+		// 			sizes: 1,
+		// 			discount: 1,
+		// 			quantity: 1,
+		// 		}
+		// 	),
+		// 	req.query,
+		// 	0
+		// )
+		// 	.filterStatus()
+		// 	.sortPrice();
 
-		const products = await productFeatures.listProducts;
+		// const products = await productFeatures.listProducts;
+		// const totalPage = Math.ceil(products.length / limit);
+		// const pageIndex = await productFeatures.listProducts
+		// 	.skip(startIndex)
+		// 	.limit(limit);
+		// console.log('So sp 1 trang:', pageIndex.length);
+		// console.log('Tong so sp:', products.length);
+		// console.log('Tong so trang:', totalPage);
+
+		let statusQuery = null;
+		if (req.query.status) {
+			statusQuery = filterStatus(req.query);
+		}
+
+		let sortQuery = null;
+
+		const products = await await Products.aggregate([
+			{
+				$match: {
+					$and: [{ price: { $gt: 0 } }, { ...statusQuery }],
+				},
+			},
+		]);
 		const totalPage = Math.ceil(products.length / limit);
-		const pageIndex = await productFeatures.listProducts
-			.skip(startIndex)
-			.limit(limit);
-		console.log('So sp 1 trang:', pageIndex.length);
-		console.log('Tong so sp:', products.length);
-		console.log('Tong so trang:', totalPage);
+		let pageIndex = null;
+		if (req.query.sort) {
+			if (req.query.sort === '1') {
+				console.log('Sort tang dan');
+				sortQuery = {
+					$sort: { new_price: 1 },
+				};
+			} else {
+				console.log('Sort giam dan');
+				sortQuery = {
+					$sort: { new_price: -1 },
+				};
+			}
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [{ price: { $gt: 0 } }, { ...statusQuery }],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ ...sortQuery },
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		} else {
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [{ price: { $gt: 0 } }, { ...statusQuery }],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		}
 
-		//const products = await Products.find({}).skip(startIndex).limit(limit);
-		//console.log(products.length);
 		res.json({ products: pageIndex, totalpage: totalPage, page: page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
@@ -142,100 +278,211 @@ const getProductCategory = async (req, res) => {
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 10;
 		const startIndex = (page - 1) * limit;
-		let productFeatures;
-		if (req.query.type) {
-			const type = convertType(req.query.type);
-			productFeatures = new ProductFeatures(
-				Products.find(
-					{ category, type },
-					{
-						_id: 1,
-						name: 1,
-						category: 1,
-						type: 1,
-						real_price: {
-							$sum: ['$price', 0],
-						},
-						price: {
-							$subtract: ['$price', '$discount'],
-						},
-						discount: 1,
-						images: 1,
-						colors: 1,
-						status: 1,
-						sizes: 1,
-						discount: 1,
-						quantity: 1,
-					}
-				),
-				req.query,
-				0
-			);
-		} else {
-			console.log(category);
-			productFeatures = new ProductFeatures(
-				Products.find(
-					{ category: category, price: { $gt: 0 } },
-					{
-						_id: 1,
-						name: 1,
-						category: 1,
-						type: 1,
-						real_price: {
-							$sum: ['$price', 0],
-						},
-						price: {
-							$subtract: ['$price', '$discount'],
-						},
-						discount: 1,
-						images: 1,
-						colors: 1,
-						status: 1,
-						sizes: 1,
-						discount: 1,
-						quantity: 1,
-					}
-				),
-				req.query,
-				0
-			)
-				.filterStatus()
-				.sortPrice();
+		// let productFeatures;
+		// if (req.query.type) {
+		// 	const type = convertType(req.query.type);
+		// 	productFeatures = new ProductFeatures(
+		// 		Products.find(
+		// 			{ category, type, price: { $gt: 0 } },
+		// 			{
+		// 				_id: 1,
+		// 				name: 1,
+		// 				category: 1,
+		// 				type: 1,
+		// 				real_price: {
+		// 					$sum: ['$price', 0],
+		// 				},
+		// 				price: {
+		// 					$subtract: ['$price', '$discount'],
+		// 				},
+		// 				discount: 1,
+		// 				images: 1,
+		// 				colors: 1,
+		// 				status: 1,
+		// 				sizes: 1,
+		// 				discount: 1,
+		// 				quantity: 1,
+		// 			}
+		// 		),
+		// 		req.query,
+		// 		0
+		// 	)
+		// 		.filterStatus()
+		// 		.sortPrice();
+		// } else {
+		// 	console.log(category);
+		// 	productFeatures = new ProductFeatures(
+		// 		Products.find(
+		// 			{ category: category, price: { $gt: 0 } },
+		// 			{
+		// 				_id: 1,
+		// 				name: 1,
+		// 				category: 1,
+		// 				type: 1,
+		// 				real_price: {
+		// 					$sum: ['$price', 0],
+		// 				},
+		// 				price: {
+		// 					$subtract: ['$price', '$discount'],
+		// 				},
+		// 				discount: 1,
+		// 				images: 1,
+		// 				colors: 1,
+		// 				status: 1,
+		// 				sizes: 1,
+		// 				discount: 1,
+		// 				quantity: 1,
+		// 			}
+		// 		),
+		// 		req.query,
+		// 		0
+		// 	)
+		// 		.filterStatus()
+		// 		.sortPrice();
+		// }
+
+		// const products = await productFeatures.listProducts;
+		// const totalPage = Math.ceil(products.length / limit);
+		// let pageIndex = await productFeatures.listProducts
+		// 	.skip(startIndex)
+		// 	.limit(limit);
+
+		// // if (req.query.sort) {
+		// // 	console.log('vao sort');
+		// // 	if (req.query.sort === 'price') {
+		// // 		console.log('sort 1 giam dan');
+		// // 		pageIndex = pageIndex.sort((a, b) => (a.price < b.price ? 1 : -1));
+		// // 	} else {
+		// // 		console.log('sort -1 tang dan');
+		// // 		pageIndex = pageIndex.sort((a, b) => (a.price > b.price ? 1 : -1));
+		// // 	}
+		// // }
+
+		// console.log('So sp 1 trang:', pageIndex.length);
+		// console.log('Tong so sp:', products.length);
+		// console.log('Tong so trang:', totalPage);
+
+		// let sortQuery = req.query.sort
+		// 	? {
+		// 			$sort: { new_price: 1 },
+		// 	  }
+		// 	: { $sort: { none: 1 } };
+
+		let statusQuery = null;
+		if (req.query.status) {
+			statusQuery = filterStatus(req.query);
 		}
 
-		const products = await productFeatures.listProducts;
-		const totalPage = Math.ceil(products.length / limit);
-		const pageIndex = await productFeatures.listProducts
-			.skip(startIndex)
-			.limit(limit);
-		console.log('So sp 1 trang:', pageIndex.length);
-		console.log('Tong so sp:', products.length);
-		console.log('Tong so trang:', totalPage);
+		let sortQuery = null;
 
-		// const ko = await Products.aggregate([
-		// 	{
-		// 		$match: {
-		// 			$and: [{ category: category }, { type: type }],
-		// 		},
-		// 	},
-		// {
-		// 	$project: {
-		// 		_id: 1,
-		// 		name: 1,
-		// 		price: 1,
-		// 		discount: 1,
-		// 		new_price: { $subtract: ['$price', '$discount'] },
-		// 	},
-		// },
-		// {
-		// 	$sort: {
-		// 		new_price: 1,
-		// 	},
-		// },
-		// ]);
-		//const asd = await Products.find({ type: 'Áo Thun Nữ' });
-		//console.log(ko.length);
-		//res.json(products);
+		let typeQuery = null;
+		if (req.query.type) {
+			const type = convertType(req.query.type);
+			typeQuery = {
+				type: type,
+			};
+		}
+
+		const products = await await Products.aggregate([
+			{
+				$match: {
+					$and: [
+						{ category: category },
+						{ price: { $gt: 0 } },
+						{ ...statusQuery },
+						{ ...typeQuery },
+					],
+				},
+			},
+		]);
+		const totalPage = Math.ceil(products.length / limit);
+		let pageIndex = null;
+		if (req.query.sort) {
+			if (req.query.sort === '1') {
+				console.log('Sort tang dan');
+				sortQuery = {
+					$sort: { new_price: 1 },
+				};
+			} else {
+				console.log('Sort giam dan');
+				sortQuery = {
+					$sort: { new_price: -1 },
+				};
+			}
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [
+							{ category: category },
+							{ price: { $gt: 0 } },
+							{ ...statusQuery },
+							{ ...typeQuery },
+						],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ ...sortQuery },
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		} else {
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [
+							{ category: category },
+							{ price: { $gt: 0 } },
+							{ ...statusQuery },
+							{ ...typeQuery },
+						],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		}
+
 		res.json({ products: pageIndex, totalpage: totalPage, page: page });
 	} catch (error) {
 		console.log('Loi');
@@ -310,55 +557,158 @@ const searchProduct = async (req, res) => {
 		const limit = parseInt(req.query.limit) || 10;
 
 		const startIndex = (page - 1) * limit;
-		const endIndex = page * limit;
 		const searchText = req.query.name;
+		// const endIndex = page * limit;
 
-		let productFeatures = new ProductFeatures(
-			Products.find(
-				{ name: { $regex: searchText, $options: '$i' } },
-				{
-					_id: 1,
-					name: 1,
-					category: 1,
-					type: 1,
-					real_price: {
-						$sum: ['$price', 0],
-					},
-					price: {
-						$subtract: ['$price', '$discount'],
-					},
-					discount: 1,
-					images: 1,
-					colors: 1,
-					status: 1,
-					sizes: 1,
-					discount: 1,
-					quantity: 1,
-				}
-			),
-			req.query,
-			0
-		)
-			.filterStatus()
-			.sortPrice();
+		// let productFeatures = new ProductFeatures(
+		// 	Products.find(
+		// 		{ name: { $regex: searchText, $options: '$i' }, price: { $gt: 0 } },
+		// 		{
+		// 			_id: 1,
+		// 			name: 1,
+		// 			category: 1,
+		// 			type: 1,
+		// 			real_price: {
+		// 				$sum: ['$price', 0],
+		// 			},
+		// 			price: {
+		// 				$subtract: ['$price', '$discount'],
+		// 			},
+		// 			discount: 1,
+		// 			images: 1,
+		// 			colors: 1,
+		// 			status: 1,
+		// 			sizes: 1,
+		// 			discount: 1,
+		// 			quantity: 1,
+		// 		}
+		// 	),
+		// 	req.query,
+		// 	0
+		// )
+		// 	.filterStatus()
+		// 	.sortPrice();
 
-		const products = await productFeatures.listProducts;
-		const totalPage = Math.ceil(products.length / limit);
-		const pageIndex = await productFeatures.listProducts
-			.skip(startIndex)
-			.limit(limit);
-		console.log('So sp 1 trang:', pageIndex.length);
-		console.log('Tong so sp:', products.length);
-		console.log('Tong so trang:', totalPage);
-
-		// const products = await Products.find({
-		// 	name: { $regex: searchText, $options: '$i' },
-		// });
+		// const products = await productFeatures.listProducts;
 		// const totalPage = Math.ceil(products.length / limit);
-		// const listProducts = products.slice(startIndex, endIndex);
+		// const pageIndex = await productFeatures.listProducts
+		// 	.skip(startIndex)
+		// 	.limit(limit);
+		// console.log('So sp 1 trang:', pageIndex.length);
+		// console.log('Tong so sp:', products.length);
+		// console.log('Tong so trang:', totalPage);
 
-		console.log(products.length);
-		res.json({ products: pageIndex, totalpage: totalPage, page });
+		// console.log(products.length);
+
+		let statusQuery = null;
+		if (req.query.status) {
+			statusQuery = filterStatus(req.query);
+		}
+
+		let sortQuery = null;
+
+		const products = await await Products.aggregate([
+			{
+				$match: {
+					$and: [
+						{ name: { $regex: searchText, $options: '$i' } },
+						{ price: { $gt: 0 } },
+						{ ...statusQuery },
+					],
+				},
+			},
+		]);
+		const totalPage = Math.ceil(products.length / limit);
+		let pageIndex = null;
+		if (req.query.sort) {
+			if (req.query.sort === '1') {
+				console.log('Sort tang dan');
+				sortQuery = {
+					$sort: { new_price: 1 },
+				};
+			} else {
+				console.log('Sort giam dan');
+				sortQuery = {
+					$sort: { new_price: -1 },
+				};
+			}
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [
+							{ name: { $regex: searchText, $options: '$i' } },
+							{ price: { $gt: 0 } },
+							{ ...statusQuery },
+						],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ ...sortQuery },
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		} else {
+			pageIndex = await Products.aggregate([
+				{
+					$match: {
+						$and: [
+							{ name: { $regex: searchText, $options: '$i' } },
+							{ price: { $gt: 0 } },
+							{ ...statusQuery },
+						],
+					},
+				},
+				{
+					$project: {
+						_id: 1,
+						name: 1,
+						category: 1,
+						type: 1,
+						real_price: {
+							$sum: ['$price', 0],
+						},
+						new_price: {
+							$subtract: ['$price', '$discount'],
+						},
+						discount: 1,
+						images: 1,
+						colors: 1,
+						status: 1,
+						sizes: 1,
+						discount: 1,
+						quantity: 1,
+					},
+				},
+				{ $skip: startIndex },
+				{ $limit: limit },
+			]);
+		}
+		res.json({
+			products: pageIndex,
+			totalPages: totalPage,
+			page,
+			search: searchText,
+		});
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
