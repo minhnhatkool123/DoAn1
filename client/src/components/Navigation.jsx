@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
+import { loginState, signUpState } from '../recoil/entryPointState';
 import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
 import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
@@ -20,37 +21,23 @@ function Navigation() {
   const totalQuantity = useRecoilValue(cartTotalQuantity);
   const totalPrice = useRecoilValue(cartTotalPrice);
 
+  const [login, setLogin] = useRecoilState(loginState);
+  const [signUp, setSignUp] = useRecoilState(signUpState);
+
   const cartPreviewRef = useRef(null);
   const searchRef = useRef(null);
 
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [name, setName] = useState('');
-
-  // const [forceUpdate, setForceUpdate] = useState(true);
-
-  const logInRightNow = () => {
-    setShowSignUp(false);
-    setShowLogin(true);
-  };
-
-  const closeSignUp = () => {
-    setShowSignUp(false);
-  };
-
-  const closeLogin = () => {
-    setShowLogin(false);
-  };
 
   const handleLoginUser = (e) => {
     if (e.target.innerText === 'Đăng nhập')
-      setShowLogin(true);
+      setLogin(true);
   };
 
   const handleSignUpEscape = (e) => {
-    if (e.target.innerText === 'Đăng ký')
-      setShowSignUp(true);
-    else {
+    if (e.target.innerText === 'Đăng ký') {
+      setSignUp(true);
+    } else {
       localStorage.removeItem('jwt');
       localStorage.removeItem('name');
       setName('');
@@ -66,30 +53,16 @@ function Navigation() {
 
   useEffect(() => {
     setName(localStorage.getItem('name'));
-  }, [name, showLogin]);
+  }, [name, login, signUp]);
 
   useEffect(() => {
-    if (showSignUp) {
-      document.getElementById('overlay').addEventListener('click', () => {
-        setShowSignUp(false);
-      });
-    }
-
-    if (showLogin) {
-      document.getElementById('overlay').addEventListener('click', () => {
-        setShowLogin(false);
-      });
-    }
-  }, [showSignUp, showLogin]);
-
-  useEffect(() => {
-    if (pathname !== '/search') {
+    if (pathname !== '/search' && !pathname.includes('/admin')) {
       searchRef.current.value = '';
     }
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname === '/cart') return;
+    if (pathname === '/cart' || pathname.includes('/admin')) return;
 
     if (cart.length) {
       cartPreviewRef.current.classList.remove('empty');
@@ -139,7 +112,7 @@ function Navigation() {
 
                   <div className="cart-list">
                     <div className="cart-items">
-                      {[...cart].reverse().slice(0, 5).map((item, index) => (
+                      {[...cart].reverse().map((item, index) => (
                         <div className="cart-product-container" key={index}>
                           <div className="product-info">
                             <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
@@ -202,8 +175,8 @@ function Navigation() {
         </div>
       </div>
 
-      {showSignUp ? <SignUpForm logInRightNow={logInRightNow} closeSignUp={closeSignUp} /> : null}
-      {showLogin ? <LoginForm closeLogin={closeLogin} /> : null}
+      {signUp && <SignUpForm />}
+      {login && <LoginForm />}
     </div>
   );
 }

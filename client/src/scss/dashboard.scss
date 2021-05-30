@@ -143,9 +143,10 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    padding: 32px 32px 44px 32px;
+    padding: 26px 32px 36px 32px;
     display: flex;
     flex-direction: column;
+    border-radius: 10px;
 
     .logo-icon {
       margin: 0 auto;
@@ -179,6 +180,7 @@
         border: 1px solid $divider;
         padding: 14px 20px;
         font-size: 20px;
+        border-radius: 4px;
 
         &::placeholder {
           font-size: 20px;
@@ -200,7 +202,9 @@
         font-size: 22px;
         height: 62px;
         margin-top: 2px;
+        // margin-bottom: -12px;
         width: 100%;
+        border-radius: 4px;
 
         &:hover {
           background: $darkslategrey;

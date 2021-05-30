@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { signUpState } from '../recoil/entryPointState';
 import { motion } from "framer-motion";
+import { FcGoogle } from "react-icons/fc";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 import TextError from './TextError';
-import { FcGoogle } from "react-icons/fc";
 import SuccessfulRegistration from './SuccessfulRegistration';
+import GoogleLogin from 'react-google-login';
 
 const initialValues = {
   fullName: '',
@@ -36,15 +39,32 @@ const popupVariants = {
   }
 }
 
-function SignUpForm(props) {
-  const [registerSuccessfully, setRegisterSuccessfully] = useState(false);
-  const [existedUsername, setExistedUsername] = useState(['admin']);
+function SignUpForm() {
+  const setSignUp = useSetRecoilState(signUpState);
+
+  const [success, setSuccess] = useState(false);
+
+  const responseSuccessGoogle = (res) => {
+    console.log(res);
+    localStorage.setItem('jwt', res.tokenId);
+
+    axios({
+      method: 'POST',
+      url: 'http://localhost:5000/user/login-google',
+      data: { tokenId: res.tokenId },
+    }).then((response) => {
+      console.log(response);
+      const userInfo = response.data.user;
+      localStorage.setItem('name', userInfo.name);
+      setSignUp(false);
+    });
+  };
+
+  const responseErrorGoogle = (err) => { };
 
   const validationSchema = Yup.object({
     fullName: Yup.string().required('*Bắt buộc'),
-    username: Yup.string()
-      .required('*Bắt buộc')
-      .notOneOf(existedUsername, 'Tên đăng nhập đã được sử dụng'),
+    username: Yup.string().required('*Bắt buộc'),
     email: Yup.string()
       .email('Email không hợp lệ')
       .required('*Bắt buộc'),
@@ -56,8 +76,8 @@ function SignUpForm(props) {
       .required('*Bắt buộc')
   });
 
-  const onSubmit = values => {
-    console.log('Form data', values);
+  const onSubmit = (values, { setFieldError }) => {
+    // console.log('Form data', values);
     const request = {
       name: values.fullName,
       username: values.username,
@@ -68,94 +88,94 @@ function SignUpForm(props) {
     axios.post('http://localhost:5000/user/register', request)
       .then(response => {
         console.log('Response: ', response.data.message);
-        setRegisterSuccessfully(true);
+        setSuccess(true);
       })
       .catch(error => {
         console.log(error.response.data.message);
         if (error.response.data.message === 'This username already exist') {
-          const errorUsername = document.querySelector("input[name='username']").value;
-          setExistedUsername([...existedUsername, errorUsername]);
-          const usernameField = document.querySelector("input[name='username']");
-          usernameField.focus();
-          usernameField.blur();
+          setFieldError('username', 'Tên đăng nhập đã được sử dụng');
+        } else if (error.response.data.message === 'This email already exist') {
+          setFieldError('email', 'Email đã được sử dụng');
         }
       });
   };
 
-  useEffect(() => {
-    console.log(existedUsername);
-  }, [existedUsername]);
+  if (success) return <SuccessfulRegistration />;
 
-  if (registerSuccessfully) {
-    return <SuccessfulRegistration signUpSuccessfully={props} />;
-  } else {
-    return (
-      <div id="sign-up-form">
-        <motion.div id="overlay"
-          variants={popupVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-        ></motion.div>
-        <motion.div className="form-container"
-          variants={popupVariants}
+  return (
+    <div id="sign-up-form">
+      <motion.div id="overlay" onClick={() => setSignUp(false)}
+        variants={popupVariants}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+      ></motion.div>
+      <motion.div className="form-container"
+        variants={popupVariants}
+      >
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
         >
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-          >
-            {formik => {
-              return (
-                <Form className="form-interface">
-                  <div className="form-control">
-                    <label htmlFor="fullName">Họ tên</label>
-                    <Field type="text" id="fullName" name="fullName" />
-                    <ErrorMessage name="fullName" component={TextError} />
-                  </div>
+          {formik => {
+            return (
+              <Form className="form-interface">
+                <div className="form-control">
+                  <label htmlFor="fullName">Họ tên</label>
+                  <Field type="text" name="fullName" />
+                  <ErrorMessage name="fullName" component={TextError} />
+                </div>
 
-                  <div className="form-control">
-                    <label htmlFor="username">Tài khoản</label>
-                    <Field type="text" id="username" name="username" />
-                    <ErrorMessage name="username" component={TextError} />
-                  </div>
+                <div className="form-control">
+                  <label htmlFor="username">Tài khoản</label>
+                  <Field type="text" name="username" />
+                  <ErrorMessage name="username" component={TextError} />
+                </div>
 
-                  <div className="form-control">
-                    <label htmlFor="email">Email</label>
-                    <Field type="email" id="email" name="email" />
-                    <ErrorMessage name="email" component={TextError} />
-                  </div>
+                <div className="form-control">
+                  <label htmlFor="email">Email</label>
+                  <Field type="email" name="email" />
+                  <ErrorMessage name="email" component={TextError} />
+                </div>
 
-                  <div className="form-control">
-                    <label htmlFor="password">Mật khẩu</label>
-                    <Field type="password" id="password" name="password" />
-                    <ErrorMessage name="password" component={TextError} />
-                  </div>
+                <div className="form-control">
+                  <label htmlFor="password">Mật khẩu</label>
+                  <Field type="password" name="password" />
+                  <ErrorMessage name="password" component={TextError} />
+                </div>
 
-                  <div className="form-control">
-                    <label htmlFor="confirmPassword">Nhập lại mật khẩu</label>
-                    <Field type="password" id="confirmPassword" name="confirmPassword" />
-                    <ErrorMessage name="confirmPassword" component={TextError} />
-                  </div>
+                <div className="form-control">
+                  <label htmlFor="confirmPassword">Nhập lại mật khẩu</label>
+                  <Field type="password" name="confirmPassword" />
+                  <ErrorMessage name="confirmPassword" component={TextError} />
+                </div>
 
-                  <button className="submit-btn" type='submit'>Đăng ký</button>
+                <button className="submit-btn" type='submit'>Đăng ký</button>
 
-                  <div className="strike">
-                    <span>HOẶC</span>
-                  </div>
+                <div className="strike">
+                  <span>HOẶC</span>
+                </div>
 
-                  <div className="google-submit-btn">
-                    <FcGoogle className="google-icon" />
-                    <span>Đăng ký với Google</span>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </motion.div>
-      </div>
-    );
-  }
+                <GoogleLogin
+                  clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
+                  render={renderProps => (
+                    <div onClick={renderProps.onClick} className="google-submit-btn">
+                      <FcGoogle className="google-icon" />
+                      <span>Đăng ký với Google</span>
+                    </div>
+                  )}
+                  onSuccess={responseSuccessGoogle}
+                  onFailure={responseErrorGoogle}
+                  cookiePolicy={'single_host_origin'}
+                />
+              </Form>
+            );
+          }}
+        </Formik>
+      </motion.div>
+    </div>
+  );
 }
 
 export default SignUpForm;

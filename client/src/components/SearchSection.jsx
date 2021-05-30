@@ -23,10 +23,10 @@ const getFilteredProducts = async (page, limit, category, name, filter) => {
       categoryKey += 'status=1&';
       break;
     case 'ascending':
-      categoryKey += 'sort=price&';
+      categoryKey += 'sort=1&';
       break;
     case 'descending':
-      categoryKey += 'sort=-price&';
+      categoryKey += 'sort=-1&';
       break;
     case 'sale':
       categoryKey += 'status=2&';
@@ -37,6 +37,7 @@ const getFilteredProducts = async (page, limit, category, name, filter) => {
 
   console.log(categoryKey)
   console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`)
+
   const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`);
   return response.data;
 }
@@ -59,7 +60,7 @@ function SearchSection() {
   useEffect(() => {
     if (data) {
       // console.log(data)
-      setTotalPages(data.totalpage);
+      setTotalPages(data.totalPages);
       setProducts(data.products);
     }
   }, [data]);

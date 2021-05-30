@@ -1,4 +1,4 @@
-@import './color.scss';
+@import "./color.scss";
 
 @keyframes bubble {
   from {
@@ -96,7 +96,9 @@
         .name {
           position: relative;
 
-          a, a:active, a:visited {
+          a,
+          a:active,
+          a:visited {
             color: inherit;
           }
 
@@ -110,7 +112,8 @@
             transform: translateY(-50%);
           }
 
-          &:hover a, &:hover {
+          &:hover a,
+          &:hover {
             color: $lightpink;
             cursor: pointer;
           }
@@ -169,7 +172,8 @@
             width: 346px;
             z-index: 1;
             border-radius: 5px;
-            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+              rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
             transform-origin: calc(100% - 15px) top;
             animation: growDiagonally ease 0.25s;
             will-change: opacity, transform;
@@ -186,6 +190,16 @@
                 style: solid;
                 color: transparent transparent $white transparent;
               }
+            }
+
+            &::before {
+              content: "";
+              cursor: pointer;
+              position: absolute;
+              width: 100px;
+              height: 34px;
+              top: -30px;
+              right: 0;
             }
 
             &.empty {
@@ -225,6 +239,12 @@
                 padding: 12px 12px 0 12px;
                 background-color: $white;
                 box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+                height: 290px;
+                overflow-y: auto;
+
+                &::-webkit-scrollbar {
+                  display: none;
+                }
 
                 .cart-product-container {
                   display: flex;
@@ -260,7 +280,6 @@
                       }
 
                       .product-quantity {
-                        
                       }
                     }
                   }
@@ -304,7 +323,9 @@
                 height: 38px;
                 line-height: 38px;
 
-                a, a:active, a:visited {
+                a,
+                a:active,
+                a:visited {
                   color: inherit;
                 }
 
@@ -381,7 +402,6 @@
   }
 }
 
-
 // ----- Sign Up/Login Form -----
 
 @mixin common-popup($width) {
@@ -405,7 +425,8 @@
   z-index: 1;
 }
 
-#sign-up-form, #login-form {
+#sign-up-form,
+#login-form {
   #overlay {
     @include overlay;
   }
@@ -415,12 +436,13 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     .form-interface {
-      width: calc(100% - 24*2px);
+      width: calc(100% - 24 * 2px);
       display: flex;
       flex-direction: column;
       margin: 26px 24px;
 
-      label, input {
+      label,
+      input {
         display: block;
         margin-bottom: 2px;
       }
@@ -468,18 +490,19 @@
       }
 
       .strike > span {
-          position: relative;
-          display: inline-block;
-          font-size: 12px;
-          color: $darkgrey;
-          font-weight: 600;
+        position: relative;
+        display: inline-block;
+        font-size: 12px;
+        color: $darkgrey;
+        font-weight: 600;
       }
 
       .strike {
         margin-top: 6px;
         margin-bottom: 10px;
 
-        span:before, span:after {
+        span:before,
+        span:after {
           content: "";
           position: absolute;
           top: 50%;
@@ -530,9 +553,8 @@
 }
 
 .google-submit-btn:active #login-form {
-    display: none;
+  display: none;
 }
-
 
 // ---- Successful Registration Message ----
 
@@ -587,7 +609,6 @@
     }
   }
 }
-
 
 // ---- Error Login Message ----
 

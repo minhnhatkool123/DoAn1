@@ -16,7 +16,7 @@ function ProductCard({ product }) {
           <div className="product-info">
             <div className="product-name">{product.name}</div>
             {product.discount === 0 && <div className="empty"></div>}
-            <div className="product-price">{product.price.toLocaleString()}đ</div>
+            <div className="product-price">{product.new_price.toLocaleString()}đ</div>
             {product.discount > 0 && <div className="product-original-price">{product.real_price.toLocaleString()}đ</div>}
           </div>
 

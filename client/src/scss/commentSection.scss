@@ -59,6 +59,11 @@
       margin-top: 12px;
       font-size: 14px;
       font-weight: 600;
+      display: none;
+
+      &.active {
+        display: flex;
+      }
 
       .cancel-btn, .submit-btn {
         padding: 8px 10px 4px 10px;
@@ -86,5 +91,9 @@
         }
       }
     }
+  }
+
+  .comment-display-area {
+    margin-top: 46px;
   }
 }

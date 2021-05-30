@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { loginState } from '../recoil/entryPointState';
 import axios from 'axios';
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -33,7 +35,9 @@ const popupVariants = {
   }
 }
 
-function LoginForm(props) {
+function LoginForm() {
+  const setLogin = useSetRecoilState(loginState);
+
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -43,20 +47,24 @@ function LoginForm(props) {
 
   const responseSuccessGoogle = (res) => {
     console.log(res);
+    localStorage.setItem('jwt', res.tokenId);
+
     axios({
       method: 'POST',
       url: 'http://localhost:5000/user/login-google',
       data: { tokenId: res.tokenId },
-    }).then((userInfo) => {
-      console.log(userInfo);
-      localStorage.setItem('name', userInfo.data.user.name);
-      props.closeLogin();
+    }).then((response) => {
+      console.log(response);
+      const userInfo = response.data.user;
+      localStorage.setItem('name', userInfo.name);
+      setLogin(false);
     });
   };
 
   const responseErrorGoogle = (res) => { };
 
-  const onSubmit = values => {
+  const onSubmit = (values, supplies) => {
+    console.log(supplies);
     const request = {
       username: values.username,
       password: values.password
@@ -64,25 +72,13 @@ function LoginForm(props) {
 
     axios.post('http://localhost:5000/user/login', request)
       .then(response => {
+        console.log(response.data)
         const jwt = response.data.accessToken;
+        const userInfo = response.data.user;
 
         localStorage.setItem('jwt', jwt);
-
-        const config = {
-          headers: {
-            Authorization: jwt
-          }
-        };
-
-        axios.get('http://localhost:5000/user/get-info-user', config)
-          .then(userInfo => {
-            console.log(userInfo);
-            localStorage.setItem('name', userInfo.data.name);
-            props.closeLogin();
-          })
-          .catch(err => {
-            console.log(err.response.data.message);
-          });
+        localStorage.setItem('name', userInfo.name);
+        setLogin(false);
       })
       .catch(error => {
         console.log(error.response.data.message);
@@ -97,7 +93,7 @@ function LoginForm(props) {
 
   return (
     <div id="login-form">
-      <motion.div id="overlay"
+      <motion.div id="overlay" onClick={() => setLogin(false)}
         variants={popupVariants}
         initial="hidden"
         animate="visible"
@@ -112,42 +108,38 @@ function LoginForm(props) {
           onSubmit={onSubmit}
           validateOnBlur={false}
         >
-          {formik => {
-            return (
-              <Form className="form-interface">
-                <div className="form-control">
-                  <label htmlFor="name">Tài khoản</label>
-                  <Field type="text" id="username" name="username" />
-                  <ErrorMessage name="username" component={TextError} />
+          <Form className="form-interface">
+            <div className="form-control">
+              <label htmlFor="name">Tài khoản</label>
+              <Field type="text" id="username" name="username" />
+              <ErrorMessage name="username" component={TextError} />
+            </div>
+
+            <div className="form-control">
+              <label htmlFor="password">Mật khẩu</label>
+              <Field type="password" id="password" name="password" />
+              <ErrorMessage name="password" component={TextError} />
+            </div>
+
+            <button className="submit-btn" type='submit'>Đăng nhập</button>
+
+            <div className="strike">
+              <span>HOẶC</span>
+            </div>
+
+            <GoogleLogin
+              clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
+              render={renderProps => (
+                <div onClick={renderProps.onClick} className="google-submit-btn">
+                  <FcGoogle className="google-icon" />
+                  <span>Đăng nhập với Google</span>
                 </div>
-
-                <div className="form-control">
-                  <label htmlFor="password">Mật khẩu</label>
-                  <Field type="password" id="password" name="password" />
-                  <ErrorMessage name="password" component={TextError} />
-                </div>
-
-                <button className="submit-btn" type='submit'>Đăng nhập</button>
-
-                <div className="strike">
-                  <span>HOẶC</span>
-                </div>
-
-                <GoogleLogin
-                  clientId="941926115379-6cbah41jf83kjm236uimrtjdr62t7k71.apps.googleusercontent.com"
-                  render={renderProps => (
-                    <div onClick={renderProps.onClick} className="google-submit-btn">
-                      <FcGoogle className="google-icon" />
-                      <span>Đăng nhập với Google</span>
-                    </div>
-                  )}
-                  onSuccess={responseSuccessGoogle}
-                  onFailure={responseErrorGoogle}
-                  cookiePolicy={'single_host_origin'}
-                />
-              </Form>
-            );
-          }}
+              )}
+              onSuccess={responseSuccessGoogle}
+              onFailure={responseErrorGoogle}
+              cookiePolicy={'single_host_origin'}
+            />
+          </Form>
         </Formik>
       </motion.div>
 

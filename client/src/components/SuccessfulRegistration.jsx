@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { signUpState } from '../recoil/entryPointState';
 import { motion } from "framer-motion";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
@@ -15,18 +17,12 @@ const popupVariants = {
   }
 }
 
-const googleSuccessMsg = 'Một email đã được gửi đến bạn. Vui lòng kiểm tra và xác thực tài khoản để hoàn tất đăng ký.'
-const normalSuccessMsg = 'Chúc mừng bạn đã đăng ký tài khoản thành công tại ZShop.'
+function SuccessfulRegistration() {
+  const setSignUp = useSetRecoilState(signUpState);
 
-function SuccessfulRegistration(props) {
   return (
     <div className="successful-registration">
-      <motion.div id="overlay" onClick={() => props.signUpSuccessfully.closeSignUp()}
-        // variants={popupVariants}
-        // initial="hidden"
-        // animate="visible"
-        // exit="hidden"
-      ></motion.div>
+      <div id="overlay" onClick={() => setSignUp(false)}></div>
       <motion.div className="container"
         variants={popupVariants}
         initial="hidden"

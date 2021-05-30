@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Comment from './Comment';
 import '../scss/commentSection.scss';
+import axios from 'axios';
 
 const data = [
   {
@@ -97,7 +98,31 @@ const getThreadedComments = (data) => {
 }
 
 function CommentSection() {
+  const buttonsRef = useRef(null);
+  const commentBoxRef = useRef(null);
   const comments = getThreadedComments(data);
+
+  const handleCommentBoxFocus = () => {
+    buttonsRef.current.classList.add('active');
+  }
+
+  const handleCancelClick = () => {
+    buttonsRef.current.classList.remove('active');
+  }
+
+  const handleOnSubmit = () => {
+    if (commentBoxRef.current.innerText) {
+      console.log(commentBoxRef.current.innerText)
+    }
+  }
+
+  const handleEnterPress = (e) => {
+    // console.log(e.keyCode)
+    if (e.keyCode == 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleOnSubmit();
+    }
+  }
 
   return (
     <div className="comment-section">
@@ -106,12 +131,19 @@ function CommentSection() {
       <div className="comment-posting-area">
         <div className="comment-typing-area">
           <div className="avatar">P</div>
-          <div contentEditable="true" className="comment-typing" data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn." />
+          <div
+            contentEditable="true"
+            className="comment-typing"
+            data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn."
+            onFocus={handleCommentBoxFocus}
+            onKeyDown={handleEnterPress}
+            ref={commentBoxRef}
+          />
         </div>
 
-        <div className="btn-group">
-          <div className="cancel-btn">Hủy</div>
-          <div className="submit-btn">Bình luận</div>
+        <div className="btn-group" ref={buttonsRef}>
+          <div className="cancel-btn" onClick={handleCancelClick}>Hủy</div>
+          <div className="submit-btn" onClick={handleOnSubmit}>Bình luận</div>
         </div>
       </div>
 

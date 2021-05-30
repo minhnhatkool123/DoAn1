@@ -66,7 +66,7 @@ function Profile() {
             provinceId: item.provinceId
           })
         });
-        console.log('districts', districts);
+        // console.log('districts', districts);
         setProvinceId(57);
         setForceUpdate(value => !value);
       })

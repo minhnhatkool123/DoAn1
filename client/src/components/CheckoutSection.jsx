@@ -70,7 +70,7 @@ function CheckoutSection() {
           })
         });
         // console.log('districts', districts);
-        setProvinceId(1);
+        setProvinceId(57);
         setForceUpdate(value => !value);
       })
       .catch(error => console.log(error))
