@@ -266,7 +266,7 @@ const getProductAll = async (req, res) => {
 			]);
 		}
 
-		res.json({ products: pageIndex, totalpage: totalPage, page: page });
+		res.json({ products: pageIndex, totalPages: totalPage, page: page });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -483,7 +483,7 @@ const getProductCategory = async (req, res) => {
 			]);
 		}
 
-		res.json({ products: pageIndex, totalpage: totalPage, page: page });
+		res.json({ products: pageIndex, totalPages: totalPage, page: page });
 	} catch (error) {
 		console.log('Loi');
 		return res.status(500).json({ message: error.message });
