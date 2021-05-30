@@ -1,9 +1,15 @@
 require('dotenv').config();
 const Comments = require('../models/commentModel');
+const Users = require('../models/userModel');
 const { ObjectId } = require('mongodb');
 const addComment = async (req, res) => {
 	try {
 		const { productId, content, user } = req.body;
+
+		const userCheck = await Users.findById({ _id: user });
+		if (userCheck.mute) {
+			return res.status(400).json({ message: 'User is muted' });
+		}
 
 		const newComment = new Comments({
 			user,
@@ -11,6 +17,7 @@ const addComment = async (req, res) => {
 			productId,
 			date: Date.now(),
 		});
+
 		// let date = new Date();
 		// let dateFormat = `${date.getDate()}-${
 		// 	date.getMonth() + 1
