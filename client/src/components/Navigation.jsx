@@ -1,9 +1,10 @@
+import '../scss/navigation.scss';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { cartTotalQuantity, cartTotalPrice, cartState } from '../recoil/cartState';
 import { loginState, signUpState } from '../recoil/entryPointState';
+import { userState } from '../recoil/userState';
 import { Link, useRouteMatch, useHistory, useLocation } from 'react-router-dom';
-import '../scss/navigation.scss';
 import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
 import SignUpForm from './SignUpForm';
@@ -23,6 +24,7 @@ function Navigation() {
 
   const [login, setLogin] = useRecoilState(loginState);
   const [signUp, setSignUp] = useRecoilState(signUpState);
+  const [user, setUser] = useRecoilState(userState);
 
   const cartPreviewRef = useRef(null);
   const searchRef = useRef(null);
@@ -38,9 +40,7 @@ function Navigation() {
     if (e.target.innerText === 'Đăng ký') {
       setSignUp(true);
     } else {
-      localStorage.removeItem('jwt');
-      localStorage.removeItem('name');
-      setName('');
+      setUser({});
     }
   };
 
@@ -52,8 +52,12 @@ function Navigation() {
   }
 
   useEffect(() => {
-    setName(localStorage.getItem('name'));
-  }, [name, login, signUp]);
+    if (Object.keys(user).length) {
+      setName(user.info.name);
+    } else {
+      setName('');
+    }
+  }, [user]);
 
   useEffect(() => {
     if (pathname !== '/search' && !pathname.includes('/admin')) {

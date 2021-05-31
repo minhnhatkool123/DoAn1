@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { signUpState } from '../recoil/entryPointState';
+import { userState } from '../recoil/userState';
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -41,12 +42,12 @@ const popupVariants = {
 
 function SignUpForm() {
   const setSignUp = useSetRecoilState(signUpState);
+  const setUser = useSetRecoilState(userState);
 
   const [success, setSuccess] = useState(false);
 
   const responseSuccessGoogle = (res) => {
     console.log(res);
-    localStorage.setItem('jwt', res.tokenId);
 
     axios({
       method: 'POST',
@@ -54,8 +55,10 @@ function SignUpForm() {
       data: { tokenId: res.tokenId },
     }).then((response) => {
       console.log(response);
-      const userInfo = response.data.user;
-      localStorage.setItem('name', userInfo.name);
+      setUser({
+        accessToken: res.tokenId,
+        info: response.data.user
+      });
       setSignUp(false);
     });
   };

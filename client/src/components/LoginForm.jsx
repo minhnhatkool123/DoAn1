@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { loginState } from '../recoil/entryPointState';
-import axios from 'axios';
+import { userState } from '../recoil/userState';
 import { motion } from "framer-motion";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 import TextError from './TextError';
 import { FcGoogle } from "react-icons/fc";
 import ErrorLoginMessage from './ErrorLoginMessage';
@@ -37,6 +38,7 @@ const popupVariants = {
 
 function LoginForm() {
   const setLogin = useSetRecoilState(loginState);
+  const setUser = useSetRecoilState(userState);
 
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -47,7 +49,6 @@ function LoginForm() {
 
   const responseSuccessGoogle = (res) => {
     console.log(res);
-    localStorage.setItem('jwt', res.tokenId);
 
     axios({
       method: 'POST',
@@ -55,16 +56,17 @@ function LoginForm() {
       data: { tokenId: res.tokenId },
     }).then((response) => {
       console.log(response);
-      const userInfo = response.data.user;
-      localStorage.setItem('name', userInfo.name);
+      setUser({
+        accessToken: res.tokenId,
+        info: response.data.user
+      });
       setLogin(false);
     });
   };
 
   const responseErrorGoogle = (res) => { };
 
-  const onSubmit = (values, supplies) => {
-    console.log(supplies);
+  const onSubmit = (values) => {
     const request = {
       username: values.username,
       password: values.password
@@ -73,11 +75,10 @@ function LoginForm() {
     axios.post('http://localhost:5000/user/login', request)
       .then(response => {
         console.log(response.data)
-        const jwt = response.data.accessToken;
-        const userInfo = response.data.user;
-
-        localStorage.setItem('jwt', jwt);
-        localStorage.setItem('name', userInfo.name);
+        setUser({
+          accessToken: response.data.accessToken,
+          info: response.data.user
+        });
         setLogin(false);
       })
       .catch(error => {

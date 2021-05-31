@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import queryString from 'query-string';
 import '../scss/searchSection.scss';
-// import products from '../data2';
 import ProductCard from './ProductCard';
 import ReactPaginate from "react-paginate";
-import { useQuery } from 'react-query';
 import axios from 'axios';
-import { EatLoading } from 'react-loadingg';
 import FetchError from './FetchError';
+import { EatLoading } from 'react-loadingg';
 
 const getFilteredProducts = async (page, limit, category, name, filter) => {
   let categoryKey;

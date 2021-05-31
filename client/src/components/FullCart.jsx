@@ -1,19 +1,28 @@
-import React from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
 import '../scss/cart.scss';
+import React from 'react';
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
+import { dialogState } from '../recoil/dialogState';
 import { Link } from 'react-router-dom';
 
 function FullCart() {
   const totalPrice = useRecoilValue(cartTotalPrice);
 
   const [cart, setCart] = useRecoilState(cartState);
+  const setDialog = useSetRecoilState(dialogState);
 
   const handleRemoveProduct = (id) => {
-    const newCart = removeFromCart(cart, id);
+    setDialog({
+      show: true,
+      message: 'Bạn có chắc muốn xóa sản phẩm này?',
+      acceptButtonName: 'Xóa',
+      func: () => {
+        const newCart = removeFromCart(cart, id);
 
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+        setCart(newCart);
+        localStorage.setItem('cart', JSON.stringify(newCart));
+      }
+    });
   }
 
   const handleProductIncrement = (id) => {

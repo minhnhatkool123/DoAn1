@@ -2,6 +2,7 @@ import './scss/App.scss';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { toastDisplayState } from './recoil/toastDisplayState';
+import { userState } from './recoil/userState';
 import HomePage from './pages/HomePage';
 import AccountInfoPage from './pages/AccountInfoPage';
 import SearchPage from './pages/SearchPage';
@@ -16,12 +17,12 @@ import ToastMessage from './components/ToastMessage';
 import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import Dialog from './components/Dialog';
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children, redirect, ...rest }) => {
-	let auth = localStorage.getItem('name');
-
+const PrivateRoute = ({ children, redirect, auth = false, ...rest }) => {
+	// let auth = localStorage.getItem('jwt');
 	return (
 		<Route {...rest} render={() =>
 			auth ? children : <Redirect to={{ pathname: redirect }} />
@@ -31,7 +32,17 @@ const PrivateRoute = ({ children, redirect, ...rest }) => {
 
 function App() {
 	const toastDisplay = useRecoilValue(toastDisplayState);
-	const loggedIn = localStorage.getItem('name');
+	const user = useRecoilValue(userState);
+
+	const isLogged = () => {
+		if (user.info) return true;
+		return false;
+	}
+
+	const isAdmin = () => {
+		if (user.info && user.info.type === 1) return true;
+		return false;
+	}
 
 	return (
 		<Router>
@@ -45,17 +56,20 @@ function App() {
 						<Route path='/category/:category' component={SearchPage} />
 						<Route path='/search' component={SearchPage} />
 						<Route path='/product/:id' component={ProductDetailPage} />
-						<Route path='/account' component={AccountInfoPage} />
 						<Route path='/checkout' component={CheckoutPage} />
+						<PrivateRoute path='/account' redirect='/' auth={isLogged}>
+							<AccountInfoPage />
+						</PrivateRoute>
 						<Route path='/admin/login' component={AdminAuthenticationPage} />
-						<PrivateRoute path='/admin' redirect='/admin/login'>
+						<PrivateRoute path='/admin' redirect='/admin/login' auth={isAdmin}>
 							<DashboardPage />
 						</PrivateRoute>
 						{/* <Route path='/admin'>
 						{!loggedIn ? <Redirect to='/admin/login' /> : <DashboardPage />}
-					</Route> */}
+						</Route> */}
 					</Switch>
 					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
+					<Dialog />
 					{toastDisplay.show && <ToastMessage />}
 					<Footer />
 				</div>

@@ -1,7 +1,9 @@
-@import './color.scss';
+@import "./color.scss";
+@import url("https://fonts.googleapis.com/css2?family=Berkshire+Swash&family=Kaushan+Script&display=swap");
 
 .comment {
-  .original-comment, .reply-comment {
+  .original-comment,
+  .reply-comment {
     display: flex;
 
     .avatar {
@@ -10,10 +12,20 @@
       background-color: #ffb0bd;
       color: #fff;
       border-radius: 50%;
-      text-align: center;
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 36px;
+
+      .text-avatar {
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 36px;
+
+        &.admin-mode {
+          font-family: "Berkshire Swash", cursive;
+          margin-left: 1px;
+          margin-top: 0px;
+          font-size: 22px;
+        }
+      }
     }
 
     .comment-content {
@@ -39,18 +51,131 @@
   .reply-comment {
     margin-left: 48px;
     margin-top: 16px;
+
+    &.admin-mode {
+      margin-top: 28px;
+    }
   }
 
-  .reply-btn {
-    color: $lightpink;
+  .control-options {
     position: absolute;
-    cursor: pointer;
     top: calc(100% + 4px);
     left: 4px;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
 
-    &:hover {
-      text-decoration: underline;
+    span {
+      color: $lightpink;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &:not(:first-child) {
+        margin-left: 16px;
+
+        &::before {
+          content: "";
+          width: 4px;
+          height: 4px;
+          background-color: $silver;
+          border-radius: 50%;
+          position: absolute;
+          right: calc(100% + 5px);
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+
+      &:last-child {
+        color: $lightgrey;
+      }
+    }
+  }
+
+  .reply-typing-area {
+    display: none;
+    width: 60%;
+    margin-top: 46px;
+    margin-left: 46px;
+
+    &.active {
+      display: block;
+    }
+
+    .comment-typing-area {
+      display: flex;
+
+      .avatar {
+        width: 37px;
+        height: 34px;
+        background-color: #ffb0bd;
+        color: #fff;
+        border-radius: 50%;
+        text-align: center;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 36px;
+        margin-top: -4px;
+      }
+
+      [contentEditable="true"]:empty:before {
+        content: attr(data-placeholder);
+        color: $grey;
+        cursor: text;
+      }
+
+      .comment-typing {
+        border-bottom: 1px solid $grey;
+        min-height: 30px;
+        width: 100%;
+        margin-left: 10px;
+        line-height: 22px;
+      }
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: flex-end;
+      text-transform: uppercase;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+
+      &.active {
+        display: flex;
+      }
+
+      .cancel-btn,
+      .submit-btn {
+        padding: 8px 10px 4px 10px;
+        cursor: pointer;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .cancel-btn {
+        color: $lightpink;
+        border: 1px solid $lightpink;
+        margin-right: 6px;
+
+        &:hover {
+          background-color: $whitesmoke;
+        }
+      }
+
+      .submit-btn {
+        color: $white;
+        background: $lightpink;
+
+        &:hover {
+          background-color: $coralpink;
+        }
+      }
     }
   }
 }

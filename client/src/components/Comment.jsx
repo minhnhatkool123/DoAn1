@@ -1,20 +1,213 @@
-import React from 'react';
 import '../scss/comment.scss';
+import React, { useRef, useEffect } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { userState } from '../recoil/userState';
+import { dialogState } from '../recoil/dialogState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
+import { useParams } from "react-router-dom";
+import axios from 'axios';
 
-function Comment({ comment }) {
+function Comment({ comment, refetch, commentId, reply = false, parentId }) {
+  const { id: productId } = useParams();
+  const user = useRecoilValue(userState);
+
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
+  const setDialog = useSetRecoilState(dialogState);
+
+  const replyBoxRef = useRef(null);
+  const replyCommentBoxRef = useRef(null);
+  const timeAgoRef = useRef();
+
+  const date = new Date(comment.date);
+  timeAgoRef.current = timeSince(date);
+
+  const handleOnSubmit = () => {
+    const commentContent = replyCommentBoxRef.current.innerText;
+
+    if (commentContent) {
+      const data = {
+        user: user.info._id,
+        content: commentContent,
+        productId: productId
+      }
+
+      const config = {
+        headers: {
+          Authorization: user.accessToken
+        }
+      }
+
+      axios.post(`http://localhost:5000/api/comment/add?reply=1&id=${commentId}`, data, config)
+        .then(response => {
+          console.log(response.data.message);
+          replyCommentBoxRef.current.innerText = '';
+          replyBoxRef.current.classList.remove('active');
+          refetch();
+        })
+        .catch(error => {
+          console.log(error.response.data.message);
+        })
+    }
+  }
+
+  const handleEnterPress = (e) => {
+    if (e.keyCode == 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleOnSubmit();
+    }
+  }
+
+  const handleCancelClick = () => {
+    replyCommentBoxRef.current.innerText = '';
+    replyBoxRef.current.classList.remove('active');
+  }
+
+  const handleReplyClick = () => {
+    if (!user.info) {
+      setToastDisplay({
+        show: true,
+        message: 'Bạn phải đăng nhập để sử dụng tính năng bình luận'
+      });
+      return;
+    }
+    replyBoxRef.current.classList.add('active');
+    replyCommentBoxRef.current.focus();
+  }
+
+  const handleDeleteComment = () => {
+    setDialog({
+      show: true,
+      message: 'Bạn có chắc muốn xóa bình luận này?',
+      acceptButtonName: 'Xóa',
+      func: () => {
+        let query = '';
+
+        if (reply) {
+          query = `id=${parentId}&node=${commentId}`;
+        } else {
+          query = `id=${commentId}`;
+        }
+
+        const config = {
+          headers: {
+            Authorization: user.accessToken
+          }
+        }
+
+        axios.delete(`http://localhost:5000/api/comment/delete?${query}`, config)
+          .then(response => {
+            console.log(response.data.message);
+            refetch();
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+    });
+  }
+
+  const handleMuteUser = () => {
+    // check user có đang bị mute hay không => hiện message tương ứng, hoặc check value của thẻ span là Cấm hay Bỏ cấm
+    setDialog({
+      show: true,
+      message: 'Bạn có chắc muốn cấm người này bình luận?',
+      acceptButtonName: 'Cấm',
+      func: () => { }
+    })
+  }
+
+  useEffect(() => {
+    const timeAgo = setInterval(() => {
+      timeAgoRef.current = timeSince(date);
+    }, 1000);
+
+    return () => clearInterval(timeAgo);
+  }, [])
+
+  const isAdmin = user.info && user.info.type === 1;
+  const isAdminComment = comment.user.type === 1;
+
   return (
-    <div key={comment.id} className="comment">
-      <div className={comment.parentId ? "reply-comment" : "original-comment"}>
-        <div className="avatar">{comment.userName.split(" ").pop().charAt(0)}</div>
+    <div className="comment">
+      <div className={reply ? (isAdmin ? "reply-comment admin-mode" : "reply-comment") : "original-comment"}>
+        <div className="avatar">
+          <div className={isAdminComment ? "text-avatar admin-mode" : "text-avatar"}>
+            {isAdminComment ? 'Z' : comment.user.name.split(" ").pop().charAt(0)}
+          </div>
+        </div>
         <div className="comment-content">
-          <div className="author">{comment.userName}</div>
+          <div className="author">{isAdminComment ? 'ZShop - Mua sắm thời trang' : comment.user.name}</div>
           <div className="content">{comment.content}</div>
-          {!comment.parentId && <span className="reply-btn">Trả lời</span>}
+          <div className="control-options">
+            {!reply && <span className="reply-btn" onClick={handleReplyClick}>Trả lời</span>}
+            {isAdmin && <span className="delete-btn" onClick={handleDeleteComment}>Xóa</span>}
+            {isAdmin && !isAdminComment && <span className="mute-btn" onClick={handleMuteUser}>Cấm</span>}
+            <span>{timeAgoRef.current}</span>
+          </div>
         </div>
       </div>
-      {comment.responses && comment.responses.map(reply => <Comment key={reply.id} comment={reply} />)}
+
+      <div className="reply-typing-area" ref={replyBoxRef}>
+        <div className="comment-typing-area">
+          <div className="avatar">{user.info ? user.info.name.split(" ").pop().charAt(0) : 'P'}</div>
+          <div
+            contentEditable="true"
+            className="comment-typing"
+            data-placeholder="Nhập câu trả lời..."
+            onKeyDown={handleEnterPress}
+            ref={replyCommentBoxRef}
+          />
+        </div>
+
+        <div className="btn-group">
+          <div className="cancel-btn" onClick={handleCancelClick}>Hủy</div>
+          <div className="submit-btn" onClick={handleOnSubmit}>Trả lời</div>
+        </div>
+      </div>
+
+      {comment.reply && comment.reply.map(reply => (
+        <Comment
+          key={reply._id}
+          commentId={reply._id}
+          comment={reply}
+          parentId={commentId}
+          refetch={refetch}
+          reply
+        />
+      ))}
     </div>
   );
 }
+
+function timeSince(date) {
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return Math.floor(interval) + " năm trước";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " tháng trước";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " ngày trước";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " giờ trước";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " phút trước";
+  }
+  // return Math.floor(seconds) + " giây trước";
+  return "Vừa xong";
+}
+var aDay = 24 * 60 * 60 * 1000;
+console.log(timeSince(new Date(Date.now() - aDay)));
+console.log(timeSince(new Date(Date.now() - aDay * 2)));
 
 export default Comment;
