@@ -32,19 +32,25 @@
         border-radius: 50%;
         margin-top: -3px;
 
+        &.admin-mode {
+          background: $white;
+          border: 1px solid $lightpink;
+
+          .text-avatar {
+            font-family: "Berkshire Swash", cursive;
+            margin-left: 1px;
+            margin-top: -1.2px;
+            font-size: 22px;
+            color: $lightpink;
+          }
+        }
+
         .text-avatar {
           text-align: center;
           font-weight: 600;
           font-size: 18px;
           line-height: 36px;
           margin-left: 1px;
-
-          &.admin-mode {
-            font-family: "Berkshire Swash", cursive;
-            margin-left: 1px;
-            margin-top: 0px;
-            font-size: 22px;
-          }
         }
       }
 

@@ -72,29 +72,30 @@ export const decreaseCartItem = (cart, itemId) => {
   const newCart = [...cart];
   const foundIndex = cart.findIndex(x => x.id === itemId);
 
-  if (!foundIndex)
-    console.log('something went wrong');
+  if (foundIndex >= 0) {
+    newCart[foundIndex] = {
+      ...cart[foundIndex],
+      quantity: cart[foundIndex].quantity - 1,
+    };
+    return newCart;
+  }
 
-    if (!foundIndex)
-    console.log('something went wrong');
-
-  newCart[foundIndex] = {
-    ...cart[foundIndex],
-    quantity: cart[foundIndex].quantity - 1,
-  };
-  return newCart;
+  console.log('something went wrong');
+  return cart;
 }
 
 export const increaseCartItem = (cart, itemId) => {
   const newCart = [...cart];
   const foundIndex = cart.findIndex(x => x.id === itemId);
 
-  if (!foundIndex)
-    console.log('something went wrong');
+  if (foundIndex >= 0) {
+    newCart[foundIndex] = {
+      ...cart[foundIndex],
+      quantity: cart[foundIndex].quantity + 1,
+    };
+    return newCart;
+  }
 
-  newCart[foundIndex] = {
-    ...cart[foundIndex],
-    quantity: cart[foundIndex].quantity + 1,
-  };
-  return newCart;
+  console.log('something went wrong');
+  return cart;
 }

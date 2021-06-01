@@ -1,94 +1,17 @@
 import '../scss/commentSection.scss';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useQuery } from 'react-query';
 import Comment from './Comment';
 import axios from 'axios';
 
-// const data = [
-//   {
-//     id: 1,
-//     parentId: null,
-//     date: '01/01/2021',
-//     userName: 'Phúc An',
-//     content: 'Áo đẹp lắm ạ'
-//   },
-//   {
-//     id: 2,
-//     parentId: null,
-//     date: '09/02/2021',
-//     userName: 'Như Uyên',
-//     content: 'Sản phẩm vừa khít luôn rất đẹp ạ. Ủng hộ shop.'
-//   },
-//   {
-//     id: 3,
-//     parentId: 2,
-//     date: '15/02/2021',
-//     userName: 'Ngọc Diễm',
-//     content: 'Bạn mua size bn ấy?'
-//   },
-//   {
-//     id: 4,
-//     parentId: 2,
-//     date: '22/02/2021',
-//     userName: 'Như Uyên',
-//     content: 'Size M á bạn'
-//   },
-//   {
-//     id: 5,
-//     parentId: null,
-//     date: '20/03/2021',
-//     userName: 'Ánh Vy',
-//     content: 'Sản phẩm đẹp như hình ạ'
-//   },
-//   {
-//     id: 6,
-//     parentId: null,
-//     date: '01/04/2021',
-//     userName: 'Hoài An',
-//     content: 'Mình mua 2 màu, màu nào cũng đẹp hết ý'
-//   },
-//   {
-//     id: 7,
-//     parentId: null,
-//     date: '10/04/2021',
-//     userName: 'Vân Khánh',
-//     content: 'Áo đẹp, chất liệu vải tốt, shop có thể nhập thêm nhiều màu khác nữa được ko ạ?'
-//   }, {
-//     id: 8,
-//     parentId: null,
-//     date: '10/04/2021',
-//     userName: 'Thanh Tú',
-//     content: 'Áo cute ghê luôn, trên hình đã đẹp rồi nhìn thực tế còn đẹp hơn'
-//   },
-//   {
-//     id: 9,
-//     parentId: null,
-//     date: '11/04/2021',
-//     userName: 'Hạ Vũ',
-//     content: 'Áo siêu đẹp luôn, nhân tiện cho mình hỏi màu vàng bao giờ có lại ấy shop?'
-//   },
-//   {
-//     id: 10,
-//     parentId: 7,
-//     date: '12/04/2021',
-//     userName: 'ZShop - Mua Sắm Thời Trang',
-//     content: 'Sắp tới shop sẽ nhập thêm một số màu nữa nhé.'
-//   },
-//   {
-//     id: 11,
-//     parentId: 9,
-//     date: '12/04/2021',
-//     userName: 'ZShop - Mua Sắm Thời Trang',
-//     content: 'Cỡ thứ 6 shop có lại nhen.'
-//   }
-// ];
-
 function CommentSection() {
+  const { pathname: url } = useLocation();
   const { id: productId } = useParams();
+
   const user = useRecoilValue(userState);
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
@@ -101,6 +24,10 @@ function CommentSection() {
     return response.data;
   });
 
+  useEffect(() => {
+    refetch();
+  }, [url]);
+
   const handleCommentBoxFocus = () => {
     buttonsRef.current.classList.add('active');
   }
@@ -111,7 +38,7 @@ function CommentSection() {
   }
 
   const handleOnSubmit = () => {
-    const commentContent = commentBoxRef.current.innerText;
+    const commentContent = commentBoxRef.current.innerText.trim();
 
     if (!commentContent) return;
 
@@ -124,7 +51,13 @@ function CommentSection() {
     } else if (user.info.mute) {
       setToastDisplay({
         show: true,
-        message: 'Quản trị viên đã cấm bạn bình luận'
+        message: 'Bạn bị cấm sử dụng tính năng bình luận'
+      });
+      return;
+    } else if (commentContent.length <= 6) {
+      setToastDisplay({
+        show: true,
+        message: 'Bình luận quá ngắn'
       });
       return;
     }
@@ -160,6 +93,8 @@ function CommentSection() {
     }
   }
 
+  const isAdmin = user.info && user.info.type === 1;
+
   return (
     <React.Fragment>
       {comments && <div className="comment-section">
@@ -167,8 +102,8 @@ function CommentSection() {
 
         <div className="comment-posting-area">
           <div className="comment-typing-area">
-            <div className="avatar">
-              <div className={user.info && user.info.type === 1 ? "text-avatar admin-mode" : "text-avatar"}>
+            <div className={isAdmin ? "avatar admin-mode" : "avatar"}>
+              <div className="text-avatar">
                 {user.info ? (user.info.type === 1 ? 'Z' : user.info.name.split(" ").pop().charAt(0)) : 'P'}
               </div>
             </div>

@@ -5,8 +5,7 @@ import { addToCart, cartState } from '../recoil/cartState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
-import { useHistory } from 'react-router-dom';
-import { useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { EatLoading } from 'react-loadingg';
@@ -18,14 +17,14 @@ const getProduct = async (id) => {
   return response.data;
 }
 
-function ProductDetail(props) {
+function ProductDetail() {
+  const { pathname: url } = useLocation();
   const { id } = useParams();
 
-  const { data, isLoading, isError } = useQuery('productDetail', () => getProduct(id));
-
-  const product = data;
+  const { data: product, isLoading, isError, refetch } = useQuery('productDetail', () => getProduct(id));
 
   const priceRef = useRef(null);
+
   const history = useHistory();
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
@@ -35,6 +34,10 @@ function ProductDetail(props) {
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState('');
   const [color, setColor] = useState('');
+
+  useEffect(() => {
+    refetch();
+  }, [url]);
 
   const handleSubImageClick = (e, image) => {
     // deactivate all the sub-images, then activate the selected sub-image
@@ -67,7 +70,8 @@ function ProductDetail(props) {
       price: parseInt(priceRef.current.innerText.replace('.', '')),
       size: sizeLabel.value,
       color,
-      id: product.id + document.querySelector('input[name="size"]:checked').value + color
+      id: product.id + document.querySelector('input[name="size"]:checked').value + color,
+      url: url
     }
     // create new cart from the product just created and product quantity
     const newCart = addToCart(cart, item, quantity);

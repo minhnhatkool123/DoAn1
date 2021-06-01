@@ -22,7 +22,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
   timeAgoRef.current = timeSince(date);
 
   const handleOnSubmit = () => {
-    const commentContent = replyCommentBoxRef.current.innerText;
+    const commentContent = replyCommentBoxRef.current.innerText.trim();
 
     if (commentContent) {
       const data = {
@@ -130,8 +130,8 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
   return (
     <div className="comment">
       <div className={reply ? (isAdmin ? "reply-comment admin-mode" : "reply-comment") : "original-comment"}>
-        <div className="avatar">
-          <div className={isAdminComment ? "text-avatar admin-mode" : "text-avatar"}>
+        <div className={isAdminComment ? "avatar admin-mode" : "avatar"}>
+          <div className="text-avatar">
             {isAdminComment ? 'Z' : comment.user.name.split(" ").pop().charAt(0)}
           </div>
         </div>
@@ -206,8 +206,8 @@ function timeSince(date) {
   // return Math.floor(seconds) + " giây trước";
   return "Vừa xong";
 }
-var aDay = 24 * 60 * 60 * 1000;
-console.log(timeSince(new Date(Date.now() - aDay)));
-console.log(timeSince(new Date(Date.now() - aDay * 2)));
+// var aDay = 24 * 60 * 60 * 1000;
+// console.log(timeSince(new Date(Date.now() - aDay)));
+// console.log(timeSince(new Date(Date.now() - aDay * 2)));
 
 export default Comment;

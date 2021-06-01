@@ -21,11 +21,11 @@ import Dialog from './components/Dialog';
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children, redirect, auth = false, ...rest }) => {
+const PrivateRoute = ({ children, redirect, auth, ...rest }) => {
 	// let auth = localStorage.getItem('jwt');
 	return (
 		<Route {...rest} render={() =>
-			auth ? children : <Redirect to={{ pathname: redirect }} />
+			auth() ? children : <Redirect to={{ pathname: redirect }} />
 		} />
 	);
 }

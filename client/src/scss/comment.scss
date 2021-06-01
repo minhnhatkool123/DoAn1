@@ -13,18 +13,25 @@
       color: #fff;
       border-radius: 50%;
 
+      &.admin-mode {
+        background: $white;
+        border: 1px solid $lightpink;
+
+        .text-avatar {
+          font-family: "Berkshire Swash", cursive;
+          margin-left: 1px;
+          margin-top: 0px;
+          font-size: 22px;
+          color: $lightpink;
+          margin-top: -1.3px;
+        }
+      }
+
       .text-avatar {
         text-align: center;
         font-weight: 600;
         font-size: 18px;
         line-height: 36px;
-
-        &.admin-mode {
-          font-family: "Berkshire Swash", cursive;
-          margin-left: 1px;
-          margin-top: 0px;
-          font-size: 22px;
-        }
       }
     }
 

@@ -33,13 +33,17 @@ function FullCart() {
   }
 
   const handleProductDecrement = (id, quantity) => {
+    if (quantity <= 1) return;
+
     let newCart = [];
 
-    if (quantity === 1) {
-      newCart = removeFromCart(cart, id);
-    } else {
-      newCart = decreaseCartItem(cart, id);
-    }
+    // if (quantity === 1) {
+    //   newCart = removeFromCart(cart, id);
+    // } else {
+    //   newCart = decreaseCartItem(cart, id);
+    // }
+
+    newCart = decreaseCartItem(cart, id);
 
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
@@ -55,7 +59,7 @@ function FullCart() {
                 <div className="image-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
               </td>
 
-              <td width="30%" className="product-name">{`${item.product.name} - ${item.product.size}`}</td>
+              <td width="30%" className="product-name"><Link to={item.product.url}>{`${item.product.name} - ${item.product.size}`}</Link></td>
 
               <td width="15%" className="unit-price">{item.product.price.toLocaleString()}đ</td>
 

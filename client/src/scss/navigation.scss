@@ -239,7 +239,7 @@
                 padding: 12px 12px 0 12px;
                 background-color: $white;
                 box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-                height: 290px;
+                max-height: 290px;
                 overflow-y: auto;
 
                 &::-webkit-scrollbar {
@@ -277,9 +277,16 @@
                         -webkit-box-orient: vertical;
                         -webkit-line-clamp: 1;
                         text-overflow: ellipsis;
-                      }
 
-                      .product-quantity {
+                        &:hover {
+                          &, + .product-quantity {
+                            color: $lightpink;
+                          }
+                        }
+
+                        a, a:visited, a:active {
+                          color: inherit;
+                        }
                       }
                     }
                   }

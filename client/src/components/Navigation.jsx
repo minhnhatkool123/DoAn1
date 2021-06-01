@@ -121,7 +121,7 @@ function Navigation() {
                           <div className="product-info">
                             <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
                             <div className="product-description">
-                              <div className="product-name">{item.product.name}</div>
+                              <div className="product-name"><Link to={item.product.url}>{item.product.name}</Link></div>
                               <div className="product-quantity">x{item.quantity}</div>
                             </div>
                           </div>
