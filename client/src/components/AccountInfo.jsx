@@ -5,6 +5,7 @@ import { IoPersonCircle } from "react-icons/io5";
 import Profile from './Profile';
 import ChangePassword from './ChangePassword';
 import OrderHistory from './OrderHistory';
+import ChangeEmail from './ChangeEmail';
 
 function AccountInfo() {
   const [catalogOption, setCatalogOption] = useState('profile');
@@ -12,7 +13,8 @@ function AccountInfo() {
   const catalogOptionInfo = {
     profile: <Profile />,
     changePassword: <ChangePassword />,
-    orderHistory: <OrderHistory />
+    orderHistory: <OrderHistory />,
+    changeEmail: <ChangeEmail />
   }
 
   const catalogRef = useRef(null);
@@ -34,6 +36,7 @@ function AccountInfo() {
           <ul className="catalog" ref={catalogRef}>
             <li className="active" onClick={(e) => handleCatalogClick(e, 'profile')}>Thông tin tài khoản</li>
             <li onClick={(e) => handleCatalogClick(e, 'orderHistory')}>Lịch sử đơn hàng</li>
+            <li onClick={(e) => handleCatalogClick(e, 'changeEmail')}>Cập nhật email</li>
             <li onClick={(e) => handleCatalogClick(e, 'changePassword')}>Đổi mật khẩu</li>
           </ul>
         </div>

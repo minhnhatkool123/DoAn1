@@ -1,4 +1,4 @@
-import { atom, selector, useSetRecoilState } from 'recoil';
+import { atom } from 'recoil';
 
 export const toastDisplayState = atom({
   key: 'toastDisplay',

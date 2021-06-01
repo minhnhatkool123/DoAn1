@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -8,31 +8,26 @@ import { userState } from '../recoil/userState';
 import { dialogState } from '../recoil/dialogState';
 import { successMessageState } from '../recoil/successMessageState';
 
-const initialValues = {
-  password: '',
-  newPassword: '',
-  confirmNewPassword: ''
-};
-
 const validationSchema = Yup.object({
-  password: Yup.string().required('*Bắt buộc'),
-  newPassword: Yup.string()
-    .notOneOf([Yup.ref('password'), ''], 'Vui lòng nhập mật khẩu mới khác với mật khẩu hiện tại của bạn')
-    .required('*Bắt buộc'),
-  confirmNewPassword: Yup.string()
-    .oneOf([Yup.ref('newPassword'), ''], 'Mật khẩu nhập lại không đúng')
+  newEmail: Yup.string()
+    .notOneOf([Yup.ref('currentEmail'), ''], 'Vui lòng nhập email mới khác với email hiện tại của bạn')
+    .email('Email không hợp lệ')
     .required('*Bắt buộc')
 });
 
-function ChangePassword() {
+function ChangeEmail() {
   const user = useRecoilValue(userState);
   const setDialog = useSetRecoilState(dialogState);
   const setSuccessMessage = useSetRecoilState(successMessageState);
 
+  const initialValues = {
+    currentEmail: user.info.email,
+    newEmail: ''
+  };
+
   const onSubmit = values => {
     const data = {
-      newPassword: values.newPassword,
-      currentPassword: values.password
+      newEmail: values.newEmail
     }
 
     const config = {
@@ -43,15 +38,20 @@ function ChangePassword() {
 
     setDialog({
       show: true,
-      message: 'Bạn xác nhận muốn đổi mật khẩu?',
+      message: 'Bạn xác nhận muốn cập nhật địa chỉ email?',
       acceptButtonName: 'Xác nhận',
       func: () => {
-        axios.patch('http://localhost:5000/user/update-pass', data, config)
+        axios.patch('http://localhost:5000/user/update-email', data, config)
           .then(response => {
             console.log(response.data.message);
             setSuccessMessage({
               show: true,
-              message: 'Mật khẩu mới đã được cập nhật.'
+              message: (
+                <React.Fragment>
+                  <div>Một email đã được gửi đến bạn.</div>
+                  <div>Vui lòng kiểm tra và xác thực tài khoản để hoàn tất cập nhật.</div>
+                </React.Fragment>
+              )
             });
           })
           .catch(error => {
@@ -63,7 +63,7 @@ function ChangePassword() {
 
   return (
     <React.Fragment>
-      <div className="info-title">Thay đổi mật khẩu</div>
+      <div className="info-title">Cập nhật địa chỉ Email</div>
       <div className="divider"></div>
 
       <Formik
@@ -74,26 +74,17 @@ function ChangePassword() {
       >
         <Form className="form-interface">
           <div className="form-control">
-            <label htmlFor="password">Nhập mật khẩu:</label>
+            <label htmlFor="currentEmail">Địa chỉ email hiện tại:</label>
             <div className="input-container">
-              <Field type="password" id="password" name="password" />
-              <ErrorMessage name="password" component={TextError} />
+              <Field type="email" name="currentEmail" disabled />
             </div>
           </div>
 
           <div className="form-control">
-            <label htmlFor="newPassword">Nhập mật khẩu mới:</label>
+            <label htmlFor="newEmail">Địa chỉ email mới:</label>
             <div className="input-container">
-              <Field type="password" id="newPassword" name="newPassword" />
-              <ErrorMessage name="newPassword" component={TextError} />
-            </div>
-          </div>
-
-          <div className="form-control">
-            <label htmlFor="confirmNewPassword">Nhập lại mật khẩu mới:</label>
-            <div className="input-container">
-              <Field type="password" id="confirmNewPassword" name="confirmNewPassword" />
-              <ErrorMessage name="confirmNewPassword" component={TextError} />
+              <Field type="email" name="newEmail" />
+              <ErrorMessage name="newEmail" component={TextError} />
             </div>
           </div>
 
@@ -101,7 +92,7 @@ function ChangePassword() {
         </Form>
       </Formik>
     </React.Fragment>
-  )
+  );
 }
 
-export default ChangePassword
+export default ChangeEmail;

@@ -19,7 +19,6 @@ function ToastMessage() {
 
   const disableToast = () => {
     toastRef.current.classList.add('disabled');
-    console.log('click overlay')
     setTimeout(() => {
       setToastDisplay({...toastDisplay, show: false});
     }, 400);

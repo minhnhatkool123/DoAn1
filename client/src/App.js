@@ -18,6 +18,7 @@ import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Dialog from './components/Dialog';
+import SuccessMessage from './components/SuccessMessage';
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ function App() {
 						</Route> */}
 					</Switch>
 					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
+					<SuccessMessage />
 					<Dialog />
 					{toastDisplay.show && <ToastMessage />}
 					<Footer />

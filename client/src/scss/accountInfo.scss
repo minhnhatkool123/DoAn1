@@ -86,12 +86,12 @@
         height: 34px;
         border: 1px solid $lightpink;
         border-radius: 4px;
-        padding: 0 10px;
         width: 400px;
+        padding: 2px 10px 0 10px;
       }
 
       select {
-        padding: 0 6px;
+        padding: 2px 6px 0 6px;
       }
 
       .form-control {
@@ -114,11 +114,20 @@
         height: 34px;
         border-radius: 4px;
         width: 86px;
-        margin-left: 181px;
+        margin-left: 182px;
         margin-top: -3px;
 
         &:hover {
           background: $coralpink;
+        }
+      }
+
+      .update-btn[disabled] {
+        background: $disabledpink;
+        cursor: default;
+
+        &:hover {
+          background: $disabledpink;
         }
       }
     }

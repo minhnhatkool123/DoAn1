@@ -69,6 +69,12 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
         message: 'Bạn phải đăng nhập để sử dụng tính năng bình luận'
       });
       return;
+    } else if (user.info.mute) {
+      setToastDisplay({
+        show: true,
+        message: 'Bạn bị cấm sử dụng tính năng bình luận'
+      });
+      return;
     }
     replyBoxRef.current.classList.add('active');
     replyCommentBoxRef.current.focus();
@@ -129,7 +135,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
 
   return (
     <div className="comment">
-      <div className={reply ? (isAdmin ? "reply-comment admin-mode" : "reply-comment") : "original-comment"}>
+      <div className={reply ? "reply-comment" : "original-comment"}>
         <div className={isAdminComment ? "avatar admin-mode" : "avatar"}>
           <div className="text-avatar">
             {isAdminComment ? 'Z' : comment.user.name.split(" ").pop().charAt(0)}
@@ -147,9 +153,13 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
         </div>
       </div>
 
-      <div className="reply-typing-area" ref={replyBoxRef}>
+      {user.info && <div className="reply-typing-area" ref={replyBoxRef}>
         <div className="comment-typing-area">
-          <div className="avatar">{user.info ? user.info.name.split(" ").pop().charAt(0) : 'P'}</div>
+          <div className={isAdmin ? "avatar admin-mode" : "avatar"}>
+            <div className="text-avatar">
+              {isAdmin ? 'Z' : user.info.name.split(" ").pop().charAt(0)}
+            </div>
+          </div>
           <div
             contentEditable="true"
             className="comment-typing"
@@ -163,7 +173,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
           <div className="cancel-btn" onClick={handleCancelClick}>Hủy</div>
           <div className="submit-btn" onClick={handleOnSubmit}>Trả lời</div>
         </div>
-      </div>
+      </div>}
 
       {comment.reply && comment.reply.map(reply => (
         <Comment

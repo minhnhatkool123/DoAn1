@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { signUpState } from '../recoil/entryPointState';
 import { userState } from '../recoil/userState';
+import { successMessageState } from '../recoil/successMessageState';
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import TextError from './TextError';
-import SuccessfulRegistration from './SuccessfulRegistration';
 import GoogleLogin from 'react-google-login';
 
 const initialValues = {
@@ -43,8 +43,7 @@ const popupVariants = {
 function SignUpForm() {
   const setSignUp = useSetRecoilState(signUpState);
   const setUser = useSetRecoilState(userState);
-
-  const [success, setSuccess] = useState(false);
+  const setSuccessMessage = useSetRecoilState(successMessageState);
 
   const responseSuccessGoogle = (res) => {
     console.log(res);
@@ -80,7 +79,6 @@ function SignUpForm() {
   });
 
   const onSubmit = (values, { setFieldError }) => {
-    // console.log('Form data', values);
     const request = {
       name: values.fullName,
       username: values.username,
@@ -90,8 +88,17 @@ function SignUpForm() {
 
     axios.post('http://localhost:5000/user/register', request)
       .then(response => {
-        console.log('Response: ', response.data.message);
-        setSuccess(true);
+        console.log(response.data.message);
+        setSignUp(false);
+        setSuccessMessage({
+          show: true,
+          message: (
+            <React.Fragment>
+              <div>Một email đã được gửi đến bạn.</div>
+              <div>Vui lòng kiểm tra và xác thực tài khoản để hoàn tất đăng ký.</div>
+            </React.Fragment>
+          )
+        });
       })
       .catch(error => {
         console.log(error.response.data.message);
@@ -102,8 +109,6 @@ function SignUpForm() {
         }
       });
   };
-
-  if (success) return <SuccessfulRegistration />;
 
   return (
     <div id="sign-up-form">
