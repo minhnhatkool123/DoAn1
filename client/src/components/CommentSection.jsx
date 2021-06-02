@@ -42,13 +42,13 @@ function CommentSection() {
 
     if (!commentContent) return;
 
-    if (!user.info) {
+    if (!user.accessToken) {
       setToastDisplay({
         show: true,
         message: 'Bạn phải đăng nhập để sử dụng tính năng bình luận'
       });
       return;
-    } else if (user.info.mute) {
+    } else if (user.mute) {
       setToastDisplay({
         show: true,
         message: 'Bạn bị cấm sử dụng tính năng bình luận'
@@ -63,7 +63,7 @@ function CommentSection() {
     }
 
     const comment = {
-      user: user.info._id,
+      user: user._id,
       content: commentContent,
       productId: productId
     }
@@ -93,7 +93,7 @@ function CommentSection() {
     }
   }
 
-  const isAdmin = user.info && user.info.type === 1;
+  const isAdmin = user.type === 1;
 
   return (
     <React.Fragment>
@@ -104,7 +104,7 @@ function CommentSection() {
           <div className="comment-typing-area">
             <div className={isAdmin ? "avatar admin-mode" : "avatar"}>
               <div className="text-avatar">
-                {user.info ? (user.info.type === 1 ? 'Z' : user.info.name.split(" ").pop().charAt(0)) : 'P'}
+                {user.accessToken ? (user.type === 1 ? 'Z' : user.name.split(" ").pop().charAt(0)) : 'P'}
               </div>
             </div>
             <div

@@ -18,7 +18,7 @@ import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Dialog from './components/Dialog';
-import SuccessMessage from './components/SuccessMessage';
+import ResultMessage from './components/ResultMessage';
 
 const queryClient = new QueryClient();
 
@@ -36,12 +36,12 @@ function App() {
 	const user = useRecoilValue(userState);
 
 	const isLogged = () => {
-		if (user.info) return true;
+		if (user.accessToken) return true;
 		return false;
 	}
 
 	const isAdmin = () => {
-		if (user.info && user.info.type === 1) return true;
+		if (user.type === 1) return true;
 		return false;
 	}
 
@@ -70,7 +70,7 @@ function App() {
 						</Route> */}
 					</Switch>
 					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
-					<SuccessMessage />
+					<ResultMessage />
 					<Dialog />
 					{toastDisplay.show && <ToastMessage />}
 					<Footer />

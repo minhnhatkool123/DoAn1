@@ -1,6 +1,6 @@
 @import "./color.scss";
 
-.success-message {
+.result-message {
   animation: wait 0.25s, fadeIn 0.6s 0.25s;
 
   #overlay {
@@ -13,7 +13,7 @@
     z-index: 1;
   }
 
-  .success-message-container {
+  .result-message-container {
     max-width: 516px;
     background: $white;
     border-radius: 2px;
@@ -26,27 +26,27 @@
     padding: 8px 8px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
-    .success-image {
+    .result-image {
       width: 40%;
       height: auto;
       margin: 0 auto;
       display: block;
     }
 
-    .success-title {
+    .result-title {
       text-align: center;
       font-size: 25px;
       font-weight: 700;
     }
 
-    .success-description {
+    .result-description {
       text-align: center;
       font-size: 19px;
       line-height: 27.5px;
       margin: 14px 52px 24px 52px;
     }
 
-    .OK-btn {
+    .accept-btn {
       margin: 0 auto 22px auto;
       text-align: center;
       background: $lightpink;

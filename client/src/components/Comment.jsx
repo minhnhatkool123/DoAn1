@@ -26,7 +26,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
 
     if (commentContent) {
       const data = {
-        user: user.info._id,
+        user: user._id,
         content: commentContent,
         productId: productId
       }
@@ -63,13 +63,13 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
   }
 
   const handleReplyClick = () => {
-    if (!user.info) {
+    if (!user.accessToken) {
       setToastDisplay({
         show: true,
         message: 'Bạn phải đăng nhập để sử dụng tính năng bình luận'
       });
       return;
-    } else if (user.info.mute) {
+    } else if (user.mute) {
       setToastDisplay({
         show: true,
         message: 'Bạn bị cấm sử dụng tính năng bình luận'
@@ -130,7 +130,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
     return () => clearInterval(timeAgo);
   }, [])
 
-  const isAdmin = user.info && user.info.type === 1;
+  const isAdmin = user.type === 1;
   const isAdminComment = comment.user.type === 1;
 
   return (
@@ -153,11 +153,11 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
         </div>
       </div>
 
-      {user.info && <div className="reply-typing-area" ref={replyBoxRef}>
+      {user.accessToken && <div className="reply-typing-area" ref={replyBoxRef}>
         <div className="comment-typing-area">
           <div className={isAdmin ? "avatar admin-mode" : "avatar"}>
             <div className="text-avatar">
-              {isAdmin ? 'Z' : user.info.name.split(" ").pop().charAt(0)}
+              {isAdmin ? 'Z' : user.name.split(" ").pop().charAt(0)}
             </div>
           </div>
           <div

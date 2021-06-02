@@ -52,8 +52,8 @@ function Navigation() {
   }
 
   useEffect(() => {
-    if (Object.keys(user).length) {
-      setName(user.info.name);
+    if (user.accessToken) {
+      setName(user.name);
     } else {
       setName('');
     }

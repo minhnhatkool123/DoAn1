@@ -77,7 +77,7 @@ function LoginForm() {
         console.log(response.data)
         setUser({
           accessToken: response.data.accessToken,
-          info: response.data.user
+          ...response.data.user
         });
         setLogin(false);
       })

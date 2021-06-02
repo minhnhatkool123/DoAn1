@@ -6,7 +6,7 @@ import TextError from './TextError';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { dialogState } from '../recoil/dialogState';
-import { successMessageState } from '../recoil/successMessageState';
+import { resultMessageState, SUCCESS, FAILURE } from '../recoil/resultMessageState';
 
 const initialValues = {
   password: '',
@@ -27,7 +27,7 @@ const validationSchema = Yup.object({
 function ChangePassword() {
   const user = useRecoilValue(userState);
   const setDialog = useSetRecoilState(dialogState);
-  const setSuccessMessage = useSetRecoilState(successMessageState);
+  const setResultMessage = useSetRecoilState(resultMessageState);
 
   const onSubmit = values => {
     const data = {
@@ -49,13 +49,21 @@ function ChangePassword() {
         axios.patch('http://localhost:5000/user/update-pass', data, config)
           .then(response => {
             console.log(response.data.message);
-            setSuccessMessage({
+            setResultMessage({
               show: true,
+              type: SUCCESS,
               message: 'Mật khẩu mới đã được cập nhật.'
             });
           })
           .catch(error => {
             console.log(error.response.data.message);
+            if (error.response.data.message === 'Incorrect password') {
+              setResultMessage({
+                show: true,
+                type: FAILURE,
+                message: 'Bạn đã nhập sai mật khẩu.'
+              });
+            }
           })
       }
     });

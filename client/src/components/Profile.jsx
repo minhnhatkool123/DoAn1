@@ -3,9 +3,10 @@ import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { dialogState } from '../recoil/dialogState';
+import { resultMessageState, SUCCESS, FAILURE } from '../recoil/resultMessageState';
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -25,15 +26,16 @@ function Profile() {
   const [provinceId, setProvinceId] = useState(0);
   const [forceUpdate, setForceUpdate] = useState(false);
 
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
   const setDialog = useSetRecoilState(dialogState);
+  const setResultMessage = useSetRecoilState(resultMessageState);
 
   const initialValues = {
-    fullName: user.info.name,
-    phone: user.info.phone,
-    province: user.info.city,
-    district: user.info.district,
-    addressDetail: user.info.address
+    fullName: user.name,
+    phone: user.phone,
+    province: user.city,
+    district: user.district,
+    addressDetail: user.address
   };
 
   const onSubmit = values => {
@@ -59,6 +61,14 @@ function Profile() {
         axios.patch('http://localhost:5000/user/update-info', data, config)
           .then(response => {
             console.log(response.data.message);
+
+            setUser({...user, ...data});
+
+            setResultMessage({
+              show: true,
+              type: SUCCESS,
+              message: 'Thông tin tài khoản đã được cập nhật'
+            });
           })
           .catch(error => {
             console.log(error.response.data.message);
@@ -97,7 +107,7 @@ function Profile() {
           })
         });
         // console.log('districts', districts);
-        setProvinceId(user.info.city);
+        setProvinceId(user.city);
         setForceUpdate(value => !value);
       })
       .catch(error => console.log(error))

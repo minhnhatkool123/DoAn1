@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { useSetRecoilState } from 'recoil';
 import { signUpState } from '../recoil/entryPointState';
 import { userState } from '../recoil/userState';
-import { successMessageState } from '../recoil/successMessageState';
+import { resultMessageState, SUCCESS } from '../recoil/resultMessageState';
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -43,7 +43,7 @@ const popupVariants = {
 function SignUpForm() {
   const setSignUp = useSetRecoilState(signUpState);
   const setUser = useSetRecoilState(userState);
-  const setSuccessMessage = useSetRecoilState(successMessageState);
+  const setResultMessage = useSetRecoilState(resultMessageState);
 
   const responseSuccessGoogle = (res) => {
     console.log(res);
@@ -90,8 +90,9 @@ function SignUpForm() {
       .then(response => {
         console.log(response.data.message);
         setSignUp(false);
-        setSuccessMessage({
+        setResultMessage({
           show: true,
+          type: SUCCESS,
           message: (
             <React.Fragment>
               <div>Một email đã được gửi đến bạn.</div>

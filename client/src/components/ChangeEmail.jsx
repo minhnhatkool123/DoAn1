@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -6,7 +6,7 @@ import TextError from './TextError';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { dialogState } from '../recoil/dialogState';
-import { successMessageState } from '../recoil/successMessageState';
+import { resultMessageState, SUCCESS, FAILURE } from '../recoil/resultMessageState';
 
 const validationSchema = Yup.object({
   newEmail: Yup.string()
@@ -18,10 +18,10 @@ const validationSchema = Yup.object({
 function ChangeEmail() {
   const user = useRecoilValue(userState);
   const setDialog = useSetRecoilState(dialogState);
-  const setSuccessMessage = useSetRecoilState(successMessageState);
+  const setResultMessage = useSetRecoilState(resultMessageState);
 
   const initialValues = {
-    currentEmail: user.info.email,
+    currentEmail: user.email,
     newEmail: ''
   };
 
@@ -44,8 +44,9 @@ function ChangeEmail() {
         axios.patch('http://localhost:5000/user/update-email', data, config)
           .then(response => {
             console.log(response.data.message);
-            setSuccessMessage({
+            setResultMessage({
               show: true,
+              type: SUCCESS,
               message: (
                 <React.Fragment>
                   <div>Một email đã được gửi đến bạn.</div>
