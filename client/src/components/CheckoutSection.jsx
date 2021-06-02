@@ -1,20 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import '../scss/checkout.scss';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
-
-const initialValues = {
-  fullName: '',
-  email: '',
-  phone: '',
-  province: '',
-  district: '',
-  addressDetail: ''
-};
+import { useRecoilValue } from 'recoil';
+import { cartTotalPrice, cartState } from '../recoil/cartState';
+import { userState } from '../recoil/userState';
+import provinces from '../data/provinces';
+import districts from '../data/districts';
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -33,52 +26,28 @@ const onSubmit = values => {
   console.log('Form data', values);
 };
 
-let provinces = [];
-let districts = [];
-let accordingDistricts = [];
-
 function CheckoutSection() {
+  const user = useRecoilValue(userState);
   const totalPrice = useRecoilValue(cartTotalPrice);
 
-  const [cart, setCart] = useRecoilState(cartState);
+  const cart = useRecoilValue(cartState);
 
-  const [provinceId, setProvinceId] = useState(0);
-  const [forceUpdate, setForceUpdate] = useState(false);
-
-  useEffect(() => {
-    axios.get('https://dc.tintoc.net/app/api-customer/public/provinces?size=64')
-      .then((response) => {
-        response.data.shift();
-        response.data.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-          provinces.push({
-            id: item.id,
-            name: item.name
-          })
-        });
-        // console.log('push xong provinces');
-        // console.log(provinces);
-      })
-      .catch(error => console.log(error))
-
-    axios.get('https://dc.tintoc.net/app/api-customer/public/districts?size=1000')
-      .then((response) => {
-        response.data.forEach(item => {
-          districts.push({
-            id: item.id,
-            name: item.name,
-            provinceId: item.provinceId
-          })
-        });
-        // console.log('districts', districts);
-        setProvinceId(57);
-        setForceUpdate(value => !value);
-      })
-      .catch(error => console.log(error))
-  }, []);
+  const [provinceId, setProvinceId] = useState(user.city);
+  const [accordingDistricts, setAccordingDistricts] = useState([]);
 
   useEffect(() => {
-    accordingDistricts = districts.filter(district => district.provinceId == provinceId);
+    const newDistricts = districts.filter(district => district.provinceId == provinceId);
+    setAccordingDistricts(newDistricts);
   }, [provinceId]);
+
+  const initialValues = {
+    fullName: user.name,
+    phone: user.phone,
+    email: user.email,
+    province: user.city,
+    district: user.district,
+    addressDetail: user.address
+  };
 
   return (
     <Formik

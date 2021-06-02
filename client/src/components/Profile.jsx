@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { dialogState } from '../recoil/dialogState';
 import { resultMessageState, SUCCESS, FAILURE } from '../recoil/resultMessageState';
+import provinces from '../data/provinces';
+import districts from '../data/districts';
 
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -18,17 +20,18 @@ const validationSchema = Yup.object({
   addressDetail: Yup.string().required('*Bắt buộc'),
 });
 
-let provinces = [];
-let districts = [];
-let accordingDistricts = [];
-
 function Profile() {
-  const [provinceId, setProvinceId] = useState(0);
-  const [forceUpdate, setForceUpdate] = useState(false);
-
   const [user, setUser] = useRecoilState(userState);
   const setDialog = useSetRecoilState(dialogState);
   const setResultMessage = useSetRecoilState(resultMessageState);
+
+  const [provinceId, setProvinceId] = useState(user.city);
+  const [accordingDistricts, setAccordingDistricts] = useState([]);
+
+  useEffect(() => {
+    const newDistricts = districts.filter(district => district.provinceId == provinceId);
+    setAccordingDistricts(newDistricts);
+  }, [provinceId]);
 
   const initialValues = {
     fullName: user.name,
@@ -81,41 +84,6 @@ function Profile() {
     handleChange(e);
     setProvinceId(e.target.selectedOptions[0].value);
   }
-
-  useEffect(() => {
-    axios.get('https://dc.tintoc.net/app/api-customer/public/provinces?size=64')
-      .then((response) => {
-        response.data.shift();
-        response.data.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-          provinces.push({
-            id: item.id,
-            name: item.name
-          })
-        });
-        // console.log('push xong provinces');
-        // console.log(provinces);
-      })
-      .catch(error => console.log(error))
-
-    axios.get('https://dc.tintoc.net/app/api-customer/public/districts?size=1000')
-      .then((response) => {
-        response.data.forEach(item => {
-          districts.push({
-            id: item.id,
-            name: item.name,
-            provinceId: item.provinceId
-          })
-        });
-        // console.log('districts', districts);
-        setProvinceId(user.city);
-        setForceUpdate(value => !value);
-      })
-      .catch(error => console.log(error))
-  }, []);
-
-  useEffect(() => {
-    accordingDistricts = districts.filter(district => district.provinceId == provinceId);
-  }, [provinceId]);
 
   return (
     <React.Fragment>
