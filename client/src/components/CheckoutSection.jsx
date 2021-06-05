@@ -20,11 +20,9 @@ const validationSchema = Yup.object({
     .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
     .required('*Bắt buộc'),
   addressDetail: Yup.string().required('*Bắt buộc'),
+  province: Yup.string().required('Vui lòng chọn Tỉnh/Thành phố'),
+  district: Yup.string().required('Vui lòng chọn Quận/Huyện')
 });
-
-const onSubmit = values => {
-  console.log('Form data', values);
-};
 
 function CheckoutSection() {
   const user = useRecoilValue(userState);
@@ -32,13 +30,13 @@ function CheckoutSection() {
 
   const cart = useRecoilValue(cartState);
 
-  const [provinceId, setProvinceId] = useState(user.city);
+  const [province, setProvince] = useState(user.city);
   const [accordingDistricts, setAccordingDistricts] = useState([]);
 
   useEffect(() => {
-    const newDistricts = districts.filter(district => district.provinceId == provinceId);
+    const newDistricts = districts.filter(district => district.provinceName === province);
     setAccordingDistricts(newDistricts);
-  }, [provinceId]);
+  }, [province]);
 
   const initialValues = {
     fullName: user.name,
@@ -46,7 +44,12 @@ function CheckoutSection() {
     email: user.email,
     province: user.city,
     district: user.district,
-    addressDetail: user.address
+    addressDetail: user.address,
+    paymentMethod: 'Thanh toán tiền mặt khi nhận hàng'
+  };
+
+  const onSubmit = values => {
+    console.log('Form data', values);
   };
 
   return (
@@ -84,27 +87,25 @@ function CheckoutSection() {
             </div>
 
             <div className="form-control">
-              <Field as='select' id='province' name='province' onClick={(e) => setProvinceId(e.target.selectedOptions[0].value)}>
-                {provinces.map(province => {
-                  return (
-                    <option key={province.id} value={province.id}>
-                      {province.name}
-                    </option>
-                  );
-                })}
+              <Field as='select' id='province' name='province' onClick={(e) => setProvince(e.target.selectedOptions[0].value)}>
+                <option hidden value="">-- Tỉnh/Thành phố --</option>
+                {provinces.map(province => (
+                  <option key={province} value={province}>
+                    {province}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage name="province" component={TextError} />
             </div>
 
             <div className="form-control">
               <Field as='select' id='district' name='district'>
-                {accordingDistricts.map(district => {
-                  return (
-                    <option key={district.id} value={district.id}>
-                      {district.name}
-                    </option>
-                  );
-                })}
+                <option hidden value="">-- Quận/Huyện --</option>
+                {accordingDistricts.map(district => (
+                  <option key={district.name} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
               </Field>
               <ErrorMessage name="district" component={TextError} />
             </div>
@@ -124,8 +125,13 @@ function CheckoutSection() {
             <div className="checkout-method">
               <div className="form-control">
                 <div className="input-container">
-                  <Field type="radio" id="money-transfer" name="checkout-method" />
-                  <label htmlFor="money-transfer">Chuyển khoản trước qua tài khoản ngân hàng</label>
+                  <Field
+                    type="radio"
+                    id="moneyTransfer"
+                    name="paymentMethod"
+                    value="Chuyển khoản trước qua tài khoản ngân hàng"
+                  />
+                  <label htmlFor="moneyTransfer">Chuyển khoản trước qua tài khoản ngân hàng</label>
                 </div>
               </div>
 
@@ -137,7 +143,12 @@ function CheckoutSection() {
             <div className="checkout-method">
               <div className="form-control">
                 <div className="input-container">
-                  <Field type="radio" id="cod" name="checkout-method" />
+                  <Field
+                    type="radio"
+                    id="cod"
+                    name="paymentMethod"
+                    value="Thanh toán tiền mặt khi nhận hàng"
+                  />
                   <label htmlFor="cod">Thanh toán tiền mặt khi nhận hàng</label>
                 </div>
               </div>

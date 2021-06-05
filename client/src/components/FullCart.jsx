@@ -2,14 +2,20 @@ import '../scss/cart.scss';
 import React from 'react';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
 import { dialogState } from '../recoil/dialogState';
-import { Link } from 'react-router-dom';
+import { userState } from '../recoil/userState';
+import { Link, useHistory } from 'react-router-dom';
 
 function FullCart() {
+  const history = useHistory();
+
   const totalPrice = useRecoilValue(cartTotalPrice);
 
   const [cart, setCart] = useRecoilState(cartState);
   const setDialog = useSetRecoilState(dialogState);
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
+  const user = useRecoilValue(userState);
 
   const handleRemoveProduct = (id) => {
     setDialog({
@@ -37,16 +43,21 @@ function FullCart() {
 
     let newCart = [];
 
-    // if (quantity === 1) {
-    //   newCart = removeFromCart(cart, id);
-    // } else {
-    //   newCart = decreaseCartItem(cart, id);
-    // }
-
     newCart = decreaseCartItem(cart, id);
 
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
+  }
+
+  const handleCheckoutClick = () => {
+    if (!user.accessToken) {
+      setToastDisplay({
+        show: true,
+        message: 'Vui lòng đăng nhập để thanh toán'
+      });
+    } else {
+      history.push('/checkout');
+    }
   }
 
   return (
@@ -83,7 +94,7 @@ function FullCart() {
 
       <div className="btn-group">
         <Link to='/'><div className="continue-shopping-btn">Tiếp tục mua sắm</div></Link>
-        <Link to='/checkout'><div className="checkout-btn">Thanh toán</div></Link>
+        <div className="checkout-btn" onClick={handleCheckoutClick}>Thanh toán</div>
       </div>
     </div>
   );

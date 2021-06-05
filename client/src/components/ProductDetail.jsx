@@ -10,6 +10,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { EatLoading } from 'react-loadingg';
 import FetchError from './FetchError';
+import uuid from 'react-uuid';
 
 const getProduct = async (id) => {
   console.log(`http://localhost:5000/api/product/get-product/${id}`)
@@ -20,16 +21,14 @@ const getProduct = async (id) => {
 function ProductDetail() {
   const { pathname: url } = useLocation();
   const { id } = useParams();
+  const history = useHistory();
 
   const { data: product, isLoading, isError, refetch } = useQuery('productDetail', () => getProduct(id));
 
   const priceRef = useRef(null);
 
-  const history = useHistory();
-
-  const setToastDisplay = useSetRecoilState(toastDisplayState);
-
   const [cart, setCart] = useRecoilState(cartState);
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
 
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState('');
@@ -70,11 +69,11 @@ function ProductDetail() {
       price: parseInt(priceRef.current.innerText.replace('.', '')),
       size: sizeLabel.value,
       color,
-      id: product.id + document.querySelector('input[name="size"]:checked').value + color,
+      id: product.id,
       url: url
     }
     // create new cart from the product just created and product quantity
-    const newCart = addToCart(cart, item, quantity);
+    const newCart = addToCart(cart, item, quantity, uuid());
     // update cart state with new cart
     setCart(newCart);
     // save new cart to the local storage
@@ -105,6 +104,11 @@ function ProductDetail() {
       setToastDisplay({
         show: true,
         message: 'Bạn chưa chọn màu cho sản phẩm'
+      });
+    } else if (quantity > product.quantity) {
+      setToastDisplay({
+        show: true,
+        message: <span>Sản phẩm <strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
       });
     } else {
       addProductToCart(sizeLabel, buttonType);

@@ -10,39 +10,64 @@ function OrderDetail({ order }) {
     <React.Fragment>
       <div id="overlay" onClick={() => setOrderDisplay(false)}></div>
       <div className="order-detail">
-        <table className="order-cart-list" width="100%">
-          <thead>
-            <tr>
-              <th width="10%">Ảnh</th>
-              <th width="40%">Sản phẩm</th>
-              <th width="15%">Số lượng</th>
-              <th width="15%">Đơn giá</th>
-              <th width="20%">Thành tiền</th>
-            </tr>
-          </thead>
+        <div className="order-cart-list" width="100%">
+          <div className="heading-title">
+            <div width="12%" className="product-color">Ảnh</div>
+            <div width="40%" className="product-description">Sản phẩm</div>
+            <div width="15%" className="product-quantity">Số lượng</div>
+            <div width="15%" className="product-unit-price">Đơn giá</div>
+            <div width="18%" className="product-total-price">Thành tiền</div>
+          </div>
 
-          <tbody className="order-cart-detail">
+          <div className="order-cart-detail">
             {order.cart.map(item => (
-              <tr key={item.id}>
-                <td className="product-color-container">
+              <div className="item-row" key={item.id}>
+                <div className="product-color-container">
                   <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
-                </td>
-                <td className="product-description">{`${item.product.name} - ${item.product.size}`}</td>
-                <td className="product-quantity">{item.quantity}</td>
-                <td className="product-unit-price">{item.product.price.toLocaleString()}đ</td>
-                <td className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</td>
-              </tr>
+                </div>
+                <div className="product-description">{`${item.product.name} - ${item.product.size}`}</div>
+                <div className="product-quantity">{item.quantity}</div>
+                <div className="product-unit-price">{item.product.price.toLocaleString()}đ</div>
+                <div className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
 
         <div className="extra-info">
-          <ul className="buyer-info"></ul>
-          <ul className="payment-info"></ul>
+          <div className="col-60">
+            <ul className="buyer-info">
+              <li className="name">Tên người nhận: <span>{order.name}</span></li>
+              <li className="phone">Điện thoại: <span>{order.phone}</span></li>
+              <li className="email">Email: <span>{order.email}</span></li>
+              <li className="note">Ghi chú: <span>{order.note}</span></li>
+              <li className="address">Địa chỉ giao hàng: <span>{order.address}</span></li>
+            </ul>
+          </div>
+          <div className="col-40">
+            <ul className="payment-info">
+              <li className="total-price">Tổng đơn: <span>{order.totalPrice.toLocaleString()}đ</span></li>
+              <li className="shipping-fee">Phí vận chuyển: <span>{order.shippingFee.toLocaleString()}đ</span></li>
+              <li className="payment-method">Trạng thái: <span>{getStatus(order.status)}</span></li>
+              <li className="date">Ngày đặt: {order.date}</li>
+              <li className="payment-method">{order.paymentMethod}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </React.Fragment>
-  )
+  );
 }
 
-export default OrderDetail
+const getStatus = (status) => {
+  switch (status) {
+    case 0: return 'Chờ xác nhận';
+    case 1: return 'Đã xác nhận';
+    case 2: return 'Đã thanh toán';
+    case 3: return 'Giao thành công';
+    case 4: return 'Đã hủy';
+    default: return null;
+  }
+}
+
+export default OrderDetail;

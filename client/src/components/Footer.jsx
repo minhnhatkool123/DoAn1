@@ -1,6 +1,6 @@
 import React from 'react';
 import '../scss/footer.scss';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
 import { RiYoutubeFill, RiInstagramFill } from "react-icons/ri";
 import { FaFacebookSquare, FaPhoneSquareAlt } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
@@ -51,7 +51,7 @@ function Footer() {
           <div className="logo-and-socials col l-2">
             <div className="logo"><img src="/img/footerlogo.png"/></div>
             <div className="socials">
-              <FaFacebookSquare className="facebook-icon" />
+              <Link to={{pathname: 'https://www.facebook.com/zshopfashionita'}} target='_blank'><FaFacebookSquare className="facebook-icon" /></Link>
               <RiInstagramFill className="instagram-icon" />
               <RiYoutubeFill className="youtube-icon" />
             </div>

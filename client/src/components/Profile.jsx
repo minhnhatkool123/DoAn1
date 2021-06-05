@@ -25,13 +25,13 @@ function Profile() {
   const setDialog = useSetRecoilState(dialogState);
   const setResultMessage = useSetRecoilState(resultMessageState);
 
-  const [provinceId, setProvinceId] = useState(user.city);
+  const [province, setProvince] = useState(user.city);
   const [accordingDistricts, setAccordingDistricts] = useState([]);
 
   useEffect(() => {
-    const newDistricts = districts.filter(district => district.provinceId == provinceId);
+    const newDistricts = districts.filter(district => district.provinceName === province);
     setAccordingDistricts(newDistricts);
-  }, [provinceId]);
+  }, [province]);
 
   const initialValues = {
     fullName: user.name,
@@ -65,7 +65,7 @@ function Profile() {
           .then(response => {
             console.log(response.data.message);
 
-            setUser({...user, ...data});
+            setUser({ ...user, ...data });
 
             setResultMessage({
               show: true,
@@ -82,7 +82,7 @@ function Profile() {
 
   const handleProvinceChange = (handleChange, e) => {
     handleChange(e);
-    setProvinceId(e.target.selectedOptions[0].value);
+    setProvince(e.target.selectedOptions[0].value);
   }
 
   return (
@@ -116,9 +116,10 @@ function Profile() {
             <div className="form-control">
               <label htmlFor="province">Tỉnh/Thành phố:</label>
               <Field as='select' id='province' name='province' onChange={(e) => handleProvinceChange(formik.handleChange, e)}>
+                <option hidden value="">-- Tỉnh/Thành phố --</option>
                 {provinces.map(province => (
-                  <option key={province.id} value={province.id}>
-                    {province.name}
+                  <option key={province} value={province}>
+                    {province}
                   </option>
                 ))}
               </Field>
@@ -128,8 +129,9 @@ function Profile() {
             <div className="form-control">
               <label htmlFor="district">Quận/Huyện:</label>
               <Field as='select' id='district' name='district'>
+                <option hidden value="">-- Quận/Huyện --</option>
                 {accordingDistricts.map(district => (
-                  <option key={district.id} value={district.id}>
+                  <option key={district.name} value={district.name}>
                     {district.name}
                   </option>
                 ))}

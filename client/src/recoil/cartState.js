@@ -3,7 +3,7 @@ import { atom, selector } from 'recoil';
 export const cartState = atom({
   key: 'cart',
   // each item in list has 3 keys: id, product and quantity
-  default: JSON.parse(localStorage.getItem("cart")) || [],
+  default: JSON.parse(localStorage.getItem("cart")) || []
 });
 
 export const cartTotalPrice = selector({
@@ -36,7 +36,7 @@ function* idGenerator() {
   }
 }
 
-export const addToCart = (cart, product, quantity = 1) => {
+export const addToCart = (cart, product, quantity = 1, uid) => {
   const newCart = [...cart];
   const foundIndex = cart.findIndex(x => x.product.id === product.id && x.product.size === product.size && x.product.color === product.color);
 
@@ -52,7 +52,7 @@ export const addToCart = (cart, product, quantity = 1) => {
   // Add new item
   newCart.push({
     product,
-    id: product.id,
+    id: uid,
     quantity: quantity,
   });
   return newCart;

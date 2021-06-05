@@ -66,7 +66,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
     if (!user.accessToken) {
       setToastDisplay({
         show: true,
-        message: 'Bạn phải đăng nhập để sử dụng tính năng bình luận'
+        message: 'Vui lòng đăng nhập để sử dụng tính năng bình luận'
       });
       return;
     } else if (user.mute) {

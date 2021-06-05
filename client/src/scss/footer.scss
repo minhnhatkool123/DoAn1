@@ -60,6 +60,11 @@
         justify-content: space-between;
         align-items: center;
 
+        a, a:visited, a:active {
+          color: inherit;
+          line-height: 10px;
+        }
+
         .facebook-icon, .instagram-icon, .youtube-icon {
           cursor: pointer;
 

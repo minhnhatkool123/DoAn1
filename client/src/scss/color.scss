@@ -31,3 +31,33 @@ $greygreen: #808879;
 $brightyellow: #fbff00;
 $khaki: #ffe476;
 $peru: #da8d4b;
+$cornflowerblue: #78a0cf;
+$mediumturquoise: #4bc2c5;
+
+.text-gradient {
+  background-image: linear-gradient(to right, rgb(198, 255, 221), rgb(251, 215, 134), rgb(247, 121, 125));
+  background-clip: text;
+  color: transparent;
+}
+
+
+/* ----- Pallette ----- */
+
+$pal1: #cabbe9;
+$pal2: #ffcef3;
+$pal3: #fdfdfd;
+$pal4: #a1eafb;
+// --------------------
+
+$pal5: #d7eaea;
+$pal6: #acdbdf;
+$pal7: #9692af;
+$pal8: #69779b;
+// --------------------
+
+$pal9: #fecea8;
+$pal10: #ff847c;
+$pal11: #e84a5f;
+$pal12: #2a363b;
+// --------------------
+

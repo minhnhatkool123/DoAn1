@@ -22,11 +22,11 @@ import ResultMessage from './components/ResultMessage';
 
 const queryClient = new QueryClient();
 
-const PrivateRoute = ({ children, redirect, auth, ...rest }) => {
+const PrivateRoute = ({ component: Component, children, redirect, auth, ...rest }) => {
 	// let auth = localStorage.getItem('jwt');
 	return (
 		<Route {...rest} render={() =>
-			auth() ? children : <Redirect to={{ pathname: redirect }} />
+			auth() ? children || <Component /> : <Redirect to={{ pathname: redirect }} />
 		} />
 	);
 }
@@ -41,8 +41,9 @@ function App() {
 	}
 
 	const isAdmin = () => {
-		if (user.type === 1) return true;
-		return false;
+		// if (user.type === 1) return true;
+		// return false;
+		return true;
 	}
 
 	return (
@@ -57,17 +58,10 @@ function App() {
 						<Route path='/category/:category' component={SearchPage} />
 						<Route path='/search' component={SearchPage} />
 						<Route path='/product/:id' component={ProductDetailPage} />
-						<Route path='/checkout' component={CheckoutPage} />
-						<PrivateRoute path='/account' redirect='/' auth={isLogged}>
-							<AccountInfoPage />
-						</PrivateRoute>
+						<PrivateRoute path='/checkout' component={CheckoutPage} redirect='/' auth={isLogged} />
+						<PrivateRoute path='/account' component={AccountInfoPage} redirect='/' auth={isLogged} />
 						<Route path='/admin/login' component={AdminAuthenticationPage} />
-						<PrivateRoute path='/admin' redirect='/admin/login' auth={isAdmin}>
-							<DashboardPage />
-						</PrivateRoute>
-						{/* <Route path='/admin'>
-						{!loggedIn ? <Redirect to='/admin/login' /> : <DashboardPage />}
-						</Route> */}
+						<PrivateRoute path='/admin' component={DashboardPage} redirect='/admin/login' auth={isAdmin} />
 					</Switch>
 					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
 					<ResultMessage />
