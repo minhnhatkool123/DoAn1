@@ -66,7 +66,7 @@ function ProductDetail() {
     //create a product object from existing information
     const item = {
       name: product.name,
-      price: parseInt(priceRef.current.innerText.replace('.', '')),
+      price: parseInt(priceRef.current.innerText.replace(',', '')),
       size: sizeLabel.value,
       color,
       id: product.id,
@@ -130,13 +130,11 @@ function ProductDetail() {
           <div className="main-image" style={{ backgroundImage: `url(${currentImage || product.images[0]})` }}></div>
           <div className="sub-images">
             <div className="row">
-              {product.images.map((image, index) => {
-                return (
-                  <div className="l-2 sub-image-container" key={index}>
-                    <div className="sub-image" style={{ backgroundImage: `url(${image})` }} onClick={(e) => handleSubImageClick(e, image)}></div>
-                  </div>
-                )
-              })}
+              {product.images.map((image, index) => (
+                <div className="l-2 sub-image-container" key={index}>
+                  <div className="sub-image" style={{ backgroundImage: `url(${image})` }} onClick={(e) => handleSubImageClick(e, image)}></div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

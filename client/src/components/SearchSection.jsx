@@ -84,7 +84,6 @@ function SearchSection() {
   }, [pathname, category])
 
   const handleFilter = (e) => {
-    // console.log(e.target.value);
     setFilter(e.target.value);
   };
 

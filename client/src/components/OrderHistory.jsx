@@ -5,25 +5,6 @@ import OrderDetail from './OrderDetail';
 
 const orders = [
   {
-    id: 19898498,
-    date: '21/01/2021',
-    totalPrice: 199000,
-    status: 3,
-    cart: [
-      {
-        id: '5Mhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309183555_1159735690.jpg',
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309183555_1159735690.jpg",
-          id: "5Mhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/GAT-K204/9309183555_1159735690.jpg",
-          name: "Áo Thun Tay Dài Hình Gấu K204",
-          price: 199000,
-          size: "M"
-        },
-        quantity: 1
-      }
-    ]
-  },
-  {
     id: 19815898,
     date: '21/01/2021',
     totalPrice: 730000,

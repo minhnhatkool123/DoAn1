@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../scss/orderDetail.scss';
 import { useSetRecoilState } from 'recoil';
 import { orderDisplayState } from '../recoil/orderDisplayState';
@@ -35,24 +35,20 @@ function OrderDetail({ order }) {
         </div>
 
         <div className="extra-info">
-          <div className="col-60">
-            <ul className="buyer-info">
-              <li className="name">Tên người nhận: <span>{order.name}</span></li>
-              <li className="phone">Điện thoại: <span>{order.phone}</span></li>
-              <li className="email">Email: <span>{order.email}</span></li>
-              <li className="note">Ghi chú: <span>{order.note}</span></li>
-              <li className="address">Địa chỉ giao hàng: <span>{order.address}</span></li>
-            </ul>
-          </div>
-          <div className="col-40">
-            <ul className="payment-info">
-              <li className="total-price">Tổng đơn: <span>{order.totalPrice.toLocaleString()}đ</span></li>
-              <li className="shipping-fee">Phí vận chuyển: <span>{order.shippingFee.toLocaleString()}đ</span></li>
-              <li className="payment-method">Trạng thái: <span>{getStatus(order.status)}</span></li>
-              <li className="date">Ngày đặt: {order.date}</li>
-              <li className="payment-method">{order.paymentMethod}</li>
-            </ul>
-          </div>
+          <ul className="buyer-info col-60">
+            <li className="name">Tên người nhận: <span>{order.name}</span></li>
+            <li className="phone">Điện thoại: <span>{order.phone}</span></li>
+            <li className="email">Email: <span>{order.email}</span></li>
+            <li className="note">Ghi chú: <span>{order.note}</span></li>
+            <li className="address">Địa chỉ giao hàng: <span>{order.address}</span></li>
+          </ul>
+          <ul className="payment-info col-40">
+            <li className="total-price">Tổng đơn: <span>{order.totalPrice.toLocaleString()}đ</span></li>
+            <li className="shipping-fee">Phí vận chuyển: <span>{order.shippingFee.toLocaleString()}đ</span></li>
+            <li className="payment-method">Trạng thái: <span>{getStatus(order.status)}</span></li>
+            <li className="date">Ngày đặt: {order.date}</li>
+            <li className="payment-method">{order.paymentMethod}</li>
+          </ul>
         </div>
       </div>
     </React.Fragment>

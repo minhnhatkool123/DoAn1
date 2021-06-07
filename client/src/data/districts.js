@@ -200,27 +200,7 @@ const districts = [
     provinceName: "Bình Dương"
   },
   {
-    name: "Quận 4",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 8",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 7",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 6",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 5",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 3",
+    name: "Quận 1",
     provinceName: "Hồ Chí Minh"
   },
   {
@@ -228,7 +208,31 @@ const districts = [
     provinceName: "Hồ Chí Minh"
   },
   {
-    name: "Quận 11",
+    name: "Quận 3",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 4",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 5",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 6",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 7",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 8",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 9",
     provinceName: "Hồ Chí Minh"
   },
   {
@@ -236,7 +240,11 @@ const districts = [
     provinceName: "Hồ Chí Minh"
   },
   {
-    name: "Quận 1",
+    name: "Quận 11",
+    provinceName: "Hồ Chí Minh"
+  },
+  {
+    name: "Quận 12",
     provinceName: "Hồ Chí Minh"
   },
   {
@@ -265,14 +273,6 @@ const districts = [
   },
   {
     name: "Quận Thủ Đức",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 12",
-    provinceName: "Hồ Chí Minh"
-  },
-  {
-    name: "Quận 9",
     provinceName: "Hồ Chí Minh"
   },
   {

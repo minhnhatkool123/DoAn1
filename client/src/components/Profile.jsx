@@ -14,9 +14,7 @@ const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required('*Bắt buộc'),
-  phone: Yup.string()
-    .matches(phoneRegExp, 'Số điện thoại không hợp lệ')
-    .required('*Bắt buộc'),
+  phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
   addressDetail: Yup.string().required('*Bắt buộc'),
 });
 
@@ -83,7 +81,7 @@ function Profile() {
   const handleProvinceChange = (handleChange, e) => {
     handleChange(e);
     setProvince(e.target.selectedOptions[0].value);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -94,6 +92,7 @@ function Profile() {
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
+        enableReinitialize
       >
         {formik => (
           <Form className="form-interface">
