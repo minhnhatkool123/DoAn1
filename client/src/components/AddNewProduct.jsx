@@ -9,6 +9,8 @@ import { useSetRecoilState } from 'recoil';
 import categories from '../data/categories';
 import types from '../data/types';
 
+const validationSchema = null;
+
 const AddNewProduct = React.forwardRef((props, ref) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -17,6 +19,18 @@ const AddNewProduct = React.forwardRef((props, ref) => {
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
 
+  const initialValues = {
+    productName: '',
+    productPrice: '',
+    productCategory: '',
+    productType: '',
+    productQuantity: ''
+  };
+
+  const onSubmit = (values) => {
+    console.log(values);
+  }
+
   useEffect(() => {
     const newTypes = types.filter(type => type.categoryName === selectedCategory);
     setAccordingTypes(newTypes);
@@ -24,7 +38,8 @@ const AddNewProduct = React.forwardRef((props, ref) => {
 
   const handleCategoryChange = (handleChange, e) => {
     handleChange(e);
-    setSelectedCategory(e.target.selectedOptions[0].value);
+    const category = e.target.selectedOptions[0].value;
+    setSelectedCategory(category);
   };
 
   const closeAddNewProductZone = () => {
@@ -83,64 +98,68 @@ const AddNewProduct = React.forwardRef((props, ref) => {
     <div className="add-new-product-zone" ref={ref}>
       <div id="overlay" onClick={closeAddNewProductZone}></div>
       <div className="add-new-product-container">
-        <Formik>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
           {formik => (
             <Form className="form-container">
               <div className="input-control">
-                <label htmlFor="product-name">Tên sản phẩm*</label>
+                <label htmlFor="productName">Tên sản phẩm*</label>
                 <div className="input-container">
-                  <Field type="text" name="product-name" />
-                  <ErrorMessage name="product-name" component={TextError} />
+                  <Field type="text" name="productName" />
+                  <ErrorMessage name="productName" component={TextError} />
                 </div>
               </div>
 
               <div className="input-control">
-                <label htmlFor="product-price">Giá*</label>
+                <label htmlFor="productPrice">Giá*</label>
                 <div className="input-container">
                   <div className="price-input">
-                    <Field type="text" name="product-price" />
+                    <Field type="text" name="productPrice" />
                     <label className="unit-lb">VND</label>
                   </div>
-                  <ErrorMessage name="product-price" component={TextError} />
+                  <ErrorMessage name="productPrice" component={TextError} />
                 </div>
               </div>
 
               <div className="select-control">
-                <label htmlFor="product-category">Phân loại*</label>
+                <label htmlFor="productCategory">Phân loại*</label>
                 <div className="input-container">
-                  <Field as="select" name="product-category" onChange={(e) => handleCategoryChange(formik.handleChange, e)}>
+                  <Field as="select" name="productCategory" onChange={(e) => handleCategoryChange(formik.handleChange, e)}>
                     <option hidden value="">-- Phân loại --</option>
                     {categories.map(category => (
                       <option key={category} value={category}>{category}</option>
                     ))}
                   </Field>
-                  <ErrorMessage name="product-category" component={TextError} />
+                  <ErrorMessage name="productCategory" component={TextError} />
                 </div>
               </div>
 
               <div className="select-control">
-                <label htmlFor="product-type">Loại*</label>
+                <label htmlFor="productType">Loại*</label>
                 <div className="input-container">
-                  <Field as="select" name="product-type">
+                  <Field as="select" name="productType">
                     <option hidden value="">-- Loại --</option>
                     {accordingTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type.name} value={type.name}>{type.name}</option>
                     ))}
                   </Field>
-                  <ErrorMessage name="product-type" component={TextError} />
+                  <ErrorMessage name="productType" component={TextError} />
                 </div>
               </div>
 
               <div className="input-control">
-                <label htmlFor="product-quantity">Số lượng*</label>
+                <label htmlFor="productQuantity">Số lượng*</label>
                 <div className="input-container">
-                  <Field type="text" name="product-quantity" />
-                  <ErrorMessage name="product-quantity" component={TextError} />
+                  <Field type="text" name="productQuantity" />
+                  <ErrorMessage name="productQuantity" component={TextError} />
                 </div>
               </div>
 
               <div className="form-control">
-                <label htmlFor="product-price">Hình ảnh*</label>
+                <label htmlFor="product-image">Hình ảnh*</label>
                 <input type="file" multiple name="file" onChange={handleImagesChoose} accept="image/*" />
                 <div className="product-color">
                   <div className="img-row">
