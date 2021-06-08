@@ -99,6 +99,40 @@ const sendMail = (to, url) => {
 	});
 };
 
+const sendMailOTP = (to, otp) => {
+	const smtpTransport = nodemailer.createTransport({
+		//service: 'gmail',
+		host: 'smtp.gmail.com',
+		port: 587,
+		ignoreTLS: false,
+		secure: false,
+		auth: {
+			user: process.env.USERNAME_GMAIL,
+			pass: process.env.PASS_GMAIL,
+		},
+	});
+
+	const mailOptions = {
+		from: process.env.USERNAME_GMAIL,
+		to: to,
+		subject: 'Confirm Email',
+		html: ` <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
+		<h2 style="text-align: center; text-transform: uppercase;color: teal;">ZShop Messenger.</h2>
+		<p>Please enter OTP code</p>
+		
+		<h2>${otp}</h2>`,
+	};
+
+	smtpTransport.sendMail(mailOptions, (err, info) => {
+		if (err) {
+			//console.log(err);
+			return err;
+		}
+		//console.log(info);
+		return info;
+	});
+};
+
 const login = async (req, res) => {
 	try {
 		const { username, password } = req.body;
@@ -122,7 +156,17 @@ const login = async (req, res) => {
 		// 	path: '/user/refresh-token',
 		// });
 
-		res.json({ message: 'Login success', accessToken, user });
+		res.json({ message: 'Login success', accessToken /*user*/ });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const getInfo = async (req, res) => {
+	try {
+		const user = await Users.findById({ _id: req.user.id }).select('-password');
+		if (!user) return res.status(400).json({ message: 'User does not exits' });
+		res.json({ message: 'Get info success', user });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -145,7 +189,10 @@ const loginGoogle = async (req, res) => {
 				id: user._id,
 			});
 			console.log(user);
-			return res.json({ message: 'Login success', accessToken, user });
+			return res.json({
+				message: 'Login with gg success',
+				accessToken /*user*/,
+			});
 		}
 		const phone = '';
 		const address = '';
@@ -165,7 +212,7 @@ const loginGoogle = async (req, res) => {
 		const accessToken = createAccessToken({
 			id: newUser._id,
 		});
-		res.json({ message: 'Login success', accessToken, user: newUser });
+		res.json({ message: 'Login success', accessToken /*user: newUser*/ });
 	}
 
 	//console.log(verify);
@@ -234,18 +281,35 @@ const updatePass = async (req, res) => {
 
 const updateEmail = async (req, res) => {
 	try {
+		if (req.body.newEmail.length != 0 && !validateEmail(req.body.newEmail))
+			return res.status(400).json({ message: 'Invalid email' });
+
+		const checkEmail = await Users.findOne({ email: req.body.newEmail });
+		if (checkEmail)
+			return res.status(400).json({ message: 'This email already exists' });
+
 		const userUpdate = await Users.findById({ _id: req.user.id });
 
 		if (userUpdate) {
 			//req.mail = userUpdate.email;
-
-			const newToken = createAccessToken({
+			const otp = Math.floor(100000 + Math.random() * 900000);
+			const newToken = jwt.sign(
+				{ id: userUpdate._id, otp, email: req.body.newEmail },
+				process.env.REFRESH_TOKEN_SECRET,
+				{
+					expiresIn: '10m',
+				}
+			); /*createAccessToken({
 				id: userUpdate._id,
 				email: req.body.newEmail,
+			});*/
+			//const url = `http://localhost:5000/user/confirm-update-mail/${newToken}`;
+			sendMailOTP(req.body.newEmail, otp);
+			res.json({
+				message: 'Please check otp in new email (expires in 10m)',
+				token: newToken,
+				otp,
 			});
-			const url = `http://localhost:5000/user/confirm-update-mail/${newToken}`;
-			sendMail(req.body.newEmail, url);
-			res.json({ message: 'Please confirm in new email' });
 		} else {
 			res.json({ message: 'Update Info fail' });
 		}
@@ -259,23 +323,36 @@ const confirmUpdateEmail = async (req, res) => {
 		//console.log(req.params.token);
 		let verifyUser = {};
 		jwt.verify(
-			req.params.token,
-			process.env.ACCESS_TOKEN_SECRET,
+			req.body.token,
+			process.env.REFRESH_TOKEN_SECRET,
 			(error, user) => {
-				//if (error) return res.status(401).json({ message: 'token sai' });
+				// if (error) {
+				// 	return res.status(401).json({ message: 'token sai' });
+				// }
 
-				verifyUser = user;
+				verifyUser = { ...user };
 			}
 		);
-		console.log(verifyUser);
-		await Users.findByIdAndUpdate(
+
+		console.log(verifyUser.otp);
+		console.log(req.body.otp);
+
+		if (req.body.otp !== verifyUser.otp) {
+			return res.status(401).json({ message: 'Ma otp sai' });
+		}
+
+		const userUpdate = await Users.findByIdAndUpdate(
 			{ _id: verifyUser.id },
-			{ email: verifyUser.email }
-		);
+			{ email: verifyUser.email },
+			{ new: true }
+		).select('-_id email');
+
+		return res
+			.status(200)
+			.json({ message: 'Update email success', newEmail: userUpdate.email });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
-	return res.redirect(process.env.CLIENT_URL);
 };
 
 // const refreshToken = (req, res) => {
@@ -308,6 +385,7 @@ function validateEmail(email) {
 module.exports = {
 	register,
 	login,
+	getInfo,
 	loginGoogle,
 	confirmMail,
 	confirmUpdateEmail,

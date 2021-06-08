@@ -53,11 +53,11 @@ const getComment = async (req, res) => {
 		})
 			.populate({
 				path: 'reply.userRep',
-				select: 'name type',
+				select: 'name type mute',
 			})
 			.populate({
 				path: 'user',
-				select: 'name type',
+				select: 'name type mute',
 			});
 
 		res.json(listComment);

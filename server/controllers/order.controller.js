@@ -1,8 +1,23 @@
 const Orders = require('../models/orderModel');
 const Products = require('../models/productModel');
+
+const getOrder = async (req, res) => {
+	try {
+		const orders = await Orders.find({ user: req.params.id }).populate({
+			path: 'user',
+			select: 'name type district city address phone email',
+		});
+
+		if (orders) res.json({ message: 'Get order done', orders });
+		else res.json({ message: 'Get order failed' });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 const addOrder = async (req, res) => {
 	try {
-		const { user, products } = req.body;
+		const { user, products, receiverInfo, paymentMethod } = req.body;
 
 		let total = 0;
 		let productError = [];
@@ -18,7 +33,21 @@ const addOrder = async (req, res) => {
 			products,
 			date: new Date(),
 			total,
+			receiverInfo,
+			paymentMethod,
 		});
+
+		for (let i = 0; i < products.length; i++) {
+			const oneProduct = await Products.findById({ _id: products[i]._id });
+			if (oneProduct.quantity < products[i].soldQuantity)
+				productError.push(
+					`Số lượng còn lại của ${oneProduct.name} là ${oneProduct.quantity}`
+				);
+		}
+
+		if (productError.length !== 0) {
+			return res.status(400).json({ error: productError });
+		}
 
 		for (let i = 0; i < products.length; i++) {
 			await Products.findByIdAndUpdate(
@@ -47,12 +76,13 @@ const addOrder = async (req, res) => {
 				// }
 			);
 		}
-		if (productError.length === 0) {
-			await newOrder.save();
-			res.json({ message: 'order add success' });
-		} else {
-			res.json({ message: productError });
-		}
+
+		//if (productError.length === 0) {
+		await newOrder.save();
+		res.json({ message: 'Order add success' });
+		//} else {
+		//res.json({ message: productError });
+		//}
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -132,6 +162,7 @@ const getTotalCategory = async (req, res) => {
 		let result = [];
 		let totalAo = 0;
 		let totalQuan = 0;
+		let totalDamVay = 0;
 		for (let i = 0; i < allPrice.length; i++) {
 			let product = allPrice[i].products;
 
@@ -150,10 +181,20 @@ const getTotalCategory = async (req, res) => {
 					totalQuan += product.price * product.soldQuantity;
 				}
 			}
+
+			if (product.category === 'Đầm Váy') {
+				if (product.status.includes(2))
+					totalDamVay +=
+						(product.price - product.discount) * product.soldQuantity;
+				else {
+					totalDamVay += product.price * product.soldQuantity;
+				}
+			}
 		}
 
 		result.push({ category: 'Áo', total: totalAo });
 		result.push({ category: 'Quần', total: totalQuan });
+		result.push({ category: 'Đầm Váy', total: totalDamVay });
 		//console.log(totalQuan);
 
 		res.json({ result });
@@ -173,6 +214,7 @@ const getNumberSoldCategory = async (req, res) => {
 		let result = [];
 		let totalAo = 0;
 		let totalQuan = 0;
+		let totalDamVay = 0;
 		for (let i = 0; i < allPrice.length; i++) {
 			let product = allPrice[i].products;
 
@@ -182,10 +224,14 @@ const getNumberSoldCategory = async (req, res) => {
 			if (JSON.stringify(product.category) === JSON.stringify('Quần')) {
 				totalQuan += product.soldQuantity;
 			}
+			if (product.category === 'Đầm Váy') {
+				totalDamVay += product.soldQuantity;
+			}
 		}
 
 		result.push({ category: 'Áo', total: totalAo });
 		result.push({ category: 'Quần', total: totalQuan });
+		result.push({ category: 'Đầm Váy', total: totalDamVay });
 		//console.log(totalQuan);
 
 		res.json({ result });
@@ -195,6 +241,7 @@ const getNumberSoldCategory = async (req, res) => {
 };
 
 module.exports = {
+	getOrder,
 	addOrder,
 	getTotalOneMonth,
 	getTotalCategory,

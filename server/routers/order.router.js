@@ -1,12 +1,31 @@
 const router = require('express').Router();
 const orderController = require('../controllers/order.controller');
+const auth = require('../middleware/auth');
+const authAdmin = require('../middleware/authAmin');
 
-router.post('/add', orderController.addOrder);
+router.post('/add', auth, orderController.addOrder);
 
-router.get('/gettotalonemonth', orderController.getTotalOneMonth);
+router.get('/get-by-user/:id', auth, orderController.getOrder);
 
-router.get('/gettotalcategory', orderController.getTotalCategory);
+router.get(
+	'/gettotalonemonth',
+	auth,
+	authAdmin,
+	orderController.getTotalOneMonth
+);
 
-router.get('/gettotalsoldcategory', orderController.getNumberSoldCategory);
+router.get(
+	'/gettotalcategory',
+	auth,
+	authAdmin,
+	orderController.getTotalCategory
+);
+
+router.get(
+	'/gettotalsoldcategory',
+	auth,
+	authAdmin,
+	orderController.getNumberSoldCategory
+);
 
 module.exports = router;
