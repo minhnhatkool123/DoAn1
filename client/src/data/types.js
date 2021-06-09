@@ -33,15 +33,15 @@ const types = [
   },
   {
     name: 'Chân váy',
-    categoryName: 'Đấm váy'
+    categoryName: 'Đầm váy'
   },
   {
     name: 'Đấm nữ',
-    categoryName: 'Đấm váy'
+    categoryName: 'Đầm váy'
   },
   {
     name: 'Yếm',
-    categoryName: 'Đấm váy'
+    categoryName: 'Đầm váy'
   },
 ];
 

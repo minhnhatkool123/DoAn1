@@ -45,7 +45,8 @@ function CheckoutSection() {
     province: user.city,
     district: user.district,
     addressDetail: user.address,
-    paymentMethod: 'Thanh toán tiền mặt khi nhận hàng'
+    paymentMethod: 'Thanh toán tiền mặt khi nhận hàng',
+    note: ''
   };
 
   const onSubmit = values => {

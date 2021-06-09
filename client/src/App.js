@@ -1,5 +1,6 @@
 import './scss/App.scss';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { toastDisplayState } from './recoil/toastDisplayState';
 import { userState } from './recoil/userState';
@@ -16,7 +17,6 @@ import MessengerCustomerChat from 'react-messenger-customer-chat';
 import ToastMessage from './components/ToastMessage';
 import ScrollToTop from './components/ScrollToTop';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import Dialog from './components/Dialog';
 import ResultMessage from './components/ResultMessage';
 

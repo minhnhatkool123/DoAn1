@@ -18,36 +18,38 @@
   }
 
   .add-new-product-container {
-    width: 800px;
     background-color: $white;
     position: fixed;
     left: 50%;
     top: 50%;
     z-index: 1;
     transform: translate(-50%, -50%);
+    border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     .form-container {
-      margin: 12px 12px;
+      margin: 22px 32px;
 
       label,
+      select,
       input:not(input[type="file"]) {
         display: block;
-        margin-bottom: 6px;
       }
 
       label {
-        margin-left: 2px;
         color: $dimgrey;
         font-weight: 600;
+        text-align: right;
+        width: 102px;
+        margin-right: 10px;
       }
 
       input:not(input[type="file"]) {
-        width: 100%;
-        height: 34px;
+        height: 30px;
         border: 1px solid $divider;
-        padding: 14px 20px;
-        font-size: 20px;
+        padding: 0 6px;
+        font-size: 15px;
+        border-radius: 3px;
 
         &::placeholder {
           font-size: 20px;
@@ -58,6 +60,35 @@
 
       input[name="file"] {
         display: none;
+      }
+
+      select {
+        height: 30px;
+        border: 1px solid $divider;
+        border-radius: 3px;
+        padding-top: 2px;
+        font-size: 15px;
+        width: 120px;
+      }
+
+      input {
+        &[name="productName"] {
+          width: 500px;
+        }
+
+        &[name="productPrice"],
+        &[name="productDiscount"] {
+          width: 140px;
+          // text-align: right;
+        }
+
+        &[name="productQuantity"] {
+          width: 76px;
+        }
+      }
+
+      input[type="checkbox"] {
+        display: none !important;
       }
 
       .product-color {
@@ -110,8 +141,100 @@
         }
       }
 
-      .form-control {
+      .input-control,
+      .select-control,
+      .multi-select-control {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
 
+      .multi-select-control {
+        &.status-control {
+          margin-top: 15px;
+        }
+
+        &.size-control {
+          margin-top: 16px;
+        }
+      }
+
+      .input-container {
+        .price-input {
+          display: flex;
+          align-items: center;
+
+          .unit-lb {
+            text-align: left;
+            margin-left: 8px;
+          }
+        }
+      }
+
+      .multi-select-container {
+        .status-options,
+        .size-options {
+          display: flex;
+          align-items: center;
+
+          label {
+            width: unset;
+            margin: unset;
+            font-weight: 100;
+            color: $grey;
+            border: 1px solid $divider;
+            border-radius: 3px;
+            padding: 1px 6px;
+            margin-right: 8px;
+            cursor: pointer;
+            min-width: 28px;
+            text-align: center;
+          }
+        }
+      }
+
+      .image-control {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .label-for-img {
+          margin-top: -57px;
+        }
+      }
+
+      .btn-group {
+        float: right;
+        margin-bottom: 22px;
+        margin-top: 10px;
+
+        .add-product-btn, .cancel-btn {
+          width: 96px;
+          padding: 8px 0;
+          text-align: center;
+          font-size: 18px;
+          font-weight: 600;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+
+        .add-product-btn {
+          background: $mediumturquoise;
+          color: $white;
+          margin-left: 10px;
+
+          &:hover {
+            background-color: #45b2b5;
+          }
+        }
+
+        .cancel-btn {
+          color: $dimgrey;
+
+          &:hover {
+            background-color: $silver;
+          }
+        }
       }
     }
   }

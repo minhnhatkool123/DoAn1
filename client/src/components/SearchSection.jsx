@@ -49,7 +49,7 @@ function SearchSection() {
 
   const filterRef = useRef(null);
 
-  const [totalPages, setTotalPages] = useState(1)
+  const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState('');
