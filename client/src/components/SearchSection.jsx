@@ -9,37 +9,7 @@ import axios from 'axios';
 import FetchError from './FetchError';
 import { EatLoading } from 'react-loadingg';
 
-const getFilteredProducts = async (page, limit, category, name, filter) => {
-  let categoryKey;
-  if (getCategoryKey(category)) {
-    categoryKey = getCategoryKey(category);
-  } else {
-    categoryKey = `search?name=${name}&`;
-  }
-
-  switch (filter) {
-    case 'new':
-      categoryKey += 'status=1&';
-      break;
-    case 'ascending':
-      categoryKey += 'sort=1&';
-      break;
-    case 'descending':
-      categoryKey += 'sort=-1&';
-      break;
-    case 'sale':
-      categoryKey += 'status=2&';
-      break;
-    default:
-      break;
-  }
-
-  console.log(categoryKey)
-  console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`)
-
-  const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=${limit}`);
-  return response.data;
-}
+// style={{ height: document.body.scrollTop === 0 || !loadingHeight.current ? '60vh' : `${loadingHeight.current}px` }}
 
 function SearchSection() {
   const { search, state, pathname } = useLocation();
@@ -48,21 +18,46 @@ function SearchSection() {
   const catalog = getCatalog(category);
 
   const filterRef = useRef(null);
+  // const productListRef = useRef(null);
+  // const loadingHeight = useRef();
 
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
-  const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState('');
 
-  const { data, isLoading, isError } = useQuery(['filteredProducts', page, category, name, filter], () => getFilteredProducts(page, 16, category, name, filter));
-
-  useEffect(() => {
-    if (data) {
-      // console.log(data)
-      setTotalPages(data.totalPages);
-      setProducts(data.products);
+  const { data, isLoading, isError } = useQuery(['filteredProducts', page, category, name, filter], async () => {
+    let categoryKey;
+    if (getCategoryKey(category)) {
+      categoryKey = getCategoryKey(category);
+    } else {
+      categoryKey = `search?name=${name}&`;
     }
-  }, [data]);
+
+    switch (filter) {
+      case 'new':
+        categoryKey += 'status=1&';
+        break;
+      case 'ascending':
+        categoryKey += 'sort=1&';
+        break;
+      case 'descending':
+        categoryKey += 'sort=-1&';
+        break;
+      case 'sale':
+        categoryKey += 'status=2&';
+        break;
+      default:
+        break;
+    }
+
+    // console.log(categoryKey)
+    // console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`)
+
+    const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`);
+    setTotalPages(response.data.totalPages);
+
+    return response.data;
+  });
 
   useEffect(() => {
     console.log('set page 0')
@@ -120,16 +115,18 @@ function SearchSection() {
           </div>
 
           <div className="row products-list">
-            {isLoading && <div style={{ height: '60vh' }}><EatLoading color='#ffb0bd' /></div>}
+            {isLoading && <div style={{ height: '60vh' }}>
+              <EatLoading color='#ffb0bd' />
+            </div>}
             {isError && <FetchError />}
-            {data && products.length > 0 && products.map(product => <ProductCard product={product} key={product._id} />)}
+            {data?.products.map(product => <ProductCard product={product} key={product._id} />)}
           </div>
 
           {category === 'set' && <div className="no-set">Hiện chưa có sản phẩm này</div>}
 
-          {category !== 'set' && data && products.length === 0 && <div className="no-result">Không có kết quả phù hợp với từ khóa "{name}"</div>}
+          {category !== 'set' && data?.products.length === 0 && <div className="no-result">Không có kết quả phù hợp với từ khóa "{name}"</div>}
 
-          {products.length > 0 && <ReactPaginate
+          {data?.products.length > 0 && <ReactPaginate
             previousLabel={"Prev"}
             nextLabel={"Next"}
             pageCount={totalPages}

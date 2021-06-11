@@ -98,7 +98,7 @@ function Navigation() {
           <div className="account-cart col l-3">
             <div className="account">
               <span className="name" onClick={handleLoginUser}>
-                <ConditionalLink to='/account' condition={name}>
+                <ConditionalLink to='/admin' condition={name}>
                   {name || 'Đăng nhập'}
                 </ConditionalLink>
               </span>

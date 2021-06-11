@@ -1,4 +1,4 @@
-import '../scss/successMessage.scss';
+import '../scss/resultMessage.scss';
 import React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { resultMessageState, messageContent } from '../recoil/resultMessageState';

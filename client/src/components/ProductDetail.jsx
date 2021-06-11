@@ -23,7 +23,7 @@ function ProductDetail() {
   const { id } = useParams();
   const history = useHistory();
 
-  const { data: product, isLoading, isError, refetch } = useQuery('productDetail', () => getProduct(id));
+  const { data: product, isLoading, isError, refetch } = useQuery(['productDetail', id], () => getProduct(id));
 
   const priceRef = useRef(null);
 

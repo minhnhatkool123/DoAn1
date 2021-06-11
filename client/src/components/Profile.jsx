@@ -15,7 +15,6 @@ const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2
 const validationSchema = Yup.object({
   fullName: Yup.string().required('*Bắt buộc'),
   phone: Yup.string().matches(phoneRegExp, 'Số điện thoại không hợp lệ'),
-  addressDetail: Yup.string().required('*Bắt buộc'),
 });
 
 function Profile() {

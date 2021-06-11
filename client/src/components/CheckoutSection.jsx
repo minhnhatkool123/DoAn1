@@ -53,9 +53,10 @@ function CheckoutSection() {
     console.log('Form data', values);
   };
 
-  const handleProvinceChange = (handleChange, e) => {
+  const handleProvinceChange = (handleChange, e, setFieldValue) => {
     handleChange(e);
     setProvince(e.target.selectedOptions[0].value);
+    setFieldValue('district', '');
   };
 
   return (
@@ -93,7 +94,7 @@ function CheckoutSection() {
             </div>
 
             <div className="form-control">
-              <Field as='select' id='province' name='province' onChange={(e) => handleProvinceChange(formik.handleChange, e)}>
+              <Field as='select' id='province' name='province' onChange={(e) => handleProvinceChange(formik.handleChange, e, formik.setFieldValue)}>
                 <option hidden value="">-- Tỉnh/Thành phố --</option>
                 {provinces.map(province => (
                   <option key={province} value={province}>

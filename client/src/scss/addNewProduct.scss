@@ -28,7 +28,7 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     .form-container {
-      margin: 22px 32px;
+      margin: 16px 18px;
 
       label,
       select,
@@ -41,13 +41,13 @@
         font-weight: 600;
         text-align: right;
         width: 102px;
-        margin-right: 10px;
+        margin-right: 8px;
       }
 
       input:not(input[type="file"]) {
         height: 30px;
         border: 1px solid $divider;
-        padding: 0 6px;
+        padding: 2px 6px 0 6px;
         font-size: 15px;
         border-radius: 3px;
 
@@ -58,7 +58,7 @@
         }
       }
 
-      input[name="file"] {
+      input[type="file"] {
         display: none;
       }
 
@@ -79,7 +79,6 @@
         &[name="productPrice"],
         &[name="productDiscount"] {
           width: 140px;
-          // text-align: right;
         }
 
         &[name="productQuantity"] {
@@ -93,13 +92,12 @@
 
       .product-color {
         width: 460px;
-        height: 80px;
         margin-top: 10px;
 
         .img-row {
           display: flex;
           flex-wrap: wrap;
-          margin-left: -6px;
+          margin-left: -4px;
           margin-right: -6px;
         }
 
@@ -141,21 +139,26 @@
         }
       }
 
-      .input-control,
-      .select-control,
-      .multi-select-control {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
+      input[type="text"],
+      select,
+      .status-options,
+      .size-options,
+      .img-row {
+        margin-bottom: 2px;
+        margin-left: 2px;
       }
 
-      .multi-select-control {
-        &.status-control {
-          margin-top: 15px;
+      .form-control {
+        display: flex;
+        margin-bottom: 4px;
+
+        label:first-child {
+          margin-top: 4px;
         }
 
-        &.size-control {
-          margin-top: 16px;
+        .size-options,
+        .status-options {
+          margin-top: 3px;
         }
       }
 
@@ -190,25 +193,31 @@
             min-width: 28px;
             text-align: center;
           }
+
+          input[type="checkbox"]:checked + label {
+            background: $divider;
+            color: $white;
+          }
         }
       }
 
       .image-control {
         display: flex;
-        align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 6px;
+        margin-top: -2px;
 
         .label-for-img {
-          margin-top: -57px;
+          margin-top: 6px;
         }
       }
 
       .btn-group {
-        float: right;
-        margin-bottom: 22px;
+        display: flex;
+        justify-content: flex-end;
         margin-top: 10px;
 
-        .add-product-btn, .cancel-btn {
+        .add-product-btn,
+        .cancel-btn {
           width: 96px;
           padding: 8px 0;
           text-align: center;
