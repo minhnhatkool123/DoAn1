@@ -110,7 +110,7 @@ function CommentSection() {
             <div
               contentEditable="true"
               className="comment-typing"
-              data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn."
+              data-placeholder="Hãy cho chúng tôi biết cảm nghĩ của bạn..."
               onFocus={handleCommentBoxFocus}
               onKeyDown={handleEnterPress}
               ref={commentBoxRef}
