@@ -3,13 +3,103 @@ const Products = require('../models/productModel');
 
 const getOrder = async (req, res) => {
 	try {
-		const orders = await Orders.find({ user: req.params.id }).populate({
-			path: 'user',
-			select: 'name type district city address phone email',
-		});
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
 
-		if (orders) res.json({ message: 'Get order done', orders });
+		let queryObj = {
+			user: req.params.id,
+		};
+		if (Object.values(req.body).length !== 0) {
+			if (req.body.timeStart && req.body.timeEnd) {
+				console.log('co time');
+				queryObj = {
+					user: req.params.id,
+					status: req.body.status,
+					date: {
+						$gte: new Date(req.body.timeStart),
+						$lt: new Date(req.body.timeEnd),
+					},
+				};
+			} else {
+				console.log('khong time');
+				queryObj = {
+					user: req.params.id,
+					status: req.body.status,
+				};
+			}
+		}
+
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
+
+		const countOrders = await Orders.countDocuments(queryObj);
+		const orders = await Orders.find(queryObj)
+			.populate({
+				path: 'user',
+				select: 'name type district city address phone email',
+			})
+			.skip(startIndex)
+			.limit(limit);
+
+		if (orders)
+			res.json({
+				message: 'Get order done',
+				orders,
+				totalPages: countOrders,
+				page: page,
+			});
 		else res.json({ message: 'Get order failed' });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const getAllOrders = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+
+		let queryObj = null;
+		if (Object.values(req.body).length !== 0) {
+			if (req.body.timeStart && req.body.timeEnd) {
+				console.log('co time');
+				queryObj = {
+					status: req.body.status,
+					date: {
+						$gte: new Date(req.body.timeStart),
+						$lt: new Date(req.body.timeEnd),
+					},
+				};
+			} else {
+				console.log('khong time');
+				queryObj = {
+					status: req.body.status,
+				};
+			}
+		}
+
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
+
+		console.log(req.body.timeStart);
+
+		const countOrders = await Orders.countDocuments(queryObj);
+		const orders = await Orders.find(queryObj)
+			.populate({
+				path: 'user',
+				select: 'name type district city address phone email',
+			})
+			.skip(startIndex)
+			.limit(limit);
+
+		if (orders)
+			res.json({
+				message: 'Get all order done',
+				orders,
+				totalPages: countOrders,
+				page: page,
+			});
+		else res.json({ message: 'Get all order failed' });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -136,7 +226,7 @@ const getTotalOneMonth = async (req, res) => {
 		}
 		console.log(dataTotal);
 
-		res.json({ message: 'Done' });
+		res.json({ message: 'Done', data: dataTotal });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -242,6 +332,7 @@ const getNumberSoldCategory = async (req, res) => {
 
 module.exports = {
 	getOrder,
+	getAllOrders,
 	addOrder,
 	getTotalOneMonth,
 	getTotalCategory,

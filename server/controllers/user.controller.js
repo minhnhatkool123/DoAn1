@@ -355,6 +355,18 @@ const confirmUpdateEmail = async (req, res) => {
 	}
 };
 
+const setMuteUser = async (req, res) => {
+	try {
+		const user = await Users.findByIdAndUpdate(
+			{ _id: req.body.id },
+			{ mute: req.body.mute }
+		);
+		return res.status(200).json({ message: 'Update mute success' });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 // const refreshToken = (req, res) => {
 // 	try {
 // 		const rf_token = req.cookies.refresh_token;
@@ -392,4 +404,5 @@ module.exports = {
 	updateInfo,
 	updatePass,
 	updateEmail,
+	setMuteUser,
 };

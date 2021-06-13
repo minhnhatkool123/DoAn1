@@ -7,6 +7,8 @@ router.post('/add', auth, orderController.addOrder);
 
 router.get('/get-by-user/:id', auth, orderController.getOrder);
 
+router.get('/get-all', auth, authAdmin, orderController.getAllOrders);
+
 router.get(
 	'/gettotalonemonth',
 	auth,

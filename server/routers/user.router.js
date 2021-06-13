@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const userController = require('../controllers/user.controller');
 const auth = require('../middleware/auth');
+const authAdmin = require('../middleware/authAmin');
 
 router.post('/register', userController.register);
 
@@ -19,5 +20,7 @@ router.patch('/update-email', auth, userController.updateEmail);
 router.post('/confirm-update-mail', auth, userController.confirmUpdateEmail);
 
 router.get('/confirm/:token', userController.confirmMail);
+
+router.patch('/update-mute', auth, authAdmin, userController.setMuteUser);
 
 module.exports = router;
