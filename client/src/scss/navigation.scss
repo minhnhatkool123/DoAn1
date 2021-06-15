@@ -50,6 +50,7 @@
           height: 40px;
           border-radius: 8px;
           border: 2px solid $lightpink;
+          border-right: none;
           position: relative;
           font-size: 17px;
           border-bottom-right-radius: 0;
@@ -172,8 +173,7 @@
             width: 346px;
             z-index: 1;
             border-radius: 5px;
-            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
-              rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+            box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
             transform-origin: calc(100% - 15px) top;
             animation: growDiagonally ease 0.25s;
             will-change: opacity, transform;
@@ -279,12 +279,15 @@
                         text-overflow: ellipsis;
 
                         &:hover {
-                          &, + .product-quantity {
+                          &,
+                          + .product-quantity {
                             color: $lightpink;
                           }
                         }
 
-                        a, a:visited, a:active {
+                        a,
+                        a:visited,
+                        a:active {
                           color: inherit;
                         }
                       }
@@ -562,7 +565,6 @@
 .google-submit-btn:active #login-form {
   display: none;
 }
-
 
 // ---- Error Login Message ----
 

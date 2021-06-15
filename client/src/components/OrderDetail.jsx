@@ -12,11 +12,11 @@ function OrderDetail({ order }) {
       <div className="order-detail">
         <div className="order-cart-list" width="100%">
           <div className="heading-title">
-            <div width="12%" className="product-color">Ảnh</div>
-            <div width="40%" className="product-description">Sản phẩm</div>
-            <div width="15%" className="product-quantity">Số lượng</div>
-            <div width="15%" className="product-unit-price">Đơn giá</div>
-            <div width="18%" className="product-total-price">Thành tiền</div>
+            <div className="product-color">Ảnh</div>
+            <div className="product-description">Sản phẩm</div>
+            <div className="product-quantity">Số lượng</div>
+            <div className="product-unit-price">Đơn giá</div>
+            <div className="product-total-price">Thành tiền</div>
           </div>
 
           <div className="order-cart-detail">

@@ -18,8 +18,6 @@ function SearchSection() {
   const catalog = getCatalog(category);
 
   const filterRef = useRef(null);
-  // const productListRef = useRef(null);
-  // const loadingHeight = useRef();
 
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
