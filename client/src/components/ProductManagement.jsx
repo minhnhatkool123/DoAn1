@@ -5,32 +5,13 @@ import editIcon from '../svg/edit.svg';
 import deleteIcon from '../svg/delete.svg';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-
-const product = {
-  "_id": "60af5e5d303b111c3144e306",
-  "name": "Áo Khoác Kaki Nữ AK12 Kaki Nữ AK12",
-  "colors": [
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GK12/500-den.jpg"
-  ],
-  "sizes": [
-    "Freesize"
-  ],
-  "status": [
-    1,
-    2
-  ],
-  "discount": 20000,
-  "category": "Áo",
-  "type": "Áo Khoác Nữ",
-  "images": [
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GK12/750.jpg",
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GK12/500-trang.jpg",
-    "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GK12/500-den.jpg"
-  ],
-  "quantity": 5,
-  "real_price": 370000,
-  "new_price": 350000
-};
+import { AiOutlinePlus } from "react-icons/ai";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import AddNewProduct from './AddNewProduct';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { dialogState } from '../recoil/dialogState';
+import { userState } from '../recoil/userState';
+import ReactPaginate from "react-paginate";
 
 const productStatus = {
   '0': 'không có',
@@ -48,19 +29,64 @@ function ProductManagement() {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState('');
 
-  const { data, isLoading, isError } = useQuery(['managedProducts'], async () => {
-    const response = await axios.get(`http://localhost:5000/api/product/all?page=1&limit=8`);
+  const addNewProductRef = React.createRef();
+
+  const user = useRecoilValue(userState);
+  const setDialog = useSetRecoilState(dialogState);
+
+  const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page], async () => {
+    const response = await axios.get(`http://localhost:5000/api/product/all?page=${page + 1}&limit=8`);
+    setTotalPages(response.data.totalPages);
     console.log(response.data);
     return response.data;
   });
+
+  const handleAddProductClick = () => {
+    addNewProductRef.current.classList.add('active');
+  }
+
+  const handleEditProductClick = (product) => {
+
+  }
+
+  const handleDeleteProductClick = (id) => {
+    setDialog({
+      show: true,
+      message: 'Bạn có chắc muốn xóa sản phẩm này?',
+      acceptButtonName: 'Xóa',
+      adminMode: true,
+      func: () => {
+        const config = {
+          headers: {
+            Authorization: user.accessToken
+          }
+        }
+
+        axios.delete(`http://localhost:5000/api/product/delete/${id}`, config)
+          .then(response => {
+            console.log(response.data.message);
+            refetch();
+          })
+          .catch(error => {
+            console.log(error);
+          })
+      }
+    });
+  }
+
+  const handlePageChange = ({ selected }) => {
+    console.log('page click: ', selected);
+    setPage(selected);
+  };
 
   return (
     <React.Fragment>
       <div className="product-other-features">
         <span className="title">Danh sách sản phẩm</span>
         <input type="text" placeholder="Tìm kiếm sản phẩm..." className="product-search"></input>
-        <div className="add-product-btn">+</div>
+        <div className="add-product-btn" onClick={handleAddProductClick}><AiOutlinePlus className="add-icon" /></div>
       </div>
+
       <div className="product-table">
         <div className="title-list">
           <div className="image-title fl-6 fl-o-1">Ảnh</div>
@@ -89,10 +115,10 @@ function ProductManagement() {
                 <div className="view-btn">
                   <img src={viewIcon} className="btn-icon" alt="" />
                 </div>
-                <div className="edit-btn">
+                <div className="edit-btn" onClick={() => handleEditProductClick(product._id)}>
                   <img src={editIcon} className="btn-icon" alt="" />
                 </div>
-                <div className="delete-btn">
+                <div className="delete-btn" onClick={() => handleDeleteProductClick(product._id)}>
                   <img src={deleteIcon} className="btn-icon" alt="" />
                 </div>
               </div>
@@ -100,6 +126,23 @@ function ProductManagement() {
           ))}
         </div>
       </div>
+
+      {data?.products.length > 0 && <ReactPaginate
+        previousLabel={<GrFormPrevious className="prev-icon" />}
+        nextLabel={<GrFormNext className="next-icon" />}
+        pageCount={totalPages}
+        onPageChange={handlePageChange}
+        containerClassName={"pagination"}
+        pageClassName={"paginated-btn"}
+        breakClassName={"paginated-btn"}
+        previousClassName={"prev-btn"}
+        nextClassName={"next-btn"}
+        disabledClassName={"disabled-btn"}
+        activeClassName={"active-btn"}
+        forcePage={page}
+      />}
+
+      <AddNewProduct ref={addNewProductRef} />
     </React.Fragment>
   );
 }

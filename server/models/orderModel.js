@@ -32,6 +32,17 @@ const orderSchema = mongoose.Schema(
 				soldQuantity: Number,
 			},
 		],
+		receiverInfo: {
+			name: String,
+			email: String,
+			phone: String,
+			address: String,
+			note: String,
+		},
+		paymentMethod: {
+			type: String,
+			default: '',
+		},
 	},
 	{ timestamps: true }
 );

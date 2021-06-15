@@ -114,11 +114,33 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
 
   const handleMuteUser = () => {
     // check user có đang bị mute hay không => hiện message tương ứng, hoặc check value của thẻ span là Cấm hay Bỏ cấm
+    const keyword = comment.user.mute ? 'bỏ cấm' : 'cấm';
+
+    const data = {
+      id: comment.user._id,
+      mute: !comment.user.mute
+    }
+
+    const config = {
+      headers: {
+        Authorization: user.accessToken
+      }
+    }
+
     setDialog({
       show: true,
-      message: 'Bạn có chắc muốn cấm người này bình luận?',
-      acceptButtonName: 'Cấm',
-      func: () => { }
+      message: `Bạn có chắc muốn ${keyword} người này bình luận?`,
+      acceptButtonName: keyword.charAt(0).toUpperCase(),
+      func: () => {
+        axios.patch('http://localhost:5000/user/update-mute', data, config)
+          .then(response => {
+            console.log(response.data.message);
+            refetch();
+          })
+          .catch(error => {
+            console.log(error.response.data.message);
+          })
+      }
     })
   }
 
@@ -147,7 +169,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
           <div className="control-options">
             {!reply && <span className="reply-btn" onClick={handleReplyClick}>Trả lời</span>}
             {isAdmin && <span className="delete-btn" onClick={handleDeleteComment}>Xóa</span>}
-            {isAdmin && !isAdminComment && <span className="mute-btn" onClick={handleMuteUser}>Cấm</span>}
+            {isAdmin && !isAdminComment && <span className="mute-btn" onClick={handleMuteUser}>{comment.user.mute ? 'Bỏ cấm' : 'Cấm'}</span>}
             <span>{timeAgoRef.current}</span>
           </div>
         </div>

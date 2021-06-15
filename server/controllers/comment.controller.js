@@ -1,4 +1,3 @@
-require('dotenv').config();
 const Comments = require('../models/commentModel');
 const Users = require('../models/userModel');
 const { ObjectId } = require('mongodb');
@@ -30,7 +29,7 @@ const addComment = async (req, res) => {
 			const comment = await Comments.findById({ _id: req.query.id });
 			//console.log('comment', comment);
 			if (comment) {
-				comment.reply.push({ _id, user, date, content });
+				comment.reply.push({ _id, userRep: user, date, content });
 				await comment.save();
 				console.log(comment);
 			}
@@ -53,12 +52,12 @@ const getComment = async (req, res) => {
 			productId: req.query.productId,
 		})
 			.populate({
-				path: 'reply.user',
-				select: 'name type',
+				path: 'reply.userRep',
+				select: 'name type mute',
 			})
 			.populate({
 				path: 'user',
-				select: 'name type',
+				select: 'name type mute',
 			});
 
 		res.json(listComment);

@@ -6,6 +6,7 @@ export const dialogState = atom({
     show: false,
     message: '',
     acceptButtonName: '',
+    adminMode: false,
     func: () => {}
   }
 })

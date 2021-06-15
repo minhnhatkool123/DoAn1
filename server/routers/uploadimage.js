@@ -1,4 +1,3 @@
-require('dotenv').config();
 const router = require('express').Router();
 const cloudinary = require('cloudinary');
 const multer = require('multer');
@@ -34,12 +33,14 @@ router.post('/upload', upload.array('images'), async (req, res) => {
 		const images = [];
 		const id_public = [];
 		const files = req.files;
+		console.log(files);
 		for (const file of files) {
 			const { path } = file;
 			const newPath = await cloudinary.v2.uploader.upload(
 				path,
 				{
 					folder: 'web-ban-hang',
+					//upload_preset: 'ml_default',
 				},
 				(error, result) => {
 					if (error) throw error;

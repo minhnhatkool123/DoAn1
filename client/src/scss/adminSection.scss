@@ -27,7 +27,7 @@
   overflow: auto;
 
   * {
-    color: #848493;
+    color: $lightslategray;
   }
 
   .admin-container {
@@ -50,9 +50,15 @@
       .admin-navigation {
         padding: 32px 0;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         background: $white;
         box-shadow: 8px 0px 22px 2px rgba(242, 237, 237, 0.75);
+
+        .logo-icon {
+          width: 76px;
+          margin-bottom: 16px;
+        }
 
         .menu-options {
           .tab-option {
@@ -88,6 +94,7 @@
 
       .admin-body {
         padding: 32px;
+        position: relative;
       }
     }
   }

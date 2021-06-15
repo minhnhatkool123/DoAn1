@@ -13,7 +13,7 @@ import FetchError from './FetchError';
 import uuid from 'react-uuid';
 
 const getProduct = async (id) => {
-  console.log(`http://localhost:5000/api/product/get-product/${id}`)
+  // console.log(`http://localhost:5000/api/product/get-product/${id}`)
   const response = await axios.get(`http://localhost:5000/api/product/get-product/${id}`);
   return response.data;
 }

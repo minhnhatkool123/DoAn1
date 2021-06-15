@@ -6,6 +6,7 @@ import starIcon from '../svg/star.svg';
 import pinkStarIcon from '../svg/star_pink.svg';
 import bubbleChartIcon from '../svg/bubble_chart.svg';
 import pinkBubbleChartIcon from '../svg/bubble_chart_pink.svg';
+import vividPinwheel from '../svg/pinwheel_vivid.svg';
 import Statistics from './Statistics';
 import ProductManagement from './ProductManagement';
 import OrderManagement from './OrderManagement';
@@ -26,7 +27,11 @@ function AdminSection() {
         <div className="admin-container">
           <div className="admin-dashboard">
             <div className="admin-navigation l-1">
-              <div className="logo"></div>
+              {/* <div className="logo">
+                
+              </div> */}
+
+              <img src={vividPinwheel} className="logo-icon" alt="" />
 
               <div className="menu-options">
                 <div className="tab-option">

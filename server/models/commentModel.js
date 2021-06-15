@@ -15,7 +15,7 @@ const commentSchema = mongoose.Schema({
 	// },
 	reply: [
 		{
-			user: {
+			userRep: {
 				type: mongoose.Schema.Types.ObjectId,
 				ref: 'Users',
 			},

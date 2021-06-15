@@ -1,4 +1,3 @@
-require('dotenv').config();
 const Products = require('../models/productModel');
 
 class ProductFeatures {
@@ -55,35 +54,6 @@ const getProductHomePage = async (req, res) => {
 
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
-
-		// const productsLength = await Products.find({
-		// 	status: { $all: [1] },
-		// });
-		// const totalPage = Math.ceil(productsLength.length / limit);
-		// const products = await Products.find(
-		// 	{ status: { $all: [1] } },
-		// 	{
-		// 		_id: 1,
-		// 		name: 1,
-		// 		category: 1,
-		// 		type: 1,
-		// 		real_price: {
-		// 			$sum: ['$price', 0],
-		// 		},
-		// 		price: {
-		// 			$subtract: ['$price', '$discount'],
-		// 		},
-		// 		discount: 1,
-		// 		images: 1,
-		// 		colors: 1,
-		// 		status: 1,
-		// 		sizes: 1,
-		// 		discount: 1,
-		// 		quantity: 1,
-		// 	}
-		// )
-		// 	.skip(startIndex)
-		// 	.limit(limit);
 
 		const productsAll = await await Products.aggregate([
 			{

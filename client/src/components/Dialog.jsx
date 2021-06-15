@@ -25,9 +25,9 @@ function Dialog() {
     <React.Fragment>
       {dialog.show && <div className="dialog" ref={dialogRef}>
         <div id="overlay"></div>
-        <div className="dialog-container">
+        <div className={dialog.adminMode ? "dialog-container admin-mode" : "dialog-container"}>
           <div className="message">{dialog.message}</div>
-          <div className="option-btn-group">
+          <div className={dialog.adminMode ? "option-btn-group admin-mode" : "option-btn-group"}>
             <div className="cancel-btn" onClick={handleCancelClick}>Hủy</div>
             <div className="accept-btn" onClick={handleAcceptClick}>{dialog.acceptButtonName}</div>
           </div>

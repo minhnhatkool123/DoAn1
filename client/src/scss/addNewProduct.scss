@@ -24,11 +24,11 @@
     top: 50%;
     z-index: 1;
     transform: translate(-50%, -50%);
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 
     .form-container {
-      margin: 16px 18px;
+      margin: 16px 14px 12px 14px;
 
       label,
       select,
@@ -184,7 +184,7 @@
             width: unset;
             margin: unset;
             font-weight: 100;
-            color: $grey;
+            color: $lightslategray;
             border: 1px solid $divider;
             border-radius: 3px;
             padding: 1px 6px;
@@ -195,7 +195,8 @@
           }
 
           input[type="checkbox"]:checked + label {
-            background: $divider;
+            background: $grey;
+            border-color: $grey;
             color: $white;
           }
         }
@@ -223,25 +224,25 @@
           text-align: center;
           font-size: 18px;
           font-weight: 600;
-          border-radius: 3px;
+          border-radius: 6px;
           cursor: pointer;
         }
 
         .add-product-btn {
-          background: $mediumturquoise;
+          background: $hotpink;
           color: $white;
           margin-left: 10px;
 
           &:hover {
-            background-color: #45b2b5;
+            background: darken($hotpink, 6);
           }
         }
 
         .cancel-btn {
-          color: $dimgrey;
+          color: $hotpink;
 
           &:hover {
-            background-color: $silver;
+            background-color: darken($silver, 2);
           }
         }
       }

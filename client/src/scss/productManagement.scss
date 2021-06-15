@@ -5,140 +5,240 @@
   max-width: $widthRate;
 }
 
-.product-other-features {
-  width: 100%;
-  max-width: 1034px;
-  margin: 0 auto;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-
-  .title {
-    margin-right: 64px;
-    color: $darkgrey;
-    font-size: 18px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-left: 8px;
-  }
-
-  .product-search {
-    height: 40px;
-    flex-grow: 1;
-    border: 1px solid #ffb0bd;
-    border-radius: 30px;
-    padding: 0 10px;
-  }
-
-  .add-product-btn {
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 50%;
-    background: $hotpink;
-    margin-left: 10px;
-    color: $white;
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
-
-    &:hover {
-      filter: brightness(0.9);
-    }
-  }
-}
-
-.product-table {
-  width: 100%;
-  max-width: 1034px;
-  margin: 0 auto;
-  border-radius: 16px;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-
-  .title-list {
+.admin-body {
+  .product-other-features {
+    width: 100%;
+    max-width: 1034px;
+    margin: 0 auto;
+    margin-bottom: 14px;
     display: flex;
-    background: $hotpink;
-    padding: 8px 0;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    align-items: center;
 
-    div {
-      text-align: center;
+    .title {
+      margin-right: 64px;
+      color: $darkgrey;
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
+    .product-search {
+      height: 40px;
+      flex-grow: 1;
+      border: 1px solid $hotpink;
+      border-radius: 30px;
+      padding: 0 10px;
+    }
+
+    .add-product-btn {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      background: $hotpink;
+      margin-left: 10px;
       color: $white;
       font-weight: 700;
-    }
+      text-align: center;
+      cursor: pointer;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-    .manipulation {
-      
+      &:hover {
+        background: darken($hotpink, 6);
+      }
+
+      .add-icon {
+        * {
+          color: $white;
+        }
+
+        width: 60%;
+        height: 100%;
+      }
     }
   }
 
-  .product-list {
-    .product-item {
+  .product-table {
+    width: 100%;
+    max-width: 1034px;
+    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    .title-list {
       display: flex;
-      align-items: center;
-
-      &:nth-child(odd) {
-        background: $white;
-      }
-
-      &:nth-child(even) {
-        background: $ghostwhite;
-      }
-
-      &:last-child {
-        border-bottom-left-radius: 16px;
-        border-bottom-right-radius: 16px;
-      }
+      background: $hotpink;
+      padding: 8px 0;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
 
       div {
         text-align: center;
-        color: $darkslategrey;
-        font-weight: 600;
+        color: $white;
+        font-weight: 700;
       }
 
-      .product-image-container {
-        padding: 6px 8px;
-
-        .product-image {
-          border-radius: 6px;
-          padding-top: 100%;
-          background: {
-            size: contain;
-            repeat: no-repeat;
-          }
-        }
+      .manipulation {
       }
+    }
 
-      .product-manipulation {
+    .product-list {
+      .product-item {
         display: flex;
-        justify-content: center;
+        align-items: center;
+
+        &:nth-child(odd) {
+          background: $white;
+        }
+
+        &:nth-child(even) {
+          background: $ghostwhite;
+        }
+
+        &:last-child {
+          border-bottom-left-radius: 16px;
+          border-bottom-right-radius: 16px;
+        }
 
         div {
-          width: 30px;
-          height: 30px;
-          margin: 3px;
-          border-radius: 50%;
-          cursor: pointer;
-          padding: 4px;
+          text-align: center;
+          color: $darkslategrey;
+          font-weight: 600;
+        }
 
-          &:hover {
-            filter: brightness(0.9);
+        .product-image-container {
+          padding: 6px 8px;
+
+          .product-image {
+            border-radius: 6px;
+            padding-top: 100%;
+            background: {
+              size: contain;
+              repeat: no-repeat;
+            }
           }
         }
 
-        .view-btn {
-          background: $hotpink;
-        }
+        .product-manipulation {
+          display: flex;
+          justify-content: center;
 
-        .edit-btn {
-          background: $cornflowerblue;
-        }
+          div {
+            width: 30px;
+            height: 30px;
+            margin: 3px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 4px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-        .delete-btn {
-          background: $sandybrown;
+            &:hover {
+              filter: brightness(0.9);
+            }
+          }
+
+          .view-btn {
+            background: $hotpink;
+          }
+
+          .edit-btn {
+            background: $cornflowerblue;
+          }
+
+          .delete-btn {
+            background: $sandybrown;
+          }
         }
       }
+    }
+  }
+
+  .pagination {
+    * {
+      color: $darkslategrey;
+    }
+
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    margin-top: 26px;
+    // position: absolute;
+    // bottom: 30px;
+    // left: 50%;
+    // transform: translateX(-50%);
+
+    .paginated-btn,
+    .prev-btn,
+    .next-btn {
+      a {
+        cursor: pointer;
+        // border: 1px solid $silver;
+        font-size: 16px;
+        // min-width: 36px;
+        min-width: 32px;
+        text-align: center;
+        display: block;
+      }
+    }
+
+    .paginated-btn a {
+      padding: 5px 8px;
+      border-left: none;
+      border-radius: 4px;
+      margin: 0 4px;
+
+      &:hover {
+        background: $hotpink;
+        color: $white;
+      }
+    }
+
+    .prev-btn,
+    .next-btn {
+      a {
+        // padding: 5px 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+      }
+
+      // &:not(.disabled-btn) {
+      //   a:hover {
+      //     background: #f3b8ce8c;
+      //   }
+      // }
+    }
+
+    .prev-icon,
+    .next-icon {
+      width: 20px;
+      height: 31.5px;
+    }
+
+    .prev-btn a {
+      margin-right: 4px;
+      // min-width: 56px;
+      // border-top-left-radius: 4px;
+      // border-bottom-left-radius: 4px;
+    }
+
+    .next-btn a {
+      margin-left: 4px;
+      // border-left: none;
+      // border-top-right-radius: 4px;
+      // border-bottom-right-radius: 4px;
+    }
+
+    .disabled-btn a {
+      cursor: default;
+      opacity: 1;
+      color: rgba($color: $silver, $alpha: 1);
+    }
+
+    .active-btn a {
+      background: $hotpink;
+      color: $white;
     }
   }
 }
