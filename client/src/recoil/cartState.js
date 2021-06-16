@@ -26,7 +26,7 @@ export const cartTotalQuantity = selector({
       return totalQuantity + item.quantity;
     }, 0)
   }
-})
+});
 
 function* idGenerator() {
   let i = 0;
@@ -98,4 +98,9 @@ export const increaseCartItem = (cart, itemId) => {
 
   console.log('something went wrong');
   return cart;
+}
+
+export const getProductQuantityInCart = (cart, productId) => {
+  const indexes = cart.reduce((totalIndexes, cartItem, i) => cartItem.product.id === productId ? totalIndexes.concat(i) : totalIndexes, []);
+  return indexes.reduce((totalQuantity, index) => totalQuantity + cart[index].quantity, 0);
 }

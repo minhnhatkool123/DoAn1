@@ -27,10 +27,6 @@ function AdminSection() {
         <div className="admin-container">
           <div className="admin-dashboard">
             <div className="admin-navigation l-1">
-              {/* <div className="logo">
-                
-              </div> */}
-
               <img src={vividPinwheel} className="logo-icon" alt="" />
 
               <div className="menu-options">

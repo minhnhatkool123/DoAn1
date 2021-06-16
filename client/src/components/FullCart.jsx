@@ -1,7 +1,7 @@
 import '../scss/cart.scss';
 import React from 'react';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
-import { removeFromCart, decreaseCartItem, increaseCartItem, cartTotalPrice, cartState } from '../recoil/cartState';
+import { removeFromCart, decreaseCartItem, increaseCartItem, getProductQuantityInCart, cartTotalPrice, cartState } from '../recoil/cartState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
 import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
@@ -31,15 +31,23 @@ function FullCart() {
     });
   }
 
-  const handleProductIncrement = (id) => {
+  const handleProductIncrement = (id, product) => {
+    if (getProductQuantityInCart(cart, product.id) + 1 > product.quantity) {
+      setToastDisplay({
+        show: true,
+        message: <span><strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
+      });
+      return;
+    }
+
     const newCart = increaseCartItem(cart, id);
 
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
   }
 
-  const handleProductDecrement = (id, quantity) => {
-    if (quantity <= 1) return;
+  const handleProductDecrement = (id, currentQuantity) => {
+    if (currentQuantity <= 1) return;
 
     let newCart = [];
 
@@ -77,7 +85,7 @@ function FullCart() {
               <td width="15%" className="quantity-adjustment">
                 <span className="decrement-btn" onClick={() => handleProductDecrement(item.id, item.quantity)}>-</span>
                 <span className="quantity">{item.quantity}</span>
-                <span className="increment-btn" onClick={() => handleProductIncrement(item.id)}>+</span>
+                <span className="increment-btn" onClick={() => handleProductIncrement(item.id, item.product)}>+</span>
               </td>
 
               <td width="15%" className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</td>

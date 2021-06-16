@@ -1,7 +1,7 @@
 import '../scss/productDetail.scss';
 import React, { useState, useEffect, useRef } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { addToCart, cartState } from '../recoil/cartState';
+import { addToCart, cartState, getProductQuantityInCart } from '../recoil/cartState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";
 import { GiTwoCoins } from "react-icons/gi";
@@ -69,8 +69,9 @@ function ProductDetail() {
       price: parseInt(priceRef.current.innerText.replace(',', '')),
       size: sizeLabel.value,
       color,
-      id: product.id,
-      url: url
+      id: product._id,
+      url: url,
+      quantity: product.quantity
     }
     // create new cart from the product just created and product quantity
     const newCart = addToCart(cart, item, quantity, uuid());
@@ -92,6 +93,7 @@ function ProductDetail() {
   }
 
   const handleAddProductToCart = (buttonType) => {
+    console.log('so luong sp da co trong gio hang: ', getProductQuantityInCart(cart, product._id))
     // get selected size from checked size label
     const sizeLabel = document.querySelector('input[name="size"]:checked');
     // check if the product information is not complete, then show the toast message, otherwise add the product to cart
@@ -105,10 +107,10 @@ function ProductDetail() {
         show: true,
         message: 'Bạn chưa chọn màu cho sản phẩm'
       });
-    } else if (quantity > product.quantity) {
+    } else if (quantity + getProductQuantityInCart(cart, product._id) > product.quantity) {
       setToastDisplay({
         show: true,
-        message: <span>Sản phẩm <strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
+        message: <span><strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
       });
     } else {
       addProductToCart(sizeLabel, buttonType);
