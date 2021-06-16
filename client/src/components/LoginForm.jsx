@@ -56,10 +56,26 @@ function LoginForm() {
       data: { tokenId: res.tokenId },
     }).then((response) => {
       console.log(response);
-      setUser({
-        accessToken: res.tokenId,
-        info: response.data.user
-      });
+
+      const userAccessToken = response.data.accessToken;
+
+      const config = {
+        headers: {
+          Authorization: userAccessToken,
+        }
+      }
+
+      axios.get('http://localhost:5000/user/info', config)
+        .then(res => {
+          console.log(res.data.user);
+          localStorage.setItem('accessToken', userAccessToken);
+          setUser({
+            accessToken: userAccessToken,
+            ...res.data.user
+          });
+        })
+        .catch(err => console.log(err))
+
       setLogin(false);
     });
   };
@@ -74,11 +90,26 @@ function LoginForm() {
 
     axios.post('http://localhost:5000/user/login', request)
       .then(response => {
-        console.log(response.data)
-        setUser({
-          accessToken: response.data.accessToken,
-          ...response.data.user
-        });
+        console.log(response.data);
+        const userAccessToken = response.data.accessToken;
+
+        const config = {
+          headers: {
+            Authorization: userAccessToken,
+          }
+        }
+
+        axios.get('http://localhost:5000/user/info', config)
+          .then(res => {
+            console.log(res.data.user);
+            localStorage.setItem('accessToken', userAccessToken);
+            setUser({
+              accessToken: userAccessToken,
+              ...res.data.user
+            });
+          })
+          .catch(err => console.log(err))
+
         setLogin(false);
       })
       .catch(error => {

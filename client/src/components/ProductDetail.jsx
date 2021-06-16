@@ -35,6 +35,7 @@ function ProductDetail() {
   const [color, setColor] = useState('');
 
   useEffect(() => {
+    setCurrentImage('');
     refetch();
   }, [url]);
 

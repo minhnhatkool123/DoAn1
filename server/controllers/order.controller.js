@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Orders = require('../models/orderModel');
 const Products = require('../models/productModel');
 

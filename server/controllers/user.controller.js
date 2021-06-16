@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Users = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -125,10 +126,10 @@ const sendMailOTP = (to, otp) => {
 
 	smtpTransport.sendMail(mailOptions, (err, info) => {
 		if (err) {
-			//console.log(err);
+			console.log(err);
 			return err;
 		}
-		//console.log(info);
+		console.log("info", info);
 		return info;
 	});
 };

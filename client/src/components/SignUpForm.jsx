@@ -54,10 +54,26 @@ function SignUpForm() {
       data: { tokenId: res.tokenId },
     }).then((response) => {
       console.log(response);
-      setUser({
-        accessToken: res.tokenId,
-        info: response.data.user
-      });
+
+      const userAccessToken = response.data.accessToken;
+
+      const config = {
+        headers: {
+          Authorization: userAccessToken,
+        }
+      }
+
+      axios.get('http://localhost:5000/user/info', config)
+        .then(res => {
+          console.log(res.data.user);
+          localStorage.setItem('accessToken', userAccessToken);
+          setUser({
+            accessToken: userAccessToken,
+            ...res.data.user
+          });
+        })
+        .catch(err => console.log(err))
+
       setSignUp(false);
     });
   };

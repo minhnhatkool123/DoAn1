@@ -48,8 +48,8 @@ function SearchSection() {
         break;
     }
 
-    // console.log(categoryKey)
-    // console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`)
+    console.log(categoryKey)
+    console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`)
 
     const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`);
     setTotalPages(response.data.totalPages);
@@ -61,6 +61,10 @@ function SearchSection() {
     console.log('set page 0')
     setPage(0);
   }, [category, filter]);
+
+  useEffect(() => {
+    console.log('pathname', pathname)
+  }, [pathname])
 
   const handlePageChange = ({ selected }) => {
     console.log('page click: ', selected);
@@ -87,7 +91,7 @@ function SearchSection() {
           <div className="title">Danh mục sản phẩm</div>
           <ul className="catalog-detail">
             {catalog.map((item, index) => (
-              <li key={index}><Link to={{ pathname: item.key, state: item.value }}>{item.value}</Link></li>
+              <li key={index}><Link to={{ pathname: `/category/${item.key}`, state: item.value }}>{item.value}</Link></li>
             ))}
           </ul>
         </div>

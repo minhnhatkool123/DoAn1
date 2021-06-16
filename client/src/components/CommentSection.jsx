@@ -20,9 +20,8 @@ function CommentSection() {
   const commentBoxRef = useRef(null);
 
   const { data: comments, refetch } = useQuery('comments', async () => {
-    console.log(`http://localhost:5000/api/comment/get?productId=${productId}`)
     const response = await axios.get(`http://localhost:5000/api/comment/get?productId=${productId}`);
-    console.log(response.data)
+    // console.log(response.data)
     return response.data;
   });
 

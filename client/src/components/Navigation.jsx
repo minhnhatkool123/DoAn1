@@ -41,6 +41,7 @@ function Navigation() {
       setSignUp(true);
     } else {
       setUser({});
+      localStorage.removeItem('accessToken');
     }
   };
 
@@ -98,7 +99,7 @@ function Navigation() {
           <div className="account-cart col l-3">
             <div className="account">
               <span className="name" onClick={handleLoginUser}>
-                <ConditionalLink to='/admin' condition={name}>
+                <ConditionalLink to='/account' condition={name}>
                   {name || 'Đăng nhập'}
                 </ConditionalLink>
               </span>

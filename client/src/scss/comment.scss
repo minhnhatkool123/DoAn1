@@ -97,6 +97,8 @@
 
       &:last-child {
         color: $lightgrey;
+        text-decoration: none;
+        cursor: default;
       }
     }
   }

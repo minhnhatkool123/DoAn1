@@ -41,7 +41,7 @@ const AddNewProduct = React.forwardRef((props, ref) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [accordingTypes, setAccordingTypes] = useState([]);
 
-  const [testedImages, setTestedImages] = useState([]);
+  const [testedImages, setTestedImages] = useState();
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
 
@@ -74,7 +74,7 @@ const AddNewProduct = React.forwardRef((props, ref) => {
     // };
 
     const data = new FormData();
-    data.append('images', JSON.stringify(testedImages))
+    data.append('images', testedImages[0])
 
     // testedImages.forEach((image) => {
     //   data.append('images[]', image);

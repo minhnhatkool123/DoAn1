@@ -130,7 +130,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
     setDialog({
       show: true,
       message: `Bạn có chắc muốn ${keyword} người này bình luận?`,
-      acceptButtonName: keyword.charAt(0).toUpperCase(),
+      acceptButtonName: keyword,
       func: () => {
         axios.patch('http://localhost:5000/user/update-mute', data, config)
           .then(response => {
@@ -170,7 +170,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
             {!reply && <span className="reply-btn" onClick={handleReplyClick}>Trả lời</span>}
             {isAdmin && <span className="delete-btn" onClick={handleDeleteComment}>Xóa</span>}
             {isAdmin && !isAdminComment && <span className="mute-btn" onClick={handleMuteUser}>{comment.user.mute ? 'Bỏ cấm' : 'Cấm'}</span>}
-            <span>{timeAgoRef.current}</span>
+            <span className="time-ago">{timeAgoRef.current}</span>
           </div>
         </div>
       </div>

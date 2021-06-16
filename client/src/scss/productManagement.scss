@@ -120,6 +120,46 @@
           }
         }
 
+        .product-status {
+          display: flex;
+          flex-flow: wrap;
+          justify-content: center;
+
+          // label:not(:first-child) {
+          //   margin-left: 4px;
+          // }
+
+          .status-label {
+            padding: 1px 8px;
+            font-size: 12px;
+            border-radius: 10px;
+            margin: 3px 3px;
+            box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+
+            &.sale {
+              color: $darkersandybrown;
+              background: $oldlace;
+            }
+
+            &.new {
+              // color: $turquoise;
+              // background: $lightcyan;
+              color: $mediumaquamarine;
+              background: $mintcream;
+            }
+
+            &.hot {
+              color: $darkerindianred;
+              background: $lavenderblush;
+            }
+
+            &.none {
+              color: $lightslategray;
+              background: $lightghostwhite;
+            }
+          }
+        }
+
         .product-manipulation {
           display: flex;
           justify-content: center;

@@ -14,14 +14,22 @@ import { userState } from '../recoil/userState';
 import ReactPaginate from "react-paginate";
 
 const productStatus = {
-  '0': 'không có',
-  '1': 'mới nhất',
-  '2': 'khuyến mãi',
-  '3': 'bán chạy'
-}
-
-const capitalize = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+  '0': {
+    key: 'none',
+    value: 'Không có'
+  },
+  '1': {
+    key: 'new',
+    value: 'Mới'
+  },
+  '2': {
+    key: 'sale',
+    value: 'Khuyến mãi'
+  },
+  '3': {
+    key: 'hot',
+    value: 'Bán chạy'
+  }
 }
 
 function ProductManagement() {
@@ -37,7 +45,7 @@ function ProductManagement() {
   const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page], async () => {
     const response = await axios.get(`http://localhost:5000/api/product/all?page=${page + 1}&limit=8`);
     setTotalPages(response.data.totalPages);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   });
 
@@ -108,7 +116,11 @@ function ProductManagement() {
               <div className="product-name fl-20">{product.name}</div>
               <div className="product-type fl-15">{product.type}</div>
               <div className="product-quantity fl-8">{product.quantity}</div>
-              <div className="product-status fl-17">{capitalize(product.status.map(status => productStatus[status]).join(', '))}</div>
+              <div className="product-status fl-17">
+                {product.status.map(status => (
+                  <label key={status} className={'status-label ' + productStatus[status].key}>{productStatus[status].value}</label>
+                ))}
+              </div>
               <div className="product-unit-price fl-10">{product.real_price.toLocaleString()}đ</div>
               <div className="product-discount fl-10">{product.discount.toLocaleString()}đ</div>
               <div className="product-manipulation fl-13">
