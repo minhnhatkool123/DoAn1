@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// const App = React.lazy(() => import('./App'));
+
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      <App />
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
+        <App />
+      {/* </Suspense> */}
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')

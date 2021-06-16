@@ -9,6 +9,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FaSearch } from "react-icons/fa";
 import SignUpForm from './SignUpForm';
 import LoginForm from './LoginForm';
+import axios from 'axios';
 
 const ConditionalLink = ({ children, to, condition }) => (!!condition && to)
   ? <Link to={to}>{children}</Link>
@@ -51,6 +52,30 @@ function Navigation() {
     if (keyword)
       history.push(`/search?name=${keyword}`);
   }
+
+  useEffect(() => {
+    const userAccessToken = localStorage.getItem('accessToken');
+
+    if (userAccessToken) {
+      const config = {
+        headers: {
+          Authorization: userAccessToken,
+        }
+      }
+
+      axios.get('http://localhost:5000/user/info', config)
+        .then(res => {
+          console.log(res.data.user);
+          setUser({
+            accessToken: userAccessToken,
+            ...res.data.user
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    }
+  }, []);
 
   useEffect(() => {
     if (user.accessToken) {

@@ -113,7 +113,6 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
   }
 
   const handleMuteUser = () => {
-    // check user có đang bị mute hay không => hiện message tương ứng, hoặc check value của thẻ span là Cấm hay Bỏ cấm
     const keyword = comment.user.mute ? 'bỏ cấm' : 'cấm';
 
     const data = {
