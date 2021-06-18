@@ -25,10 +25,7 @@
 
 .admin-section {
   overflow: auto;
-
-  * {
-    color: $lightslategray;
-  }
+  color: $lightslategray;
 
   .admin-container {
     max-width: 1250px;

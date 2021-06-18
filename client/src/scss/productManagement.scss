@@ -28,7 +28,7 @@
       flex-grow: 1;
       border: 1px solid $hotpink;
       border-radius: 30px;
-      padding: 0 10px;
+      padding: 0 14px;
     }
 
     .add-product-btn {
@@ -49,10 +49,7 @@
       }
 
       .add-icon {
-        * {
-          color: $white;
-        }
-
+        color: $white;
         width: 60%;
         height: 100%;
       }
@@ -69,14 +66,213 @@
     .title-list {
       display: flex;
       background: $hotpink;
-      padding: 8px 0;
       border-top-left-radius: 16px;
       border-top-right-radius: 16px;
 
-      div {
+      .title {
         text-align: center;
         color: $white;
         font-weight: 700;
+        padding: 8px 0;
+
+        span {
+          color: $white;
+        }
+      }
+
+      .type-title-container {
+        position: relative;
+        cursor: pointer;
+
+        &:hover {
+          .type-options {
+            display: block;
+          }
+        }
+
+        .dropdown-icon {
+          position: absolute;
+          top: 13px;
+          color: $white;
+          width: 16px;
+          height: 13px;
+        }
+
+        .type-options {
+          display: none;
+          list-style: none;
+          position: absolute;
+          top: calc(100% + 3px);
+          width: calc(100% - 28px);
+          border-radius: 4px;
+          margin-left: 14px;
+          font-size: 15px;
+          line-height: 30px;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            top: -3px;
+            left: 0;
+          }
+
+          .category-option {
+            font-weight: 500;
+
+            &:first-child label {
+              border-top-left-radius: 4px;
+              border-top-right-radius: 4px;
+            }
+
+            &:last-child label {
+              border-bottom-left-radius: 4px;
+              border-bottom-right-radius: 4px;
+            }
+
+            &:hover {
+              .type-option {
+                display: block;
+              }
+            }
+
+            .expand-select-icon {
+              position: absolute;
+              right: 1px;
+              top: 6.5px;
+              width: 16px;
+              height: 16px;
+            }
+
+            .type-option {
+              display: none;
+              position: absolute;
+              left: calc(100% + 3.5px);
+              top: -1px;
+              width: 100%;
+
+              &::before {
+                content: "";
+                position: absolute;
+                height: 100%;
+                width: 3.5px;
+                top: 0;
+                left: -3.5px;
+              }
+
+              label {
+                border-radius: unset;
+
+                &:nth-child(2) {
+                  border-top-left-radius: 4px;
+                  border-top-right-radius: 4px;
+                }
+
+                &:last-child {
+                  border-bottom-left-radius: 4px;
+                  border-bottom-right-radius: 4px;
+                }
+              }
+            }
+          }
+        }
+
+        input[type="radio"] {
+          display: none;
+        }
+
+        label {
+          position: relative;
+          display: block;
+          cursor: pointer;
+          color: $darkslategrey;
+          background: lighten($hotpink, 19);
+          border-bottom: 1px solid lighten($hotpink, 15);
+          border-top: 1px solid lighten($hotpink, 21);
+
+          &:hover {
+            background: lighten($hotpink, 15);
+          }
+        }
+
+        input[type="radio"]:checked + label {
+          background: $hotpink;
+        }
+      }
+
+      .status-title-container {
+        position: relative;
+        cursor: pointer;
+
+        &:hover {
+          .status-options {
+            display: block;
+          }
+        }
+
+        .dropdown-icon {
+          position: absolute;
+          top: 13px;
+          color: $white;
+          width: 16px;
+          height: 13px;
+        }
+
+        .status-options {
+          display: none;
+          list-style: none;
+          position: absolute;
+          top: calc(100% + 3px);
+          width: calc(100% - 28px);
+          border-radius: 4px;
+          font-weight: 500;
+          margin-left: 14px;
+          font-size: 15px;
+          line-height: 30px;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            top: -3px;
+            left: 0;
+          }
+
+          input[type="checkbox"] {
+            display: none;
+          }
+
+          label {
+            display: block;
+            cursor: pointer;
+            color: $darkslategrey;
+            background: lighten($hotpink, 19);
+            border-bottom: 1px solid lighten($hotpink, 15);
+            border-top: 1px solid lighten($hotpink, 21);
+
+            &:nth-child(2) {
+              border-top-left-radius: 4px;
+              border-top-right-radius: 4px;
+            }
+
+            &:last-child {
+              border-bottom-left-radius: 4px;
+              border-bottom-right-radius: 4px;
+            }
+
+            &:hover {
+              background: lighten($hotpink, 15);
+            }
+          }
+
+          input[type="checkbox"]:checked + label {
+            background: $hotpink;
+          }
+        }
       }
 
       .manipulation {
@@ -124,10 +320,6 @@
           display: flex;
           flex-flow: wrap;
           justify-content: center;
-
-          // label:not(:first-child) {
-          //   margin-left: 4px;
-          // }
 
           .status-label {
             padding: 1px 8px;
@@ -213,9 +405,7 @@
     .next-btn {
       a {
         cursor: pointer;
-        // border: 1px solid $silver;
         font-size: 16px;
-        // min-width: 36px;
         min-width: 32px;
         text-align: center;
         display: block;
@@ -237,7 +427,6 @@
     .prev-btn,
     .next-btn {
       a {
-        // padding: 5px 10px;
         width: 32px;
         height: 32px;
         border-radius: 4px;
@@ -258,16 +447,10 @@
 
     .prev-btn a {
       margin-right: 4px;
-      // min-width: 56px;
-      // border-top-left-radius: 4px;
-      // border-bottom-left-radius: 4px;
     }
 
     .next-btn a {
       margin-left: 4px;
-      // border-left: none;
-      // border-top-right-radius: 4px;
-      // border-bottom-right-radius: 4px;
     }
 
     .disabled-btn a {

@@ -41,7 +41,7 @@ function App() {
 	}
 
 	const isAdmin = () => {
-		// async & lazy load Admin?
+		// async & lazy load Admin? => yes
 		// if (user.type === 1) return true;
 		// return false;
 		return true;

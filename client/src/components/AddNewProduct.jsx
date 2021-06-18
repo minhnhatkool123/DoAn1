@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import TextError from './TextError';
 import { IoIosClose } from "react-icons/io";
 import { toastDisplayState } from '../recoil/toastDisplayState';
+import { LoopCircleLoading } from 'react-loadingg';
+import { useMutation } from 'react-query';
 import categories from '../data/categories';
 import types from '../data/types';
 import sizes from '../data/sizes';
@@ -14,7 +16,7 @@ import axios from 'axios';
 
 const validationSchema = Yup.object({
   productName: Yup.string().required('*Bắt buộc'),
-  productCategory: Yup.string().required('*Bắt buộc'),
+  productCategory: Yup.string().required('*Bắt buộccccc'),
   productType: Yup.string().required('*Bắt buộc'),
   productPrice: Yup.number()
     .typeError('Giá phải là một số')
@@ -27,7 +29,7 @@ const validationSchema = Yup.object({
   productQuantity: Yup.number()
     .required('*Bắt buộc')
     .typeError('Số lượng phải là một số'),
-  productStatus: Yup.array().min(1, 'Chọn ít nhất 1 trạng thái'),
+  // productStatus: Yup.array().min(1, 'Chọn ít nhất 1 trạng thái'),
   productSize: Yup.array().min(1, 'Chọn ít nhất 1 kích thước'),
   productImages: Yup.array().min(1, 'Chọn ít nhất 1 ảnh'),
   productColors: Yup.array().min(1, 'Chọn ít nhất 1 ảnh')
@@ -40,8 +42,6 @@ const AddNewProduct = React.forwardRef((props, ref) => {
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [accordingTypes, setAccordingTypes] = useState([]);
-
-  const [testedImages, setTestedImages] = useState();
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
 
@@ -58,59 +58,81 @@ const AddNewProduct = React.forwardRef((props, ref) => {
     productColors: []
   };
 
-  const onSubmit = (values) => {
-    console.log(values);
+  const resetSelections = () => {
+    setSelectedImages([]);
+    setSelectedColors([]);
+    setSelectedCategory('');
+    setAccordingTypes([]);
+  }
+
+  const mutation = useMutation(async ({ values, resetForm }) => {
+    const images = new FormData();
+    for (let i = 0; i < selectedImages.length; i++) {
+      images.append('images', selectedImages[i].file);
+    }
+
+    const colors = new FormData();
+    for (let i = 0; i < selectedColors.length; i++) {
+      colors.append('images', selectedColors[i].file);
+    }
+
+    const [uploadedImages, uploadedColors] = await Promise.all([
+      axios.post('http://localhost:5000/api/image/upload', images),
+      axios.post('http://localhost:5000/api/image/upload', colors)
+    ]);
+
+    // console.log(uploadedImages.data)
+    // console.log(uploadedColors.data)
 
     const config = {
       headers: {
         Authorization: user.accessToken
       }
     }
+    // chưa test
+    const productStatus = values.productStatus.map(status => parseInt(status));
+    if (values.productDiscount > 0) {
+      productStatus.push(2);
+    } else if (!values.productStatus.length) {
+      productStatus.push(0);
+    }
 
-    // console.log(values.productImages[0]);
+    const product = {
+      name: values.productName,
+      category: values.productCategory,
+      type: values.productType,
+      price: values.productPrice,
+      discount: values.productDiscount,
+      quantity: values.productQuantity,
+      sizes: values.productSize,
+      // status: values.productStatus.length ? values.productStatus.map(status => parseInt(status)) : [0],
+      status: productStatus,
+      images: uploadedImages.data.images,
+      colors: uploadedColors.data.images
+    }
 
-    // const payload = {
-    //   path: testedImages[0]
-    // };
+    console.log(product);
 
-    const data = new FormData();
-    data.append('images', testedImages[0])
+    axios.post('http://localhost:5000/api/product/add', product, config)
+      .then((response) => {
+        console.log('Them thanh cong');
+        console.log(response.data);
 
-    // testedImages.forEach((image) => {
-    //   data.append('images[]', image);
-    // });
+        resetForm();
+        resetSelections();
 
-    console.log(data)
-    // console.log(data.getAll('images[]'));
-
-    axios.post('http://localhost:5000/api/image/upload', data, config)
-      .then(response => {
-        console.log('uploaded images: ', response.data);
-
-        // const product = {
-        //   name: values.productName,
-        //   category: values.productCategory,
-        //   type: values.productType,
-        //   price: values.productPrice,
-        //   discount: values.productDiscount,
-        //   quantity: values.productQuantity,
-        //   sizes: values.productSize,
-        //   status: values.productStatus.map(status => parseInt(status)),
-        //   colors: values.productColors,
-        //   images: response.data
-        // }
-
-        // axios.post('http://localhost:5000/api/product/add', product, config)
-        //   .then(res => {
-        //     console.log(res);
-        //   })
-        //   .catch(err => {
-        //     console.log(err);
-        //   })
+        setToastDisplay({
+          show: true,
+          message: 'Thêm sản phẩm thành công'
+        });
       })
-      .catch(error => {
-        console.log(error)
-      });
+      .catch((error) => {
+        console.log(error);
+      })
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    mutation.mutate({ values, resetForm });
   }
 
   useEffect(() => {
@@ -128,18 +150,16 @@ const AddNewProduct = React.forwardRef((props, ref) => {
   const handleClosing = (resetForm) => {
     ref.current.classList.remove('active');
     resetForm();
-    setSelectedImages([]);
-    setSelectedColors([]);
+    resetSelections();
   }
 
   const handleImagesChoose = (e, setFieldValue) => {
     if (e.target.files) {
-      console.log(e.target.files);
-      const fileArray = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+      const fileArray = Array.from(e.target.files).map(file => ({
+        file: file,
+        url: URL.createObjectURL(file)
+      }));
       const expectedImages = [...selectedImages].concat(fileArray);
-
-      const testArray = Array.from(e.target.files);
-      const images = [...testedImages].concat(testArray);
 
       if (expectedImages.length > 5) {
         setToastDisplay({
@@ -149,7 +169,6 @@ const AddNewProduct = React.forwardRef((props, ref) => {
       } else {
         setSelectedImages(expectedImages);
         setFieldValue('productImages', expectedImages);
-        setTestedImages(e.target.files);
       }
 
       Array.from(e.target.files).map(file => URL.revokeObjectURL(file));
@@ -158,7 +177,10 @@ const AddNewProduct = React.forwardRef((props, ref) => {
 
   const handleColorsChoose = (e, setFieldValue) => {
     if (e.target.files) {
-      const fileArray = Array.from(e.target.files).map(file => URL.createObjectURL(file));
+      const fileArray = Array.from(e.target.files).map(file => ({
+        file: file,
+        url: URL.createObjectURL(file)
+      }));
       const expectedColors = [...selectedColors].concat(fileArray);
 
       if (expectedColors.length > 5) {
@@ -269,12 +291,8 @@ const AddNewProduct = React.forwardRef((props, ref) => {
                   <div className="status-options">
                     <Field type="checkbox" id="new" name="productStatus" value="1" />
                     <label htmlFor="new">Mới nhất</label>
-                    <Field type="checkbox" id="sale" name="productStatus" value="2" />
-                    <label htmlFor="sale">Khuyến mãi</label>
                     <Field type="checkbox" id="hot" name="productStatus" value="3" />
                     <label htmlFor="hot">Bán chạy</label>
-                    <Field type="checkbox" id="none" name="productStatus" value="0" />
-                    <label htmlFor="none">Không có</label>
                   </div>
                   <ErrorMessage name="productStatus" component={TextError} />
                 </div>
@@ -301,8 +319,8 @@ const AddNewProduct = React.forwardRef((props, ref) => {
                 <div className="product-color">
                   <div className="img-row">
                     {selectedImages.map(image => (
-                      <div className="img-col" key={image}>
-                        <div className="image-color" style={{ backgroundImage: `url(${image})` }}>
+                      <div className="img-col" key={image.url}>
+                        <div className="image-color" style={{ backgroundImage: `url(${image.url})` }}>
                           <span className="remove-image-btn" onClick={() => handleRemoveImageClick(image, formik.setFieldValue)}>
                             <IoIosClose className="remove-image-icon" />
                           </span>
@@ -325,8 +343,8 @@ const AddNewProduct = React.forwardRef((props, ref) => {
                 <div className="product-color">
                   <div className="img-row">
                     {selectedColors.map(color => (
-                      <div className="img-col" key={color}>
-                        <div className="image-color" style={{ backgroundImage: `url(${color})` }}>
+                      <div className="img-col" key={color.url}>
+                        <div className="image-color" style={{ backgroundImage: `url(${color.url})` }}>
                           <span className="remove-image-btn" onClick={() => handleRemoveColorClick(color, formik.setFieldValue)}>
                             <IoIosClose className="remove-image-icon" />
                           </span>
@@ -350,6 +368,10 @@ const AddNewProduct = React.forwardRef((props, ref) => {
             </Form>
           )}
         </Formik>
+
+        {mutation.isLoading && <div className="loading-overlay">
+          <LoopCircleLoading color='#ff7eae' />
+        </div>}
       </div>
     </div>
   )
