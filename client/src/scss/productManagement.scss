@@ -59,15 +59,22 @@
   .product-table {
     width: 100%;
     max-width: 1034px;
+    // min-height: 482px;
+    background: $white;
     margin: 0 auto;
     border-radius: 16px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+    &.offset {
+      min-height: 500px;
+    }
 
     .title-list {
       display: flex;
       background: $hotpink;
       border-top-left-radius: 16px;
       border-top-right-radius: 16px;
+      box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 
       .title {
         text-align: center;
@@ -247,6 +254,90 @@
           }
 
           label {
+            position: relative;
+            display: block;
+            cursor: pointer;
+            color: $darkslategrey;
+            background: lighten($hotpink, 19);
+            border-bottom: 1px solid lighten($hotpink, 15);
+            border-top: 1px solid lighten($hotpink, 21);
+
+            &:nth-child(2) {
+              border-top-left-radius: 4px;
+              border-top-right-radius: 4px;
+            }
+
+            &:last-child {
+              border-bottom-left-radius: 4px;
+              border-bottom-right-radius: 4px;
+            }
+
+            &:hover {
+              background: lighten($hotpink, 15);
+            }
+
+            .tick-icon {
+              display: none;
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              width: 18px;
+              height: 18px;
+              color: $hotpink;
+            }
+          }
+
+          input[type="checkbox"]:checked + label .tick-icon {
+            display: block;
+          }
+        }
+      }
+
+      .unit-price-title-container {
+        position: relative;
+        cursor: pointer;
+
+        &:hover {
+          .sort-options {
+            display: block;
+          }
+        }
+
+        .dropdown-icon {
+          position: absolute;
+          top: 13px;
+          color: $white;
+          width: 16px;
+          height: 13px;
+        }
+
+        .sort-options {
+          display: none;
+          list-style: none;
+          position: absolute;
+          top: calc(100% + 3px);
+          width: calc(100% - 0px);
+          border-radius: 4px;
+          font-weight: 500;
+          margin-left: 0px;
+          font-size: 15px;
+          line-height: 30px;
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+          &::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            top: -3px;
+            left: 0;
+          }
+
+          input[type="radio"] {
+            display: none;
+          }
+
+          label {
             display: block;
             cursor: pointer;
             color: $darkslategrey;
@@ -269,7 +360,7 @@
             }
           }
 
-          input[type="checkbox"]:checked + label {
+          input[type="radio"]:checked + label {
             background: $hotpink;
           }
         }
@@ -292,7 +383,7 @@
           background: $ghostwhite;
         }
 
-        &:last-child {
+        &:nth-child(8) {
           border-bottom-left-radius: 16px;
           border-bottom-right-radius: 16px;
         }
@@ -301,6 +392,22 @@
           text-align: center;
           color: $darkslategrey;
           font-weight: 600;
+
+          a, a:visited, a:active {
+            color: inherit;
+          }
+
+          a:hover {
+            color: $hotpink;
+          }
+        }
+
+        .product-unit-price {
+          .original-price {
+            color: #ccc;
+            text-decoration: line-through;
+            font-size: 14px;
+          }
         }
 
         .product-image-container {
@@ -334,8 +441,6 @@
             }
 
             &.new {
-              // color: $turquoise;
-              // background: $lightcyan;
               color: $mediumaquamarine;
               background: $mintcream;
             }
@@ -393,12 +498,12 @@
 
     display: flex;
     list-style: none;
-    justify-content: center;
-    margin-top: 26px;
-    // position: absolute;
-    // bottom: 30px;
-    // left: 50%;
-    // transform: translateX(-50%);
+    // justify-content: center;
+    // margin-top: 26px;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
 
     .paginated-btn,
     .prev-btn,
@@ -469,20 +574,20 @@
 .fl-5 {
   @include flex-width(5%);
 }
-.fl-10 {
-  @include flex-width(10%);
-}
-.fl-15 {
-  @include flex-width(15%);
-}
-.fl-20 {
-  @include flex-width(20%);
+.fl-6 {
+  @include flex-width(6%);
 }
 .fl-8 {
   @include flex-width(8%);
 }
-.fl-6 {
-  @include flex-width(6%);
+.fl-10 {
+  @include flex-width(10%);
+}
+.fl-11 {
+  @include flex-width(11%);
+}
+.fl-12 {
+  @include flex-width(12%);
 }
 .fl-13 {
   @include flex-width(13%);
@@ -490,8 +595,17 @@
 .fl-14 {
   @include flex-width(14%);
 }
+.fl-15 {
+  @include flex-width(15%);
+}
+.fl-16 {
+  @include flex-width(16%);
+}
 .fl-17 {
   @include flex-width(17%);
+}
+.fl-20 {
+  @include flex-width(20%);
 }
 
 .fl-o-1 {

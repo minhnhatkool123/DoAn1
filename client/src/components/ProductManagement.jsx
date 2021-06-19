@@ -3,18 +3,22 @@ import '../scss/productManagement.scss';
 import viewIcon from '../svg/visibility.svg';
 import editIcon from '../svg/edit.svg';
 import deleteIcon from '../svg/delete.svg';
-import { useQuery } from 'react-query';
 import axios from 'axios';
+import { useQuery } from 'react-query';
 import { AiOutlinePlus } from "react-icons/ai";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
-import AddNewProduct from './AddNewProduct';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
-import ReactPaginate from "react-paginate";
-import { TiChevronRight, TiArrowSortedDown } from "react-icons/ti";
+import { productViewDisplayState } from '../recoil/productViewDisplayState';
+import { TiArrowSortedDown } from "react-icons/ti";
 import { BiChevronRight } from "react-icons/bi";
-import { BsFillCaretRightFill } from "react-icons/bs";
+import { TiTick } from "react-icons/ti";
+import { EatLoading } from 'react-loadingg';
+import { Link } from 'react-router-dom';
+import AddNewProduct from './AddNewProduct';
+import ViewProduct from './ViewProduct';
+import ReactPaginate from "react-paginate";
 
 const productStatus = {
   '0': {
@@ -38,16 +42,18 @@ const productStatus = {
 function ProductManagement() {
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
-  const [filter, setFilter] = useState('');
+  const [filterQuery, setFilterQuery] = useState('all?');
+  const [currentProduct, setCurrentProduct] = useState();
 
   const addNewProductRef = React.createRef();
   const filterRef = useRef(null);
 
   const user = useRecoilValue(userState);
   const setDialog = useSetRecoilState(dialogState);
+  const [productViewDisplay, setProductViewDisplay] = useRecoilState(productViewDisplayState);
 
-  const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page], async () => {
-    const response = await axios.get(`http://localhost:5000/api/product/all?page=${page + 1}&limit=8`);
+  const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page, filterQuery], async () => {
+    const response = await axios.get(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     setTotalPages(response.data.totalPages);
     // console.log(response.data);
     return response.data;
@@ -55,6 +61,11 @@ function ProductManagement() {
 
   const handleAddProductClick = () => {
     addNewProductRef.current.classList.add('active');
+  }
+
+  const handleViewProductClick = (product) => {
+    setCurrentProduct(product);
+    setProductViewDisplay(true);
   }
 
   const handleEditProductClick = (product) => {
@@ -91,14 +102,17 @@ function ProductManagement() {
     setPage(selected);
   };
 
-  const handleStatusFilter = () => {
-
-  }
-
   const handleFilterChange = () => {
     const formData = new FormData(filterRef.current);
+    const type = formData.get('productType');
     const status = formData.getAll('productStatus');
-    console.log(status);
+    const sort = formData.get('sortByPrice');
+
+    const query = type + status.join('') + sort;
+
+    // console.log(query);
+    setPage(0);
+    setFilterQuery(query);
   }
 
   return (
@@ -109,7 +123,7 @@ function ProductManagement() {
         <div className="add-product-btn" onClick={handleAddProductClick}><AiOutlinePlus className="add-icon" /></div>
       </div>
 
-      <div className="product-table">
+      <div className={data?.products.length === 8 ? "product-table" : "product-table offset"}>
         <form className="title-list" action="" method="post" id="filterProductForm" ref={filterRef} onChange={handleFilterChange}>
           <div className="image-title fl-6 fl-o-1 title">Ảnh</div>
           <div className="name-title fl-20 title">Tên sản phẩm</div>
@@ -118,97 +132,123 @@ function ProductManagement() {
             <TiArrowSortedDown className="dropdown-icon" />
             <div className="type-options">
               <div className="category-option">
-                <input type="radio" name="productCategory" id="ao" value="ao" />
+                <input type="radio" name="productType" id="ao" value="detail/ao?" />
                 <label htmlFor="ao">
                   Áo
                   <BiChevronRight className="expand-select-icon" />
                   <div className="type-option">
-                    <input type="radio" name="productType" id="ao-the-thao" value="ao-the-thao" />
+                    <input type="radio" name="productType" id="ao-the-thao" value="detail/ao?type=ao-the-thao&" />
                     <label htmlFor="ao-the-thao">Áo thể thao</label>
-                    <input type="radio" name="productType" id="ao-thun-nu" value="ao-thun-nu" />
+                    <input type="radio" name="productType" id="ao-thun-nu" value="detail/ao?type=ao-thun-nu&" />
                     <label htmlFor="ao-thun-nu">Áo thun nữ</label>
-                    <input type="radio" name="productType" id="ao-kieu-nu" value="ao-kieu-nu" />
+                    <input type="radio" name="productType" id="ao-kieu-nu" value="detail/ao?type=ao-kieu-nu&" />
                     <label htmlFor="ao-kieu-nu">Áo kiểu nữ</label>
-                    <input type="radio" name="productType" id="ao-so-mi-nu" value="ao-so-mi-nu" />
+                    <input type="radio" name="productType" id="ao-so-mi-nu" value="detail/ao?type=ao-so-mi-nu&" />
                     <label htmlFor="ao-so-mi-nu">Áo sơ mi nữ</label>
-                    <input type="radio" name="productType" id="ao-khoac-nu" value="ao-khoac-nu" />
+                    <input type="radio" name="productType" id="ao-khoac-nu" value="detail/ao?type=ao-khoac-nu&" />
                     <label htmlFor="ao-khoac-nu">Áo khoác nữ</label>
                   </div>
                 </label>
               </div>
               <div className="category-option">
-                <input type="radio" name="productCategory" id="quan" value="quan" />
+                <input type="radio" name="productType" id="quan" value="detail/quan?" />
                 <label htmlFor="quan">
                   Quần
                   <BiChevronRight className="expand-select-icon" />
                   <div className="type-option">
-                    <input type="radio" name="productType" id="quan-dai" value="quan-dai" />
+                    <input type="radio" name="productType" id="quan-dai" value="detail/quan?type=quan-dai&" />
                     <label htmlFor="quan-dai">Quần dài</label>
-                    <input type="radio" name="productType" id="quan-short-nu" value="quan-short-nu" />
+                    <input type="radio" name="productType" id="quan-short-nu" value="detail/quan?type=quan-short-nu&" />
                     <label htmlFor="quan-short-nu">Quần jean nữ</label>
-                    <input type="radio" name="productType" id="quan-legging" value="quan-legging" />
+                    <input type="radio" name="productType" id="quan-legging" value="detail/quan?type=quan-legging&" />
                     <label htmlFor="quan-legging">Quần legging</label>
                   </div>
                 </label>
               </div>
               <div className="category-option">
-                <input type="radio" name="productCategory" id="dam-vay" value="dam-vay" />
+                <input type="radio" name="productType" id="dam-vay" value="detail/dam-vay?" />
                 <label htmlFor="dam-vay">
                   Đầm váy
                   <BiChevronRight className="expand-select-icon" />
                   <div className="type-option">
-                    <input type="radio" name="productType" id="chan-vay" value="chan-vay" />
+                    <input type="radio" name="productType" id="chan-vay" value="detail/dam-vay?type=chan-vay&" />
                     <label htmlFor="chan-vay">Chân váy</label>
-                    <input type="radio" name="productType" id="dam-nu" value="dam-nu" />
+                    <input type="radio" name="productType" id="dam-nu" value="detail/dam-vay?type=dam-nu&" />
                     <label htmlFor="dam-nu">Đầm nữ</label>
-                    <input type="radio" name="productType" id="yem" value="yem" />
+                    <input type="radio" name="productType" id="yem" value="detail/dam-vay?type=yem&" />
                     <label htmlFor="yem">Yếm</label>
                   </div>
                 </label>
               </div>
               <div className="category-option">
-                <input type="radio" name="productCategory" id="all" value="all" />
+                <input type="radio" name="productType" id="all" value="all?" defaultChecked />
                 <label htmlFor="all">Tất cả</label>
               </div>
             </div>
           </div>
           <div className="quantity-title fl-8 title">Số lượng</div>
-          <div className="status-title-container fl-17 title">
-            <span className="status-title" onClick={handleStatusFilter}>Trạng thái</span>
+          <div className="status-title-container fl-16 title">
+            <span className="status-title">Trạng thái</span>
             <TiArrowSortedDown className="dropdown-icon" />
             <div className="status-options">
-              <input type="checkbox" name="productStatus" id="new" value="1" />
-              <label htmlFor="new">Mới nhất</label>
-              <input type="checkbox" name="productStatus" id="sale" value="2" />
-              <label htmlFor="sale">Khuyến mãi</label>
-              <input type="checkbox" name="productStatus" id="hot" value="3" />
-              <label htmlFor="hot">Bán chạy</label>
+              <input type="checkbox" name="productStatus" id="new" value="status=1&" />
+              <label htmlFor="new">
+                Mới nhất
+                <TiTick className="tick-icon" />
+              </label>
+              <input type="checkbox" name="productStatus" id="sale" value="status=2&" />
+              <label htmlFor="sale">
+                Khuyến mãi
+                <TiTick className="tick-icon" />
+              </label>
+              <input type="checkbox" name="productStatus" id="hot" value="status=3&" />
+              <label htmlFor="hot">
+                Bán chạy
+                <TiTick className="tick-icon" />
+              </label>
             </div>
           </div>
-          <div className="unit-price-title fl-10 title">Đơn giá</div>
+          <div className="unit-price-title-container fl-11 title">
+            <span className="unit-price-title">Đơn giá</span>
+            <TiArrowSortedDown className="dropdown-icon" />
+            <div className="sort-options">
+              <input type="radio" name="sortByPrice" id="ascending" value="sort=1&" />
+              <label htmlFor="ascending">Tăng dần</label>
+              <input type="radio" name="sortByPrice" id="descending" value="sort=-1&" />
+              <label htmlFor="descending">Giảm dần</label>
+              <input type="radio" name="sortByPrice" id="none" value="" defaultChecked />
+              <label htmlFor="none">Bình thường</label>
+            </div>
+          </div>
           <div className="discount-title fl-10 title">Khuyến mãi</div>
           <div className="manipulation fl-13 title"></div>
         </form>
 
         <div className="product-list">
+          {isLoading && <EatLoading color="#ff7eae" />}
           {data?.products.map(product => (
             <div key={product._id} className="product-item">
               <div className="product-image-container fl-6 fl-o-1">
                 <div className="product-image" style={{ backgroundImage: `url(${product.images[0]})` }}></div>
               </div>
-              <div className="product-name fl-20">{product.name}</div>
+              <div className="product-name fl-20">
+                <Link to={`/product/${product._id}`} target='_blank'>{product.name}</Link>
+              </div>
               <div className="product-type fl-15">{product.type}</div>
               <div className="product-quantity fl-8">{product.quantity}</div>
-              <div className="product-status fl-17">
+              <div className="product-status fl-16">
                 {product.status.map(status => (
                   <label key={status} className={'status-label ' + productStatus[status].key}>{productStatus[status].value}</label>
                 ))}
               </div>
-              <div className="product-unit-price fl-10">{product.real_price.toLocaleString()}đ</div>
+              <div className="product-unit-price fl-11">
+                <div className="discount-price">{product.new_price.toLocaleString()}đ</div>
+                {product.new_price !== product.real_price && <div className="original-price">{product.real_price.toLocaleString()}đ</div>}
+              </div>
               <div className="product-discount fl-10">{product.discount.toLocaleString()}đ</div>
               <div className="product-manipulation fl-13">
                 <div className="view-btn">
-                  <img src={viewIcon} className="btn-icon" alt="" />
+                  <img src={viewIcon} className="btn-icon" alt="" onClick={() => handleViewProductClick(product)} />
                 </div>
                 <div className="edit-btn" onClick={() => handleEditProductClick(product._id)}>
                   <img src={editIcon} className="btn-icon" alt="" />
@@ -238,6 +278,7 @@ function ProductManagement() {
       />}
 
       <AddNewProduct ref={addNewProductRef} />
+      {currentProduct && productViewDisplay && <ViewProduct product={currentProduct} />}
     </React.Fragment>
   );
 }

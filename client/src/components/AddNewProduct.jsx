@@ -316,7 +316,7 @@ const AddNewProduct = React.forwardRef((props, ref) => {
               <div className="image-control">
                 <label className="label-for-img" htmlFor="product-image">Hình ảnh</label>
                 <input type="file" multiple name="productImages" id="image" onChange={(e) => handleImagesChoose(e, formik.setFieldValue)} accept="image/*" />
-                <div className="product-color">
+                <div className="product-image">
                   <div className="img-row">
                     {selectedImages.map(image => (
                       <div className="img-col" key={image.url}>
