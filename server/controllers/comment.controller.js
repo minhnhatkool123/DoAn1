@@ -29,7 +29,7 @@ const addComment = async (req, res) => {
 			const comment = await Comments.findById({ _id: req.query.id });
 			//console.log('comment', comment);
 			if (comment) {
-				comment.reply.push({ _id, userRep: user, date, content });
+				comment.reply.push({ _id, user: user, date, content });
 				await comment.save();
 				console.log(comment);
 			}
@@ -52,7 +52,7 @@ const getComment = async (req, res) => {
 			productId: req.query.productId,
 		})
 			.populate({
-				path: 'reply.userRep',
+				path: 'reply.user',
 				select: 'name type mute',
 			})
 			.populate({

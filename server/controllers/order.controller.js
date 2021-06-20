@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const Orders = require('../models/orderModel');
 const Products = require('../models/productModel');
 
@@ -17,7 +18,7 @@ const getOrder = async (req, res) => {
 					status: req.body.status,
 					date: {
 						$gte: new Date(req.body.timeStart),
-						$lt: new Date(req.body.timeEnd),
+						$lte: new Date(req.body.timeEnd),
 					},
 				};
 			} else {
@@ -32,7 +33,8 @@ const getOrder = async (req, res) => {
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
 
-		const countOrders = await Orders.countDocuments(queryObj);
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
 		const orders = await Orders.find(queryObj)
 			.populate({
 				path: 'user',
@@ -67,7 +69,7 @@ const getAllOrders = async (req, res) => {
 					status: req.body.status,
 					date: {
 						$gte: new Date(req.body.timeStart),
-						$lt: new Date(req.body.timeEnd),
+						$lte: new Date(req.body.timeEnd),
 					},
 				};
 			} else {
@@ -83,7 +85,8 @@ const getAllOrders = async (req, res) => {
 
 		console.log(req.body.timeStart);
 
-		const countOrders = await Orders.countDocuments(queryObj);
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
 		const orders = await Orders.find(queryObj)
 			.populate({
 				path: 'user',
@@ -173,6 +176,98 @@ const addOrder = async (req, res) => {
 		//} else {
 		//res.json({ message: productError });
 		//}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const updateOrder = async (req, res) => {
+	try {
+		const order = await Orders.findByIdAndUpdate(
+			{ _id: req.body.id },
+			{ status: req.body.status },
+			{ new: true }
+		);
+
+		if (req.body.status === 5) {
+			const productOrder = order.products;
+			console.log(productOrder.length);
+
+			for (let i = 0; i < productOrder.length; i++) {
+				await Products.findByIdAndUpdate(
+					{ _id: productOrder[i]._id },
+					{
+						$inc: {
+							quantity: productOrder[i].soldQuantity,
+							soldQuantity: -productOrder[i].soldQuantity,
+						},
+					}
+				);
+			}
+		}
+
+		res.json({ message: 'Update order done', order });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const searchOrder = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+
+		const searchText = req.query.q;
+
+		let queryObj = {
+			$or: [
+				{ 'receiverInfo.name': { $regex: searchText, $options: '$i' } },
+				{ 'receiverInfo.phone': { $regex: searchText, $options: '$i' } },
+			],
+		};
+		if (Object.values(req.body).length !== 0) {
+			if (req.body.timeStart && req.body.timeEnd) {
+				console.log('co time');
+				queryObj = {
+					...queryObj,
+					status: req.body.status,
+					date: {
+						$gte: new Date(req.body.timeStart),
+						$lte: new Date(req.body.timeEnd),
+					},
+				};
+			} else {
+				console.log('khong time');
+				queryObj = {
+					...queryObj,
+					status: req.body.status,
+				};
+			}
+		}
+
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
+
+		console.log(req.body.timeStart);
+
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
+		const orders = await Orders.find(queryObj)
+			.populate({
+				path: 'user',
+				select: 'name type district city address phone email',
+			})
+			.skip(startIndex)
+			.limit(limit);
+
+		if (orders)
+			res.json({
+				orders,
+				totalPages: countOrders,
+				page: page,
+				search: searchText,
+			});
+		else res.json({ message: 'Loi' });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -334,7 +429,9 @@ module.exports = {
 	getOrder,
 	getAllOrders,
 	addOrder,
+	updateOrder,
 	getTotalOneMonth,
 	getTotalCategory,
 	getNumberSoldCategory,
+	searchOrder,
 };
