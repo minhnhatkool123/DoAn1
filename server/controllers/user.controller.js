@@ -308,7 +308,7 @@ const updateEmail = async (req, res) => {
 			res.json({
 				message: 'Please check otp in new email (expires in 10m)',
 				token: newToken,
-				otp,
+				// otp,
 			});
 		} else {
 			res.json({ message: 'Update Info fail' });
