@@ -1,7 +1,7 @@
 const categories = [
   'Áo',
   'Quần',
-  'Đầm váy'
+  'Đầm Váy'
 ];
 
 export default categories;

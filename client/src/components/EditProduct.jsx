@@ -1,13 +1,13 @@
-import '../scss/addNewProduct.scss';
+import '../scss/editProduct.scss';
 import React, { useState, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
-import { toastDisplayState } from '../recoil/toastDisplayState';
-import { productAddDisplayState } from '../recoil/productAddDisplayState';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
 import { IoIosClose } from "react-icons/io";
+import { toastDisplayState } from '../recoil/toastDisplayState';
+import { productEditDisplayState } from '../recoil/productEditDisplayState';
 import { LoopCircleLoading } from 'react-loadingg';
 import { useMutation } from 'react-query';
 import categories from '../data/categories';
@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const validationSchema = Yup.object({
   productName: Yup.string().required('*Bắt buộc'),
-  productCategory: Yup.string().required('*Bắt buộc'),
+  productCategory: Yup.string().required('*Bắt buộccccc'),
   productType: Yup.string().required('*Bắt buộc'),
   productPrice: Yup.number()
     .typeError('Giá phải là một số')
@@ -35,28 +35,33 @@ const validationSchema = Yup.object({
   productColors: Yup.array().min(1, 'Chọn ít nhất 1 ảnh')
 });
 
-function AddNewProduct({ refetch }) {
+function EditProduct({ product, refetch }) {
   const user = useRecoilValue(userState);
 
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedImages, setSelectedImages] = useState(product.images.map(image => ({ url: image })));
+  const [selectedColors, setSelectedColors] = useState(product.colors.map(color => ({ url: color })));
+  const [selectedCategory, setSelectedCategory] = useState(product.category);
   const [accordingTypes, setAccordingTypes] = useState([]);
 
   const setToastDisplay = useSetRecoilState(toastDisplayState);
-  const setProductAddDisplay = useSetRecoilState(productAddDisplayState);
+  const setProductEditDisplay = useSetRecoilState(productEditDisplayState);
+
+  useEffect(() => {
+    const newTypes = types.filter(type => type.categoryName === selectedCategory);
+    setAccordingTypes(newTypes);
+  }, [selectedCategory]);
 
   const initialValues = {
-    productName: '',
-    productPrice: '',
-    productCategory: '',
-    productType: '',
-    productQuantity: '',
-    productStatus: [],
-    productSize: [],
-    productDiscount: '',
-    productImages: [],
-    productColors: []
+    productName: product.name,
+    productPrice: product.real_price,
+    productCategory: product.category,
+    productType: product.type,
+    productQuantity: product.quantity,
+    productStatus: product.status.map(status => status.toString()),
+    productSize: product.sizes,
+    productDiscount: product.discount,
+    productImages: product.images,
+    productColors: product.colors
   };
 
   const resetSelections = () => {
@@ -67,20 +72,30 @@ function AddNewProduct({ refetch }) {
   }
 
   const mutation = useMutation(async ({ values, resetForm }) => {
+    const completeImages = selectedImages.filter(image => !image.file);
+    const completeColors = selectedColors.filter(color => !color.file);
+
     const images = new FormData();
     for (let i = 0; i < selectedImages.length; i++) {
-      images.append('images', selectedImages[i].file);
+      if (selectedImages[i].file) {
+        images.append('images', selectedImages[i].file);
+      }
     }
 
     const colors = new FormData();
     for (let i = 0; i < selectedColors.length; i++) {
-      colors.append('images', selectedColors[i].file);
+      if (selectedColors[i].file) {
+        colors.append('images', selectedColors[i].file);
+      }
     }
 
     const [uploadedImages, uploadedColors] = await Promise.all([
       axios.post('http://localhost:5000/api/image/upload', images),
       axios.post('http://localhost:5000/api/image/upload', colors)
     ]);
+
+    // uploadedImages.concat(completeImages.map(image => image.url));
+    // uploadedColors.concat(completeColors.map(color => color.url));
 
     // console.log(uploadedImages.data)
     // console.log(uploadedColors.data)
@@ -91,40 +106,45 @@ function AddNewProduct({ refetch }) {
       }
     }
 
-    const productStatus = values.productStatus.map(status => parseInt(status));
-    if (values.productDiscount > 0) {
+    let productStatus = values.productStatus.map(status => parseInt(status));
+    if (values.productDiscount > 0 && !productStatus.includes(2)) {
       productStatus.push(2);
-    } else if (!values.productStatus.length) {
+    }
+    if (parseInt(values.productDiscount) <= 0) {
+      productStatus = productStatus.filter(status => status !== 2);
+    }
+    if (productStatus.length >= 2 && productStatus.includes(0)) {
+      productStatus = productStatus.filter(status => status !== 0);
+    }
+    if (!productStatus.length) {
       productStatus.push(0);
     }
 
-    const product = {
+    const data = {
       name: values.productName,
       category: values.productCategory,
-      type: values.productType === 'Quần Jean Nữ' ? 'Quần Short Nữ' : values.productType,
+      type: values.productType,
       price: values.productPrice,
       discount: values.productDiscount,
       quantity: values.productQuantity,
       sizes: values.productSize,
       status: productStatus,
-      images: uploadedImages.data.images,
-      colors: uploadedColors.data.images
+      images: completeImages.map(image => image.url).concat(uploadedImages.data.images),
+      colors: completeColors.map(image => image.url).concat(uploadedColors.data.images)
     }
 
-    console.log(product);
+    console.log(data);
 
-    axios.post('http://localhost:5000/api/product/add', product, config)
+    axios.put(`http://localhost:5000/api/product/update/${product._id}`, data, config)
       .then((response) => {
         console.log('Them thanh cong');
         console.log(response.data);
 
-        resetForm();
-        resetSelections();
         refetch();
 
         setToastDisplay({
           show: true,
-          message: 'Thêm sản phẩm thành công'
+          message: 'Sản phẩm đã được cập nhật'
         });
       })
       .catch((error) => {
@@ -136,11 +156,6 @@ function AddNewProduct({ refetch }) {
     mutation.mutate({ values, resetForm });
   }
 
-  useEffect(() => {
-    const newTypes = types.filter(type => type.categoryName === selectedCategory);
-    setAccordingTypes(newTypes);
-  }, [selectedCategory]);
-
   const handleCategoryChange = (handleChange, e, setFieldValue) => {
     handleChange(e);
     const category = e.target.selectedOptions[0].value;
@@ -149,8 +164,7 @@ function AddNewProduct({ refetch }) {
   };
 
   const handleClosing = (resetForm) => {
-    // ref.current.classList.remove('active');
-    setProductAddDisplay(false);
+    setProductEditDisplay(false);
     resetForm();
     resetSelections();
   }
@@ -212,14 +226,13 @@ function AddNewProduct({ refetch }) {
   }
 
   return (
-    <div className="add-new-product-zone">
+    <div className="edit-product">
       <div id="overlay"></div>
-      <div className="add-new-product-container">
+      <div className="edit-product-container">
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
-          // validateOnBlur={false}
         >
           {formik => (
             <Form className="form-container">
@@ -365,7 +378,7 @@ function AddNewProduct({ refetch }) {
 
               <div className="btn-group">
                 <button type="button" className="cancel-btn" onClick={() => handleClosing(formik.resetForm)}>Hủy</button>
-                <button type="submit" className="add-product-btn">Thêm</button>
+                <button type="submit" className="add-product-btn">Lưu</button>
               </div>
             </Form>
           )}
@@ -379,4 +392,4 @@ function AddNewProduct({ refetch }) {
   )
 };
 
-export default AddNewProduct;
+export default EditProduct;

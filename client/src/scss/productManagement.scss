@@ -28,7 +28,27 @@
       flex-grow: 1;
       border: 1px solid $hotpink;
       border-radius: 30px;
-      padding: 0 14px;
+      padding: 0 12px;
+      display: flex;
+      background: $white;
+      overflow: hidden;
+
+      .search-input {
+        height: 100%;
+        margin-left: 6px;
+        flex-grow: 1;
+        font-size: 16px;
+      }
+
+      .search-icon {
+        height: 100%;
+        width: 20px;
+        margin-top: -1px;
+      }
+
+      .search-btn {
+        display: none;
+      }
     }
 
     .add-product-btn {
@@ -204,9 +224,9 @@
           }
         }
 
-        input[type="radio"]:checked + label {
-          background: $hotpink;
-        }
+        // input[type="radio"]:checked + label {
+        //   background: $hotpink;
+        // }
       }
 
       .status-title-container {
@@ -360,9 +380,9 @@
             }
           }
 
-          input[type="radio"]:checked + label {
-            background: $hotpink;
-          }
+          // input[type="radio"]:checked + label {
+          //   background: $hotpink;
+          // }
         }
       }
 
@@ -393,7 +413,9 @@
           color: $darkslategrey;
           font-weight: 600;
 
-          a, a:visited, a:active {
+          a,
+          a:visited,
+          a:active {
             color: inherit;
           }
 

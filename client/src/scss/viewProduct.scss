@@ -109,14 +109,14 @@
 
           .size-label {
             font-weight: 100;
-            color: $darkgrey;
-            border: 1px solid $lightgrey;
+            color: $lightslategray;
+            border: 1px solid $divider;
             border-radius: 3px;
             padding: 0px 5px;
             margin-right: 8px;
-            cursor: pointer;
             min-width: 23px;
             text-align: center;
+            font-size: 14px;
             display: block;
           }
         }

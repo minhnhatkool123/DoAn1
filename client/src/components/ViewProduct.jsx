@@ -1,7 +1,5 @@
 import React from 'react';
 import '../scss/viewProduct.scss';
-import { GrClose } from "react-icons/gr";
-import { ImCross } from "react-icons/im";
 import { IoClose } from "react-icons/io5";
 import { useSetRecoilState } from 'recoil';
 import { productViewDisplayState } from '../recoil/productViewDisplayState';
@@ -49,7 +47,7 @@ const productStatus = {
 
           <div className="form-control">
             <label className="field-title">Loại:</label>
-            <label className="text-lb">{product.type}</label>
+            <label className="text-lb">{product.type === 'Quần Short Nữ' ? 'Quần Jean Nữ' : product.type}</label>
           </div>
 
           <div className="form-control">

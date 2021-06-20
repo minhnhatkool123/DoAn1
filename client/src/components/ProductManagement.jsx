@@ -11,14 +11,19 @@ import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
 import { productViewDisplayState } from '../recoil/productViewDisplayState';
+import { productEditDisplayState } from '../recoil/productEditDisplayState';
+import { productAddDisplayState } from '../recoil/productAddDisplayState';
 import { TiArrowSortedDown } from "react-icons/ti";
 import { BiChevronRight } from "react-icons/bi";
 import { TiTick } from "react-icons/ti";
+import { IoSearchOutline } from "react-icons/io5";
 import { EatLoading } from 'react-loadingg';
 import { Link } from 'react-router-dom';
 import AddNewProduct from './AddNewProduct';
 import ViewProduct from './ViewProduct';
+import EditProduct from './EditProduct';
 import ReactPaginate from "react-paginate";
+import queryString from 'query-string';
 
 const productStatus = {
   '0': {
@@ -45,14 +50,23 @@ function ProductManagement() {
   const [filterQuery, setFilterQuery] = useState('all?');
   const [currentProduct, setCurrentProduct] = useState();
 
-  const addNewProductRef = React.createRef();
   const filterRef = useRef(null);
+  const searchRef = useRef(null);
+
+  const defaultTypeRef = useRef(null);
+  const defaultSortRef = useRef(null);
+  const newStatusRef = useRef(null);
+  const saleStatusRef = useRef(null);
+  const hotStatusRef = useRef(null);
 
   const user = useRecoilValue(userState);
   const setDialog = useSetRecoilState(dialogState);
   const [productViewDisplay, setProductViewDisplay] = useRecoilState(productViewDisplayState);
+  const [productEditDisplay, setProductEditDisplay] = useRecoilState(productEditDisplayState);
+  const [productAddDisplay, setProductAddDisplay] = useRecoilState(productAddDisplayState);
 
   const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page, filterQuery], async () => {
+    console.log(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     const response = await axios.get(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     setTotalPages(response.data.totalPages);
     // console.log(response.data);
@@ -60,7 +74,7 @@ function ProductManagement() {
   });
 
   const handleAddProductClick = () => {
-    addNewProductRef.current.classList.add('active');
+    setProductAddDisplay(true);
   }
 
   const handleViewProductClick = (product) => {
@@ -69,7 +83,8 @@ function ProductManagement() {
   }
 
   const handleEditProductClick = (product) => {
-
+    setCurrentProduct(product);
+    setProductEditDisplay(true);
   }
 
   const handleDeleteProductClick = (id) => {
@@ -103,6 +118,8 @@ function ProductManagement() {
   };
 
   const handleFilterChange = () => {
+    searchRef.current.value = '';
+
     const formData = new FormData(filterRef.current);
     const type = formData.get('productType');
     const status = formData.getAll('productStatus');
@@ -115,11 +132,40 @@ function ProductManagement() {
     setFilterQuery(query);
   }
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const search = searchRef.current.value;
+
+    resetFilterOptions();
+    setPage(0);
+    setFilterQuery(`search?name=${search}&`);
+  }
+
+  const resetFilterOptions = () => {
+    defaultTypeRef.current.checked = true;
+    defaultSortRef.current.checked = true;
+    newStatusRef.current.checked = false;
+    saleStatusRef.current.checked = false;
+    hotStatusRef.current.checked = false;
+  }
+
+  const handleAllTypeClick = () => {
+    if (searchRef.current.value) {
+      setFilterQuery('all?');
+      searchRef.current.value = '';
+    }
+  }
+
   return (
     <React.Fragment>
       <div className="product-other-features">
         <span className="title">Danh sách sản phẩm</span>
-        <input type="text" placeholder="Tìm kiếm sản phẩm..." className="product-search"></input>
+        <form className="product-search">
+          <IoSearchOutline className="search-icon" />
+          <input type="text" placeholder="Tìm kiếm sản phẩm..." className="search-input" ref={searchRef} />
+          <button type="submit" onClick={handleSearch} className="search-btn"></button>
+        </form>
+
         <div className="add-product-btn" onClick={handleAddProductClick}><AiOutlinePlus className="add-icon" /></div>
       </div>
 
@@ -181,8 +227,8 @@ function ProductManagement() {
                 </label>
               </div>
               <div className="category-option">
-                <input type="radio" name="productType" id="all" value="all?" defaultChecked />
-                <label htmlFor="all">Tất cả</label>
+                <input type="radio" name="productType" id="all" value="all?" defaultChecked ref={defaultTypeRef} />
+                <label htmlFor="all" onClick={handleAllTypeClick}>Tất cả</label>
               </div>
             </div>
           </div>
@@ -191,18 +237,18 @@ function ProductManagement() {
             <span className="status-title">Trạng thái</span>
             <TiArrowSortedDown className="dropdown-icon" />
             <div className="status-options">
-              <input type="checkbox" name="productStatus" id="new" value="status=1&" />
-              <label htmlFor="new">
+              <input type="checkbox" name="productStatus" id="new-status" value="status=1&" ref={newStatusRef} />
+              <label htmlFor="new-status">
                 Mới nhất
                 <TiTick className="tick-icon" />
               </label>
-              <input type="checkbox" name="productStatus" id="sale" value="status=2&" />
-              <label htmlFor="sale">
+              <input type="checkbox" name="productStatus" id="sale-status" value="status=2&" ref={saleStatusRef} />
+              <label htmlFor="sale-status">
                 Khuyến mãi
                 <TiTick className="tick-icon" />
               </label>
-              <input type="checkbox" name="productStatus" id="hot" value="status=3&" />
-              <label htmlFor="hot">
+              <input type="checkbox" name="productStatus" id="hot-status" value="status=3&" ref={hotStatusRef} />
+              <label htmlFor="hot-status">
                 Bán chạy
                 <TiTick className="tick-icon" />
               </label>
@@ -216,7 +262,7 @@ function ProductManagement() {
               <label htmlFor="ascending">Tăng dần</label>
               <input type="radio" name="sortByPrice" id="descending" value="sort=-1&" />
               <label htmlFor="descending">Giảm dần</label>
-              <input type="radio" name="sortByPrice" id="none" value="" defaultChecked />
+              <input type="radio" name="sortByPrice" id="none" value="" defaultChecked ref={defaultSortRef} />
               <label htmlFor="none">Bình thường</label>
             </div>
           </div>
@@ -234,7 +280,7 @@ function ProductManagement() {
               <div className="product-name fl-20">
                 <Link to={`/product/${product._id}`} target='_blank'>{product.name}</Link>
               </div>
-              <div className="product-type fl-15">{product.type}</div>
+              <div className="product-type fl-15">{product.type === 'Quần Short Nữ' ? 'Quần Jean Nữ' : product.type}</div>
               <div className="product-quantity fl-8">{product.quantity}</div>
               <div className="product-status fl-16">
                 {product.status.map(status => (
@@ -250,7 +296,7 @@ function ProductManagement() {
                 <div className="view-btn">
                   <img src={viewIcon} className="btn-icon" alt="" onClick={() => handleViewProductClick(product)} />
                 </div>
-                <div className="edit-btn" onClick={() => handleEditProductClick(product._id)}>
+                <div className="edit-btn" onClick={() => handleEditProductClick(product)}>
                   <img src={editIcon} className="btn-icon" alt="" />
                 </div>
                 <div className="delete-btn" onClick={() => handleDeleteProductClick(product._id)}>
@@ -277,8 +323,9 @@ function ProductManagement() {
         forcePage={page}
       />}
 
-      <AddNewProduct ref={addNewProductRef} />
+      {productAddDisplay && <AddNewProduct refetch={refetch} />}
       {currentProduct && productViewDisplay && <ViewProduct product={currentProduct} />}
+      {currentProduct && productEditDisplay && <EditProduct product={currentProduct} refetch={refetch} />}
     </React.Fragment>
   );
 }

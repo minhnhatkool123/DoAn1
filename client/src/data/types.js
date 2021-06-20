@@ -1,47 +1,47 @@
 const types = [
   {
-    name: 'Áo thể thao',
+    name: 'Áo Thể Thao',
     categoryName: 'Áo'
   },
   {
-    name: 'Áo thun nữ',
+    name: 'Áo Thun Nữ',
     categoryName: 'Áo'
   },
   {
-    name: 'Áo kiểu nữ',
+    name: 'Áo Kiểu Nữ',
     categoryName: 'Áo'
   },
   {
-    name: 'Áo sơ mi nữ',
+    name: 'Áo Sơ Mi Nữ',
     categoryName: 'Áo'
   },
   {
-    name: 'Áo khoác nữ',
+    name: 'Áo Khoác Nữ',
     categoryName: 'Áo'
   },
   {
-    name: 'Quần dài',
+    name: 'Quần Dài',
     categoryName: 'Quần'
   },
   {
-    name: 'Quần jean nữ',
+    name: 'Quần Jean Nữ',
     categoryName: 'Quần'
   },
   {
-    name: 'Quần legging',
+    name: 'Quần Legging',
     categoryName: 'Quần'
   },
   {
-    name: 'Chân váy',
-    categoryName: 'Đầm váy'
+    name: 'Chân Váy',
+    categoryName: 'Đầm Váy'
   },
   {
-    name: 'Đấm nữ',
-    categoryName: 'Đầm váy'
+    name: 'Đầm Nữ',
+    categoryName: 'Đầm Váy'
   },
   {
     name: 'Yếm',
-    categoryName: 'Đầm váy'
+    categoryName: 'Đầm Váy'
   },
 ];
 
