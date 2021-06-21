@@ -6,6 +6,10 @@ const orderSchema = mongoose.Schema(
 			require: true,
 			ref: 'Users',
 		},
+		idOrder: {
+			type: String,
+			require: true,
+		},
 		status: {
 			type: Number,
 			default: 0,

@@ -34,4 +34,11 @@ router.get(
 	orderController.getNumberSoldCategory
 );
 
+router.get(
+	'/gettotalsoldcategory-followmonth',
+	auth,
+	authAdmin,
+	orderController.getNumberSoldCategoryFollowMonth
+);
+
 module.exports = router;

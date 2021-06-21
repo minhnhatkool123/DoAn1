@@ -39,7 +39,7 @@ router.post('/upload', upload.array('images'), async (req, res) => {
 			const newPath = await cloudinary.v2.uploader.upload(
 				path,
 				{
-					folder: 'web-ban-hang',
+					folder: 'ZShop',
 					//upload_preset: 'ml_default',
 				},
 				(error, result) => {
