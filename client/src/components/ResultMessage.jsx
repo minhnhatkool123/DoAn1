@@ -3,22 +3,23 @@ import React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { resultMessageState, messageContent } from '../recoil/resultMessageState';
 
-function SuccessMessage() {
-  const [successMsg, setSuccessMsg] = useRecoilState(resultMessageState);
+function ResultMessage() {
+  const [resultMsg, setResultMsg] = useRecoilState(resultMessageState);
   const content = useRecoilValue(messageContent);
 
   const closeMessage = () => {
-    setSuccessMsg({ ...successMsg, show: false });
+    resultMsg.func();
+    setResultMsg({ ...resultMsg, show: false, func: () => {} });
   }
 
   return (
     <React.Fragment>
-      {successMsg.show && <div className="result-message">
+      {resultMsg.show && <div className="result-message">
         <div id="overlay"></div>
         <div className="result-message-container">
           <img src={content.image} className="result-image" alt="" />
           <div className="result-title">{content.title}</div>
-          <div className="result-description">{successMsg.message}</div>
+          <div className="result-description">{resultMsg.message}</div>
           <div className="accept-btn" onClick={closeMessage}>{content.acceptButtonName}</div>
         </div>
       </div>}
@@ -26,4 +27,4 @@ function SuccessMessage() {
   );
 }
 
-export default SuccessMessage;
+export default ResultMessage;

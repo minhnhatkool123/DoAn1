@@ -188,6 +188,7 @@ function EditProduct({ product, refetch }) {
       }
 
       Array.from(e.target.files).map(file => URL.revokeObjectURL(file));
+      e.target.value = null;
     }
   }
 
@@ -210,6 +211,7 @@ function EditProduct({ product, refetch }) {
       }
 
       Array.from(e.target.files).map(file => URL.revokeObjectURL(file));
+      e.target.value = null;
     }
   }
 
@@ -390,6 +392,6 @@ function EditProduct({ product, refetch }) {
       </div>
     </div>
   )
-};
+}
 
 export default EditProduct;

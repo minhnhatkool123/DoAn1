@@ -1,17 +1,18 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
-import App from './App';
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Preloader from './components/Preloader';
 
-// const App = React.lazy(() => import('./App'));
+const App = React.lazy(() => import('./App'));
 
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      {/* <Suspense fallback={<div>Loading...</div>}> */}
+      <Suspense fallback={<Preloader />}>
         <App />
-      {/* </Suspense> */}
+      </Suspense>
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')

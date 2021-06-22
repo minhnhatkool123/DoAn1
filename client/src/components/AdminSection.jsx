@@ -10,25 +10,33 @@ import vividPinwheel from '../svg/pinwheel_vivid.svg';
 import Statistics from './Statistics';
 import ProductManagement from './ProductManagement';
 import OrderManagement from './OrderManagement';
+import { BiLogOut } from "react-icons/bi";
+import { useHistory } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../recoil/userState';
 
 
 function AdminSection() {
-  const [selectedTab, setSelectedTab] = useState('product');
+  const history = useHistory();
+
+  const setUser = useSetRecoilState(userState);
+
+  const [selectedTab, setSelectedTab] = useState('statistics');
 
   const statisticsTabRef = useRef(null);
   const productTabRef = useRef(null);
   const orderTabRef = useRef(null);
 
+  const handleLogOutClick = () => {
+    history.push('/admin/login');
+    setUser({});
+    localStorage.removeItem('accessToken');
+  }
+
   const tabOption = {
     statistics: <Statistics />,
     product: <ProductManagement />,
     order: <OrderManagement />
-  }
-
-  const handleTabClick = (e, tabName) => {
-    setSelectedTab(tabName);
-    console.log(e.target)
-    e.target.querySelector('.option-icon').src = pinkBubbleChartIcon;
   }
 
   const handleStatisticsTabClick = () => {
@@ -79,13 +87,13 @@ function AdminSection() {
               <img src={vividPinwheel} className="logo-icon" alt="" />
 
               <div className="menu-options">
-                <div className="tab-option" ref={statisticsTabRef} onClick={handleStatisticsTabClick}>
-                  <img src={bubbleChartIcon} className="option-icon" alt="" />
+                <div className="tab-option active" ref={statisticsTabRef} onClick={handleStatisticsTabClick}>
+                  <img src={pinkBubbleChartIcon} className="option-icon" alt="" />
                   <div className="option-title">Thống kê</div>
                 </div>
 
-                <div className="tab-option active" ref={productTabRef} onClick={handleProductTabClick}>
-                  <img src={pinkStarIcon} className="option-icon" alt="" />
+                <div className="tab-option" ref={productTabRef} onClick={handleProductTabClick}>
+                  <img src={starIcon} className="option-icon" alt="" />
                   <div className="option-title">Sản phẩm</div>
                 </div>
 
@@ -94,6 +102,8 @@ function AdminSection() {
                   <div className="option-title">Hóa đơn</div>
                 </div>
               </div>
+
+              <BiLogOut className="logout-icon" onClick={handleLogOutClick} />
             </div>
 
             <div className="admin-body l-11">

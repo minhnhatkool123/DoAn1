@@ -149,7 +149,6 @@ function AddNewProduct({ refetch }) {
   };
 
   const handleClosing = (resetForm) => {
-    // ref.current.classList.remove('active');
     setProductAddDisplay(false);
     resetForm();
     resetSelections();
@@ -174,6 +173,7 @@ function AddNewProduct({ refetch }) {
       }
 
       Array.from(e.target.files).map(file => URL.revokeObjectURL(file));
+      e.target.value = null;
     }
   }
 
@@ -196,6 +196,7 @@ function AddNewProduct({ refetch }) {
       }
 
       Array.from(e.target.files).map(file => URL.revokeObjectURL(file));
+      e.target.value = null;
     }
   }
 
@@ -377,6 +378,6 @@ function AddNewProduct({ refetch }) {
       </div>
     </div>
   )
-};
+}
 
 export default AddNewProduct;

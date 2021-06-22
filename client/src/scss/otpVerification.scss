@@ -1,0 +1,89 @@
+@import "./color.scss";
+
+.otp-verification {
+  display: none;
+
+  &.active {
+    display: block;
+  }
+
+  .otp-verification-body {
+    &.disabled {
+      display: none;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+
+    .otp-verification-container {
+      max-width: 382px;
+      background: $white;
+      z-index: 1;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 6px;
+      padding: 12px 12px;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+      .otp-message {
+        text-align: justify;
+        background: lighten($lightpink, 10);
+        border-radius: 3px;
+        padding: 4px 6px;
+      }
+
+      .otp-input {
+        display: flex;
+        margin-top: 11px;
+        margin-bottom: 3px;
+
+        input {
+          border: 1px solid $lightpink;
+          border-radius: 3px;
+          padding: 3px 6px;
+          font-size: 15px;
+          flex-grow: 1;
+        }
+
+        .submit-otp-btn {
+          color: $white;
+          background: $lightpink;
+          height: 30px;
+          border-radius: 3px;
+          margin-left: 6px;
+          padding: 0 6px;
+          font-weight: 600;
+          cursor: pointer;
+
+          &:hover {
+            background: $coralpink;
+          }
+        }
+      }
+
+      span {
+        font-size: 14px;
+      }
+
+      .resend-otp-btn {
+        color: $lightpink;
+        margin-left: 4px;
+
+        &:hover {
+          // text-decoration: underline;
+          cursor: pointer;
+          color: $coralpink;
+        }
+      }
+    }
+  }
+}

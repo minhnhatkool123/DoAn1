@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import TextError from './TextError';
 import { FcGoogle } from "react-icons/fc";
-import ErrorLoginMessage from './ErrorLoginMessage';
+import ErrorLoginMessage from './ErrorMessage';
 import GoogleLogin from 'react-google-login';
 
 const initialValues = {

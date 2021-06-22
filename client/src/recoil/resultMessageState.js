@@ -9,6 +9,7 @@ export const resultMessageState = atom({
     show: false,
     type: SUCCESS,
     message: '',
+    func: () => {}
   }
 })
 

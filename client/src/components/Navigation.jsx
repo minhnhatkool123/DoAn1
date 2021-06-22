@@ -66,6 +66,7 @@ function Navigation() {
       axios.get('http://localhost:5000/user/info', config)
         .then(res => {
           console.log(res.data.user);
+          console.log('set user')
           setUser({
             accessToken: userAccessToken,
             ...res.data.user

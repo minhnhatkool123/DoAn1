@@ -65,11 +65,6 @@ const productStatus = {
             <label className="text-lb">{product.quantity}</label>
           </div>
 
-          <div className="form-control">
-            <label className="field-title">Số lượng bán:</label>
-            <label className="text-lb">{product.soldQuantity}</label>
-          </div>
-
           <div className="form-control mt-9">
             <label className="field-title">Trạng thái:</label>
             <div className="product-status-view">
@@ -121,6 +116,6 @@ const productStatus = {
       </div>
     </div>
   );
-};
+}
 
 export default ViewProduct;

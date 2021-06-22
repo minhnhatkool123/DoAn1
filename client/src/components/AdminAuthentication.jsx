@@ -37,11 +37,13 @@ function AdminAuthentication() {
             <AiOutlineDashboard className="logo-icon" />
 
             <div className="form-control">
+              <label htmlFor="username">Tài khoản</label>
               <Field type="text" id="username" name="username" placeholder="Tài khoản" />
               <ErrorMessage name="username" component={TextError} />
             </div>
 
             <div className="form-control">
+              <label htmlFor="password">Mật khẩu</label>
               <Field type="password" id="password" name="password" placeholder="Mật khẩu" />
               <ErrorMessage name="password" component={TextError} />
             </div>
