@@ -12,7 +12,7 @@ export const cartTotalPrice = selector({
     const cart = get(cartState);
 
     return cart.reduce((totalPrice, item) => {
-      return totalPrice + (item.product.price * item.quantity);
+      return totalPrice + ((item.product.price - item.product.discount) * item.quantity);
     }, 0);
   }
 });

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
+import axios from 'axios';
 import { useRecoilValue } from 'recoil';
 import { cartTotalPrice, cartState } from '../recoil/cartState';
 import { userState } from '../recoil/userState';
@@ -51,6 +52,14 @@ function CheckoutSection() {
 
   const onSubmit = values => {
     console.log('Form data', values);
+
+    const config = {
+      headers: {
+        Authorization: user.accessToken
+      }
+    }
+
+    axios.post('http://localhost:5000/api/order/add')
   };
 
   const handleProvinceChange = (handleChange, e, setFieldValue) => {
@@ -186,7 +195,7 @@ function CheckoutSection() {
                   <tr className="cart-item">
                     <td className="product-name">{`${item.product.name} - ${item.product.size}`}</td>
                     <td className="product-quantity">{item.quantity}</td>
-                    <td className="product-unit-price">{item.product.price.toLocaleString()}đ</td>
+                    <td className="product-unit-price">{(item.product.price - item.product.discount).toLocaleString()}đ</td>
                   </tr>
                 ))}
               </tbody>

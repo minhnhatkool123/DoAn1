@@ -16,6 +16,7 @@ function OrderDetail({ order }) {
             <div className="product-description">Sản phẩm</div>
             <div className="product-quantity">Số lượng</div>
             <div className="product-unit-price">Đơn giá</div>
+            <div className="product-discount">Khuyến mãi</div>
             <div className="product-total-price">Thành tiền</div>
           </div>
 
@@ -28,7 +29,8 @@ function OrderDetail({ order }) {
                 <div className="product-description">{`${item.product.name} - ${item.product.size}`}</div>
                 <div className="product-quantity">{item.quantity}</div>
                 <div className="product-unit-price">{item.product.price.toLocaleString()}đ</div>
-                <div className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</div>
+                <div className="product-discount">{item.product.discount.toLocaleString()}đ</div>
+                <div className="product-total-price">{((item.product.price - item.product.discount) * item.quantity).toLocaleString()}đ</div>
               </div>
             ))}
           </div>

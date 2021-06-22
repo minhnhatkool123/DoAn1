@@ -130,7 +130,7 @@
         }
 
         .cart-group {
-          cursor: pointer;
+          // cursor: pointer;
           position: relative;
           margin-left: 21px;
 
@@ -138,6 +138,16 @@
             .cart-preview {
               display: block;
             }
+          }
+
+          .cart-hover {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            z-index: 2;
           }
 
           a {

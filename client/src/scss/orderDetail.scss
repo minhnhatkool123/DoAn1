@@ -15,7 +15,7 @@
   max-height: 600px;
   overflow-y: auto;
   background-color: $white;
-  border-radius: 6px;
+  border-radius: 10px;
   z-index: 1;
   position: fixed;
   top: 50%;
@@ -46,17 +46,17 @@
   .order-cart-list {
     .heading-title {
       display: flex;
-      font-size: 19px;
+      font-size: 18px;
       background-color: $mistyrose;
       line-height: 48px;
       text-align: center;
       font-weight: 700;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
 
       .product-color {
-        flex: 0 0 12%;
-        max-width: 12%;
+        flex: 0 0 10%;
+        max-width: 10%;
       }
 
       .product-description {
@@ -65,18 +65,23 @@
       }
 
       .product-quantity {
-        flex: 0 0 15%;
-        max-width: 15%;
+        flex: 0 0 10%;
+        max-width: 10%;
       }
 
       .product-unit-price {
-        flex: 0 0 18%;
-        max-width: 18%;
+        flex: 0 0 13%;
+        max-width: 13%;
+      }
+
+      .product-discount {
+        flex: 0 0 12%;
+        max-width: 12%;
       }
 
       .product-total-price {
-        flex: 0 0 12%;
-        max-width: 12%;
+        flex: 0 0 15%;
+        max-width: 15%;
       }
     }
 
@@ -95,8 +100,8 @@
         }
 
         .product-color-container {
-          flex: 0 0 12%;
-          max-width: 12%;
+          flex: 0 0 10%;
+          max-width: 10%;
         }
 
         .product-description {
@@ -105,18 +110,23 @@
         }
 
         .product-quantity {
-          flex: 0 0 15%;
-          max-width: 15%;
+          flex: 0 0 10%;
+          max-width: 10%;
         }
 
         .product-unit-price {
-          flex: 0 0 18%;
-          max-width: 18%;
+          flex: 0 0 13%;
+          max-width: 13%;
+        }
+
+        .product-discount {
+          flex: 0 0 12%;
+          max-width: 12%;
         }
 
         .product-total-price {
-          flex: 0 0 12%;
-          max-width: 12%;
+          flex: 0 0 15%;
+          max-width: 15%;
         }
       }
 
@@ -124,6 +134,7 @@
         padding: 10px;
 
         .product-color {
+          border-radius: 4px;
           padding-top: 100%;
           background: {
             size: contain;

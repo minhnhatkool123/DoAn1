@@ -3,7 +3,7 @@
 .empty-cart {
   img {
     height: auto;
-    width: 320px;
+    width: 70vh;
     margin: 0 auto;
     display: block;
   }
@@ -12,7 +12,7 @@
     font-size: 24px;
     font-weight: 700;
     text-align: center;
-    color: $peru;
+    color: lighten(#e34738, 15);
     margin-bottom: 24px;
   }
 }

@@ -100,7 +100,7 @@ function Navigation() {
     } else {
       cartPreviewRef.current.classList.add('empty');
     }
-  }, [cart]);
+  }, [cart, pathname]);
 
   const isInDashboard = useRouteMatch('/admin');
   const isInCartPage = useRouteMatch('/cart');
@@ -132,38 +132,37 @@ function Navigation() {
               <span className="log-out" onClick={handleSignUpEscape}>{name ? 'Thoát' : 'Đăng ký'}</span>
             </div>
             <div className="cart-group">
-              <Link to='/cart'>
-                <HiOutlineShoppingBag className="cart-icon" />
-                <div className="cart-notice">{totalQuantity}</div>
-                {!isInCartPage && <div className="cart-preview" ref={cartPreviewRef}>
-                  <div className="empty-cart-container">
-                    <img src="/img/cart-empty.png" alt="" className="empty-cart-img" />
-                    <div className="empty-cart-message">Chưa có sản phẩm nào</div>
-                  </div>
+              <Link to='/cart' className="cart-hover"></Link>
+              <HiOutlineShoppingBag className="cart-icon" />
+              <div className="cart-notice">{totalQuantity}</div>
+              {!isInCartPage && <div className="cart-preview" ref={cartPreviewRef}>
+                <div className="empty-cart-container">
+                  <img src="/img/cart-empty.png" alt="" className="empty-cart-img" />
+                  <div className="empty-cart-message">Chưa có sản phẩm nào</div>
+                </div>
 
-                  <div className="cart-list">
-                    <div className="cart-items">
-                      {[...cart].reverse().map((item, index) => (
-                        <div className="cart-product-container" key={index}>
-                          <div className="product-info">
-                            <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
-                            <div className="product-description">
-                              <div className="product-name"><Link to={item.product.url}>{item.product.name}</Link></div>
-                              <div className="product-quantity">x{item.quantity}</div>
-                            </div>
+                <div className="cart-list">
+                  <div className="cart-items">
+                    {[...cart].reverse().map((item, index) => (
+                      <div className="cart-product-container" key={index}>
+                        <div className="product-info">
+                          <div className="product-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
+                          <div className="product-description">
+                            <div className="product-name"><Link to={item.product.url}>{item.product.name}</Link></div>
+                            <div className="product-quantity">x{item.quantity}</div>
                           </div>
-                          <div className="product-price">{(item.product.price * item.quantity).toLocaleString()}đ</div>
                         </div>
-                      ))}
-                    </div>
-                    <div className="cart-total-price">
-                      <span className="text-label">Thành tiền:</span>
-                      <span className="total-price">{totalPrice.toLocaleString()}đ</span>
-                    </div>
-                    <div className="view-cart-btn"><Link to='/cart'>Xem giỏ hàng</Link></div>
+                        <div className="product-price">{((item.product.price - item.product.discount) * item.quantity).toLocaleString()}đ</div>
+                      </div>
+                    ))}
                   </div>
-                </div>}
-              </Link>
+                  <div className="cart-total-price">
+                    <span className="text-label">Thành tiền:</span>
+                    <span className="total-price">{totalPrice.toLocaleString()}đ</span>
+                  </div>
+                  <Link to='/cart'><div className="view-cart-btn">Xem giỏ hàng</div></Link>
+                </div>
+              </div>}
             </div>
           </div>
         </div>

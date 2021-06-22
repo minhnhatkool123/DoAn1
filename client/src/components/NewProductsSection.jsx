@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../scss/newProductsSection.scss';
 import ProductCard from './ProductCard';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-
-const getNewProducts = async (page, limit) => {
-  const response = await axios.get(`http://localhost:5000/api/product/home?page=${page}&limit=${limit}`);
-  return response.data;
-}
+import { TransverseLoading } from 'react-loadingg';
+import spinner from '../svg/spinner.svg';
 
 function NewProductsSection() {
   const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const { data } = useQuery(['newProducts', page], () => getNewProducts(page, 16));
-
-  useEffect(() => {
-    if (data && data.products) {
-      const updatedProducts = [...products].concat(data.products);
-      setProducts(updatedProducts);
-    }
-  }, [data]);
+  const { isLoading } = useQuery(['newProducts', page], async () => {
+    const response = await axios.get(`http://localhost:5000/api/product/home?page=${page}&limit=16`);
+    const updatedProducts = [...products].concat(response.data.products);
+    setProducts(updatedProducts);
+    setTotalPages(response.data.totalPages);
+  });
 
   const showMoreItems = () => {
     setPage(prevPage => prevPage + 1);
@@ -34,10 +30,16 @@ function NewProductsSection() {
         </div>
 
         <div className="row">
+          {isLoading && !products.length && <div style={{ height: '10vh', position: 'relative', width: '100%' }}>
+            <TransverseLoading color='#ffb0bd' size='large' />
+          </div>}
+
           {products && products.map(product => <ProductCard product={product} key={product._id} />)}
         </div>
 
-        {(!data || page < data.totalPages) && <div className="load-more-btn" onClick={showMoreItems}>Xem thêm</div>}
+        {(products.length !== 0 && page < totalPages) && <div className="load-more-btn" onClick={showMoreItems}>
+          {isLoading ? <img src={spinner} className="loading-icon" alt="" /> : 'Xem thêm'}
+        </div>}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-require('dotenv').config();
+const { json } = require('body-parser');
 const Orders = require('../models/orderModel');
 const Products = require('../models/productModel');
 
@@ -18,7 +18,7 @@ const getOrder = async (req, res) => {
 					status: req.body.status,
 					date: {
 						$gte: new Date(req.body.timeStart),
-						$lt: new Date(req.body.timeEnd),
+						$lte: new Date(req.body.timeEnd),
 					},
 				};
 			} else {
@@ -33,7 +33,8 @@ const getOrder = async (req, res) => {
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
 
-		const countOrders = await Orders.countDocuments(queryObj);
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
 		const orders = await Orders.find(queryObj)
 			.populate({
 				path: 'user',
@@ -68,7 +69,7 @@ const getAllOrders = async (req, res) => {
 					status: req.body.status,
 					date: {
 						$gte: new Date(req.body.timeStart),
-						$lt: new Date(req.body.timeEnd),
+						$lte: new Date(req.body.timeEnd),
 					},
 				};
 			} else {
@@ -84,7 +85,8 @@ const getAllOrders = async (req, res) => {
 
 		console.log(req.body.timeStart);
 
-		const countOrders = await Orders.countDocuments(queryObj);
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
 		const orders = await Orders.find(queryObj)
 			.populate({
 				path: 'user',
@@ -119,21 +121,20 @@ const addOrder = async (req, res) => {
 				total += e.price * e.soldQuantity;
 			}
 		});
-		const newOrder = new Orders({
-			user,
-			products,
-			date: new Date(),
-			total,
-			receiverInfo,
-			paymentMethod,
-		});
 
 		for (let i = 0; i < products.length; i++) {
 			const oneProduct = await Products.findById({ _id: products[i]._id });
-			if (oneProduct.quantity < products[i].soldQuantity)
+			if (oneProduct.quantity < products[i].soldQuantity) {
+				let objectInfoError = {
+					id: oneProduct._id,
+					name: oneProduct.name,
+					quantity: oneProduct.quantity,
+				};
 				productError.push(
-					`Số lượng còn lại của ${oneProduct.name} là ${oneProduct.quantity}`
+					objectInfoError
+					// `Số lượng còn lại của ${oneProduct.name} là ${oneProduct.quantity}`
 				);
+			}
 		}
 
 		if (productError.length !== 0) {
@@ -167,6 +168,16 @@ const addOrder = async (req, res) => {
 				// }
 			);
 		}
+		let idOrder = new Date().valueOf().toString().substring(6, 13);
+		const newOrder = new Orders({
+			user,
+			idOrder,
+			products,
+			date: new Date(),
+			total,
+			receiverInfo,
+			paymentMethod,
+		});
 
 		//if (productError.length === 0) {
 		await newOrder.save();
@@ -174,6 +185,99 @@ const addOrder = async (req, res) => {
 		//} else {
 		//res.json({ message: productError });
 		//}
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const updateOrder = async (req, res) => {
+	try {
+		const order = await Orders.findByIdAndUpdate(
+			{ _id: req.body.id },
+			{ status: req.body.status },
+			{ new: true }
+		);
+
+		if (req.body.status === 5) {
+			const productOrder = order.products;
+			console.log(productOrder.length);
+
+			for (let i = 0; i < productOrder.length; i++) {
+				await Products.findByIdAndUpdate(
+					{ _id: productOrder[i]._id },
+					{
+						$inc: {
+							quantity: productOrder[i].soldQuantity,
+							soldQuantity: -productOrder[i].soldQuantity,
+						},
+					}
+				);
+			}
+		}
+
+		res.json({ message: 'Update order done', order });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+const searchOrder = async (req, res) => {
+	try {
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 10;
+
+		const searchText = req.query.q;
+
+		let queryObj = {
+			$or: [
+				{ idOrder: { $regex: searchText, $options: '$i' } },
+				{ 'receiverInfo.name': { $regex: searchText, $options: '$i' } },
+				{ 'receiverInfo.phone': { $regex: searchText, $options: '$i' } },
+			],
+		};
+		if (Object.values(req.body).length !== 0) {
+			if (req.body.timeStart && req.body.timeEnd) {
+				console.log('co time');
+				queryObj = {
+					...queryObj,
+					status: req.body.status,
+					date: {
+						$gte: new Date(req.body.timeStart),
+						$lte: new Date(req.body.timeEnd),
+					},
+				};
+			} else {
+				console.log('khong time');
+				queryObj = {
+					...queryObj,
+					status: req.body.status,
+				};
+			}
+		}
+
+		const startIndex = (page - 1) * limit;
+		const endIndex = page * limit;
+
+		console.log(req.body.timeStart);
+
+		let countOrders = await Orders.countDocuments(queryObj);
+		countOrders = Math.ceil(countOrders / limit);
+		const orders = await Orders.find(queryObj)
+			.populate({
+				path: 'user',
+				select: 'name type district city address phone email',
+			})
+			.skip(startIndex)
+			.limit(limit);
+
+		if (orders)
+			res.json({
+				orders,
+				totalPages: countOrders,
+				page: page,
+				search: searchText,
+			});
+		else res.json({ message: 'Loi' });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -331,11 +435,70 @@ const getNumberSoldCategory = async (req, res) => {
 	}
 };
 
+const getNumberSoldCategoryFollowMonth = async (req, res) => {
+	try {
+		let data = [];
+		for (let i = 1; i <= 12; i++) {
+			const allPrice = await Orders.aggregate([
+				{
+					$match: {
+						date: {
+							$gte: new Date(`2021-${i}`),
+							$lt: new Date(`2021-${i + 1}`),
+						},
+					},
+				},
+				{
+					$unwind: '$products',
+				},
+			]);
+
+			//let result = [];
+			let totalAo = 0;
+			let totalQuan = 0;
+			let totalDamVay = 0;
+			for (let i = 0; i < allPrice.length; i++) {
+				let product = allPrice[i].products;
+
+				if (JSON.stringify(product.category) === JSON.stringify('Áo')) {
+					totalAo += product.soldQuantity;
+				}
+				if (JSON.stringify(product.category) === JSON.stringify('Quần')) {
+					totalQuan += product.soldQuantity;
+				}
+				if (product.category === 'Đầm Váy') {
+					totalDamVay += product.soldQuantity;
+				}
+			}
+
+			let objectOneMonthSold = {
+				Ao: totalAo, //{ category: 'Áo', total:  },
+				Quan: totalQuan, // { category: 'Quần', total:  },
+				DamVay: totalDamVay, //{ category: 'Đầm Váy', total: totalDamVay },
+				Month: i,
+			};
+			data.push(objectOneMonthSold);
+		}
+
+		//result.push({ category: 'Áo', total: totalAo });
+		//result.push({ category: 'Quần', total: totalQuan });
+		//result.push({ category: 'Đầm Váy', total: totalDamVay });
+		//console.log(totalQuan);
+
+		res.json({ data });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	getOrder,
 	getAllOrders,
 	addOrder,
+	updateOrder,
 	getTotalOneMonth,
 	getTotalCategory,
 	getNumberSoldCategory,
+	getNumberSoldCategoryFollowMonth,
+	searchOrder,
 };

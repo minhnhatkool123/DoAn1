@@ -1,9 +1,10 @@
-@import './color.scss';
+@import "./color.scss";
 
 .new-products-section {
   .container {
     max-width: 1140px;
     margin: 0 auto;
+    margin-bottom: 24px;
 
     .section-title {
       font-weight: 900;
@@ -12,12 +13,14 @@
     }
 
     .load-more-btn {
+      // position: relative;
       cursor: pointer;
       text-transform: uppercase;
       color: $white;
       background-color: $lightpink;
       width: 108px;
-      padding: 11px 0;
+      height: 42px;
+      line-height: 42px;
       text-align: center;
       border-radius: 8px;
       font-size: 16px;
@@ -25,12 +28,16 @@
       margin: {
         left: auto;
         right: auto;
-        bottom: 50px;
         top: 4px;
       }
 
       &:hover {
         background-color: $coralpink;
+      }
+
+      .loading-icon {
+        width: 42px;
+        height: 100%;
       }
     }
   }

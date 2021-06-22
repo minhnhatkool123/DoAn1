@@ -6,8 +6,9 @@ import { toastDisplayState } from '../recoil/toastDisplayState';
 import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
 import { Link, useHistory } from 'react-router-dom';
+import EmptyCart from './EmptyCart';
 
-function FullCart() {
+function Cart() {
   const history = useHistory();
 
   const totalPrice = useRecoilValue(cartTotalPrice);
@@ -69,43 +70,46 @@ function FullCart() {
   }
 
   return (
-    <div className="full-cart">
-      <table>
-        {cart.map(item => {
-          return (
-            <tr>
-              <td width="10%" className="image-color-container">
-                <div className="image-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
-              </td>
+    <React.Fragment>
+      {cart.length === 0 && <EmptyCart />}
+      {cart.length !== 0 && <div className="full-cart">
+        <table>
+          {cart.map(item => {
+            return (
+              <tr>
+                <td width="10%" className="image-color-container">
+                  <div className="image-color" style={{ backgroundImage: `url(${item.product.color})` }}></div>
+                </td>
 
-              <td width="30%" className="product-name"><Link to={item.product.url}>{`${item.product.name} - ${item.product.size}`}</Link></td>
+                <td width="30%" className="product-name"><Link to={item.product.url}>{`${item.product.name} - ${item.product.size}`}</Link></td>
 
-              <td width="15%" className="unit-price">{item.product.price.toLocaleString()}đ</td>
+                <td width="15%" className="unit-price">{(item.product.price - item.product.discount).toLocaleString()}đ</td>
 
-              <td width="15%" className="quantity-adjustment">
-                <span className="decrement-btn" onClick={() => handleProductDecrement(item.id, item.quantity)}>-</span>
-                <span className="quantity">{item.quantity}</span>
-                <span className="increment-btn" onClick={() => handleProductIncrement(item.id, item.product)}>+</span>
-              </td>
+                <td width="15%" className="quantity-adjustment">
+                  <span className="decrement-btn" onClick={() => handleProductDecrement(item.id, item.quantity)}>-</span>
+                  <span className="quantity">{item.quantity}</span>
+                  <span className="increment-btn" onClick={() => handleProductIncrement(item.id, item.product)}>+</span>
+                </td>
 
-              <td width="15%" className="product-total-price">{(item.product.price * item.quantity).toLocaleString()}đ</td>
+                <td width="15%" className="product-total-price">{((item.product.price - item.product.discount) * item.quantity).toLocaleString()}đ</td>
 
-              <td width="15%" className="remove">
-                <span className="remove-btn" onClick={() => handleRemoveProduct(item.id)}>Xóa</span>
-              </td>
-            </tr>
-          )
-        })}
-      </table>
+                <td width="15%" className="remove">
+                  <span className="remove-btn" onClick={() => handleRemoveProduct(item.id)}>Xóa</span>
+                </td>
+              </tr>
+            )
+          })}
+        </table>
 
-      <div className="totalPrice">Tổng: {totalPrice.toLocaleString()}đ</div>
+        <div className="totalPrice">Tổng: {totalPrice.toLocaleString()}đ</div>
 
-      <div className="btn-group">
-        <Link to='/'><div className="continue-shopping-btn">Tiếp tục mua sắm</div></Link>
-        <div className="checkout-btn" onClick={handleCheckoutClick}>Thanh toán</div>
-      </div>
-    </div>
+        <div className="btn-group">
+          <Link to='/'><div className="continue-shopping-btn">Tiếp tục mua sắm</div></Link>
+          <div className="checkout-btn" onClick={handleCheckoutClick}>Thanh toán</div>
+        </div>
+      </div>}
+    </React.Fragment>
   );
 }
 
-export default FullCart;
+export default Cart;

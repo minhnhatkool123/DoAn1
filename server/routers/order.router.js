@@ -9,6 +9,10 @@ router.get('/get-by-user/:id', auth, orderController.getOrder);
 
 router.get('/get-all', auth, authAdmin, orderController.getAllOrders);
 
+router.get('/search', orderController.searchOrder);
+
+router.patch('/update', orderController.updateOrder);
+
 router.get(
 	'/gettotalonemonth',
 	auth,
@@ -28,6 +32,13 @@ router.get(
 	auth,
 	authAdmin,
 	orderController.getNumberSoldCategory
+);
+
+router.get(
+	'/gettotalsoldcategory-followmonth',
+	auth,
+	authAdmin,
+	orderController.getNumberSoldCategoryFollowMonth
 );
 
 module.exports = router;

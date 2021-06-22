@@ -8,7 +8,7 @@ function ResultMessage() {
   const content = useRecoilValue(messageContent);
 
   const closeMessage = () => {
-    resultMsg.func();
+    if (resultMsg.func) resultMsg.func();
     setResultMsg({ ...resultMsg, show: false, func: () => {} });
   }
 

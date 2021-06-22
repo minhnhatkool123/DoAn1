@@ -25,8 +25,6 @@ function ProductDetail() {
 
   const { data: product, isLoading, isError, refetch } = useQuery(['productDetail', id], () => getProduct(id));
 
-  const priceRef = useRef(null);
-
   const [cart, setCart] = useRecoilState(cartState);
   const setToastDisplay = useSetRecoilState(toastDisplayState);
 
@@ -67,7 +65,8 @@ function ProductDetail() {
     //create a product object from existing information
     const item = {
       name: product.name,
-      price: parseInt(priceRef.current.innerText.replace(',', '')),
+      price: product.price,
+      discount: product.discount,
       size: sizeLabel.value,
       color,
       id: product._id,
@@ -108,12 +107,12 @@ function ProductDetail() {
         show: true,
         message: 'Bạn chưa chọn màu cho sản phẩm'
       });
-    } else if (quantity + getProductQuantityInCart(cart, product._id) > product.quantity) {
+    } /*else if (quantity + getProductQuantityInCart(cart, product._id) > product.quantity) {
       setToastDisplay({
         show: true,
         message: <span><strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
       });
-    } else {
+    }*/ else {
       addProductToCart(sizeLabel, buttonType);
     }
   }
@@ -144,7 +143,7 @@ function ProductDetail() {
 
         <div className="product-detail-info col l-6">
           <div className="product-title">{product.name}</div>
-          <div className="product-price" ref={priceRef}>{(product.price - product.discount).toLocaleString()}đ</div>
+          <div className="product-price">{(product.price - product.discount).toLocaleString()}đ</div>
           {product.discount > 0 && <div className="product-original-price">{parseInt(product.price).toLocaleString()}đ</div>}
 
           <div className="size-group">
