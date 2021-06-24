@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const validationSchema = Yup.object({
   productName: Yup.string().required('*Bắt buộc'),
-  productCategory: Yup.string().required('*Bắt buộccccc'),
+  productCategory: Yup.string().required('*Bắt buộc'),
   productType: Yup.string().required('*Bắt buộc'),
   productPrice: Yup.number()
     .typeError('Giá phải là một số')

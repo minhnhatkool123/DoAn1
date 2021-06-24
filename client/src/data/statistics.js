@@ -85,3 +85,80 @@ export const soldQuantityByCategory = {
     }
   ]
 };
+
+export const soldCategoryMonthly = {
+  "data": [
+    {
+      "Ao": 10,
+      "Quan": 2,
+      "DamVay": 5,
+      "Month": 1
+    },
+    {
+      "Ao": 20,
+      "Quan": 10,
+      "DamVay": 10,
+      "Month": 2
+    },
+    {
+      "Ao": 25,
+      "Quan": 11,
+      "DamVay": 30,
+      "Month": 3
+    },
+    {
+      "Ao": 35,
+      "Quan": 20,
+      "DamVay": 18,
+      "Month": 4
+    },
+    {
+      "Ao": 39,
+      "Quan": 14,
+      "DamVay": 40,
+      "Month": 5
+    },
+    {
+      "Ao": 23,
+      "Quan": 16,
+      "DamVay": 10,
+      "Month": 6
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 7
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 8
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 9
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 10
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 11
+    },
+    {
+      "Ao": 0,
+      "Quan": 0,
+      "DamVay": 0,
+      "Month": 12
+    }
+  ]
+}

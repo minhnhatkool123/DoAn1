@@ -13,9 +13,8 @@ import { userState } from '../recoil/userState';
 import { productViewDisplayState } from '../recoil/productViewDisplayState';
 import { productEditDisplayState } from '../recoil/productEditDisplayState';
 import { productAddDisplayState } from '../recoil/productAddDisplayState';
-import { TiArrowSortedDown } from "react-icons/ti";
+import { TiArrowSortedDown, TiTick } from "react-icons/ti";
 import { BiChevronRight } from "react-icons/bi";
-import { TiTick } from "react-icons/ti";
 import { IoSearchOutline } from "react-icons/io5";
 import { EatLoading } from 'react-loadingg';
 import { Link } from 'react-router-dom';
@@ -23,7 +22,6 @@ import AddNewProduct from './AddNewProduct';
 import ViewProduct from './ViewProduct';
 import EditProduct from './EditProduct';
 import ReactPaginate from "react-paginate";
-import queryString from 'query-string';
 
 const productStatus = {
   '0': {
@@ -65,7 +63,7 @@ function ProductManagement() {
   const [productEditDisplay, setProductEditDisplay] = useRecoilState(productEditDisplayState);
   const [productAddDisplay, setProductAddDisplay] = useRecoilState(productAddDisplayState);
 
-  const { data, isLoading, isError, refetch } = useQuery(['managedProducts', page, filterQuery], async () => {
+  const { data, isLoading, refetch } = useQuery(['managedProducts', page, filterQuery], async () => {
     console.log(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     const response = await axios.get(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     setTotalPages(response.data.totalPages);
@@ -170,7 +168,7 @@ function ProductManagement() {
       </div>
 
       <div className={data?.products.length === 8 ? "product-table" : "product-table offset"}>
-        <form className="title-list" action="" method="post" id="filterProductForm" ref={filterRef} onChange={handleFilterChange}>
+        <form className="title-list" ref={filterRef} onChange={handleFilterChange}>
           <div className="image-title fl-6 fl-o-1 title">Ảnh</div>
           <div className="name-title fl-20 title">Tên sản phẩm</div>
           <div className="type-title-container fl-15 title">
@@ -293,8 +291,8 @@ function ProductManagement() {
               </div>
               <div className="product-discount fl-10">{product.discount.toLocaleString()}đ</div>
               <div className="product-manipulation fl-13">
-                <div className="view-btn">
-                  <img src={viewIcon} className="btn-icon" alt="" onClick={() => handleViewProductClick(product)} />
+                <div className="view-btn" onClick={() => handleViewProductClick(product)}>
+                  <img src={viewIcon} className="btn-icon" alt="" />
                 </div>
                 <div className="edit-btn" onClick={() => handleEditProductClick(product)}>
                   <img src={editIcon} className="btn-icon" alt="" />

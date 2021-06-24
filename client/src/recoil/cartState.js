@@ -101,6 +101,6 @@ export const increaseCartItem = (cart, itemId) => {
 }
 
 export const getProductQuantityInCart = (cart, productId) => {
-  const indexes = cart.reduce((totalIndexes, cartItem, i) => cartItem.product.id === productId ? totalIndexes.concat(i) : totalIndexes, []);
+  const indexes = cart.reduce((totalIndexes, cartItem, i) => cartItem.product._id === productId ? totalIndexes.concat(i) : totalIndexes, []);
   return indexes.reduce((totalQuantity, index) => totalQuantity + cart[index].quantity, 0);
 }

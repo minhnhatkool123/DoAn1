@@ -79,7 +79,6 @@
   .product-table {
     width: 100%;
     max-width: 1034px;
-    // min-height: 482px;
     background: $white;
     margin: 0 auto;
     border-radius: 16px;
@@ -514,14 +513,10 @@
   }
 
   .pagination {
-    * {
-      color: $darkslategrey;
-    }
+    color: $darkslategrey;
 
     display: flex;
     list-style: none;
-    // justify-content: center;
-    // margin-top: 26px;
     position: absolute;
     bottom: 30px;
     left: 50%;

@@ -69,9 +69,12 @@ function ProductDetail() {
       discount: product.discount,
       size: sizeLabel.value,
       color,
-      id: product._id,
+      _id: product._id,
       url: url,
-      quantity: product.quantity
+      quantity: product.quantity,
+      type: product.type,
+      category: product.category,
+      status: product.status
     }
     // create new cart from the product just created and product quantity
     const newCart = addToCart(cart, item, quantity, uuid());
@@ -93,7 +96,6 @@ function ProductDetail() {
   }
 
   const handleAddProductToCart = (buttonType) => {
-    console.log('so luong sp da co trong gio hang: ', getProductQuantityInCart(cart, product._id))
     // get selected size from checked size label
     const sizeLabel = document.querySelector('input[name="size"]:checked');
     // check if the product information is not complete, then show the toast message, otherwise add the product to cart

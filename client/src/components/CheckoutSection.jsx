@@ -4,8 +4,9 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import TextError from './TextError';
 import axios from 'axios';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { cartTotalPrice, cartState } from '../recoil/cartState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
 import { userState } from '../recoil/userState';
 import provinces from '../data/provinces';
 import districts from '../data/districts';
@@ -28,8 +29,8 @@ const validationSchema = Yup.object({
 function CheckoutSection() {
   const user = useRecoilValue(userState);
   const totalPrice = useRecoilValue(cartTotalPrice);
-
-  const cart = useRecoilValue(cartState);
+  const [cart, setCart] = useRecoilState(cartState);
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
 
   const [province, setProvince] = useState(user.city);
   const [accordingDistricts, setAccordingDistricts] = useState([]);
@@ -50,8 +51,8 @@ function CheckoutSection() {
     note: ''
   };
 
-  const onSubmit = values => {
-    console.log('Form data', values);
+  const onSubmit = (values) => {
+    // console.log('Form data', values);
 
     const config = {
       headers: {
@@ -59,7 +60,44 @@ function CheckoutSection() {
       }
     }
 
-    axios.post('http://localhost:5000/api/order/add')
+    const products = cart.map(cartItem => {
+      const { url, quantity, ...item } = cartItem.product;
+      return {
+        ...item,
+        soldQuantity: cartItem.quantity
+      }
+    })
+
+    const address = `${values.addressDetail}, ${values.district}, ${values.province}`;
+
+    const data = {
+      user: user._id,
+      paymentMethod: values.paymentMethod,
+      products,
+      receiverInfo: {
+        name: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        address,
+        note: values.note
+      }
+    }
+
+    console.log(data);
+
+    axios.post('http://localhost:5000/api/order/add', data, config)
+      .then(response => {
+        console.log(response.data);
+        setCart([]);
+        localStorage.setItem('cart', cart);
+      })
+      .catch(error => {
+        console.log(error);
+        setToastDisplay({
+          show: true,
+          message: 'Giỏ hàng có sản phẩm vượt quá số lượng'
+        });
+      })
   };
 
   const handleProvinceChange = (handleChange, e, setFieldValue) => {

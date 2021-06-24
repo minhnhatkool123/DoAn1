@@ -20,12 +20,9 @@ function AdminRoute({ component: Component, children, redirect, ...rest }) {
 
     const response = await axios.get('http://localhost:5000/user/info', config);
     if (response.data.user.type !== 1) {
-      console.log('You are not an admin')
       throw new Error('You are not an admin');
     }
-
-    return response.data;
-  }, { retry: 1 });
+  }, { retry: false });
 
   return (
     <React.Fragment>

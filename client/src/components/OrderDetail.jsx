@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../scss/orderDetail.scss';
 import { useSetRecoilState } from 'recoil';
 import { orderDisplayState } from '../recoil/orderDisplayState';
+import { IoClose } from "react-icons/io5";
 
 function OrderDetail({ order }) {
   const setOrderDisplay = useSetRecoilState(orderDisplayState);
@@ -11,6 +12,7 @@ function OrderDetail({ order }) {
       <div id="overlay" onClick={() => setOrderDisplay(false)}></div>
       <div className="order-detail">
         <div className="order-cart-list" width="100%">
+          <div className="heading-id">Đơn hàng <span>#{order.id}</span></div>
           <div className="heading-title">
             <div className="product-color">Ảnh</div>
             <div className="product-description">Sản phẩm</div>
@@ -51,6 +53,10 @@ function OrderDetail({ order }) {
             <li className="date">Ngày đặt: {order.date}</li>
             <li className="payment-method">{order.paymentMethod}</li>
           </ul>
+        </div>
+
+        <div className="close-btn" onClick={() => setOrderDisplay(false)}>
+          <IoClose className="close-icon" />
         </div>
       </div>
     </React.Fragment>

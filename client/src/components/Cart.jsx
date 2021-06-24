@@ -33,7 +33,7 @@ function Cart() {
   }
 
   const handleProductIncrement = (id, product) => {
-    if (getProductQuantityInCart(cart, product.id) + 1 > product.quantity) {
+    if (getProductQuantityInCart(cart, product._id) + 1 > product.quantity) {
       setToastDisplay({
         show: true,
         message: <span><strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
