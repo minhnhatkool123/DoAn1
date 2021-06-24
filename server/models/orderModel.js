@@ -14,7 +14,7 @@ const orderSchema = mongoose.Schema(
 			type: Number,
 			default: 0,
 		},
-		shippingfee: {
+		shipFee: {
 			type: Number,
 			default: 25000,
 		},
@@ -30,6 +30,7 @@ const orderSchema = mongoose.Schema(
 				category: { type: String, require: true },
 				type: { type: String, require: true },
 				price: { type: Number, require: true },
+				size:String,
 				color: String,
 				discount: Number,
 				status: [Number],
