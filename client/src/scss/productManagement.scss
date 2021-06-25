@@ -457,23 +457,23 @@
             box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 
             &.sale {
-              color: $darkersandybrown;
-              background: $oldlace;
+              color: darken($darkersandybrown, 5);
+              background: darken($oldlace, 2);
             }
 
             &.new {
-              color: $mediumaquamarine;
-              background: $mintcream;
+              color: darken($mediumaquamarine, 10);
+              background: darken($mintcream, 4);
             }
 
             &.hot {
-              color: $darkerindianred;
-              background: $lavenderblush;
+              color: lighten($darkerindianred, 3);
+              background: darken($lavenderblush, 1);
             }
 
             &.none {
               color: $lightslategray;
-              background: $lightghostwhite;
+              background: darken($lightghostwhite, 2);
             }
           }
         }

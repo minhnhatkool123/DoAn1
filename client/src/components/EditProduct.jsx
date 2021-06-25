@@ -137,7 +137,7 @@ function EditProduct({ product, refetch }) {
 
     axios.put(`http://localhost:5000/api/product/update/${product._id}`, data, config)
       .then((response) => {
-        console.log('Them thanh cong');
+        console.log('Luu thanh cong');
         console.log(response.data);
 
         refetch();

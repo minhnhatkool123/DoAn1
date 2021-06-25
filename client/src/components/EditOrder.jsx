@@ -4,7 +4,11 @@ import Stepper from './Stepper';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { orderEditDisplayState } from '../recoil/orderEditDisplayState';
+import { toastDisplayState } from '../recoil/toastDisplayState';
+import { dialogState } from '../recoil/dialogState';
 import { IoClose } from "react-icons/io5";
+import { useMutation } from 'react-query';
+import axios from 'axios';
 
 const steps = [
   {
@@ -25,14 +29,82 @@ const steps = [
   }
 ];
 
-function EditOrder({ order }) {
+function EditOrder({ order, refetch }) {
   const user = useRecoilValue(userState);
+  const setDialog = useSetRecoilState(dialogState);
   const setOrderEditDisplay = useSetRecoilState(orderEditDisplayState);
+  const setToastDisplay = useSetRecoilState(toastDisplayState);
 
   const [currentStep, setCurrentStep] = useState(order.status);
 
+  const mutation = useMutation(async () => {
+    const config = {
+      headers: {
+        Authorization: user.accessToken
+      }
+    }
+
+    const data = {
+      id: order._id,
+      status: currentStep
+    }
+
+    console.log(data)
+
+    axios.patch(`http://localhost:5000/api/order/update`, data, config)
+      .then((response) => {
+        console.log('Luu thanh cong');
+        console.log(response.data);
+
+        refetch();
+
+        setToastDisplay({
+          show: true,
+          message: 'Đã lưu cập nhật'
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  })
+
   const handleCancelOrder = () => {
-    setCurrentStep(-1);
+    setDialog({
+      show: true,
+      message: 'Bạn xác nhận muốn hủy đơn hàng?',
+      acceptButtonName: 'Xác nhận',
+      adminMode: true,
+      func: () => {
+        const config = {
+          headers: {
+            Authorization: user.accessToken
+          }
+        }
+
+        const data = {
+          id: order._id,
+          status: 4
+        }
+
+        axios.patch(`http://localhost:5000/api/order/update`, data, config)
+          .then((response) => {
+            console.log('Luu thanh cong');
+            console.log(response.data);
+
+            refetch();
+
+            setToastDisplay({
+              show: true,
+              message: 'Đã hủy đơn hàng'
+            });
+
+            setOrderEditDisplay(false);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
+    });
   }
 
   const handlePrevStepClick = () => {
@@ -50,7 +122,7 @@ function EditOrder({ order }) {
   }
 
   const handleSaveOrderStatus = () => {
-
+    mutation.mutate();
   }
 
   return (

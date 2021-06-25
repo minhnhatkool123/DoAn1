@@ -48,6 +48,10 @@
       }
     }
 
+    .date-picker-group {
+      display: flex;
+    }
+
     .date-picker {
       width: 220px;
       margin-left: 24px;
@@ -172,7 +176,7 @@
           background: $ghostwhite;
         }
 
-        &:nth-child(8) {
+        &:nth-child(9) {
           border-bottom-left-radius: 16px;
           border-bottom-right-radius: 16px;
         }
@@ -206,23 +210,23 @@
             box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 
             &.pending {
-              color: $orangecoral;
-              background: $antiquewhite;
+              color: lighten($orangecoral, 1);
+              background: lighten($antiquewhite, 1);
             }
 
             &.paid {
-              color: $mediumslateblue;
-              background: $lavender;
+              color: lighten($mediumslateblue, 2);
+              background: lighten($lavender, 3);
             }
 
             &.confirmed {
-              color: $paledodgerblue;
-              background: $bluelavender;
+              color: #37aaa9;
+              background: #d9f3f4;
             }
 
             &.success {
-              color: $darkerindianred;
-              background: $mystyred;
+              color: lighten($darkerindianred, 5);
+              background: lighten($mystyred, 1);
             }
 
             &.canceled {
@@ -245,7 +249,7 @@
             padding: 4px;
             box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-            &:hover {
+            &:not(.disabled):hover {
               filter: brightness(0.9);
             }
           }
@@ -256,6 +260,11 @@
 
           .edit-btn {
             background: $cornflowerblue;
+
+            &.disabled {
+              background: $lightgrey;
+              cursor: default;
+            }
           }
 
           .delete-btn {
@@ -313,6 +322,75 @@
       //     background: #f3b8ce8c;
       //   }
       // }
+    }
+
+    .prev-icon,
+    .next-icon {
+      width: 20px;
+      height: 31.5px;
+    }
+
+    .prev-btn a {
+      margin-right: 4px;
+    }
+
+    .next-btn a {
+      margin-left: 4px;
+    }
+
+    .disabled-btn a {
+      cursor: default;
+      opacity: 1;
+      color: rgba($color: $silver, $alpha: 1);
+    }
+
+    .active-btn a {
+      background: $hotpink;
+      color: $white;
+    }
+  }
+
+  .pagination {
+    color: $darkslategrey;
+
+    display: flex;
+    list-style: none;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .paginated-btn,
+    .prev-btn,
+    .next-btn {
+      a {
+        cursor: pointer;
+        font-size: 16px;
+        min-width: 32px;
+        text-align: center;
+        display: block;
+      }
+    }
+
+    .paginated-btn a {
+      padding: 5px 8px;
+      border-left: none;
+      border-radius: 4px;
+      margin: 0 4px;
+
+      &:hover {
+        background: $hotpink;
+        color: $white;
+      }
+    }
+
+    .prev-btn,
+    .next-btn {
+      a {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+      }
     }
 
     .prev-icon,

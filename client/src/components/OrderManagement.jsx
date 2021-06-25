@@ -1,5 +1,7 @@
 import '../scss/orderManagement.scss';
 import React, { useState, useRef } from 'react';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
@@ -9,103 +11,132 @@ import { EatLoading } from 'react-loadingg';
 import { TiArrowSortedDown } from "react-icons/ti";
 import { orderEditDisplayState } from '../recoil/orderEditDisplayState';
 import { orderDisplayState } from '../recoil/orderDisplayState';
+import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import viewIcon from '../svg/visibility.svg';
 import editIcon from '../svg/edit.svg';
 import EditOrder from './EditOrder';
 import OrderDetail from './OrderDetail';
-import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
+import ReactPaginate from "react-paginate";
 
-const orders = [
-  {
-    id: 19815898,
-    date: '21/01/2021',
-    totalPrice: 1950000,
-    status: 1,
-    name: 'Phương Thùy',
-    phone: '0187264727',
-    email: 'phuongthuy@gmail.com',
-    address: '53 Nguyễn Du, Thành phố Dĩ An, Bình Dương',
-    note: 'Giao giờ hành chính',
-    paymentMethod: 'Thanh toán tiền mặt khi nhận hàng',
-    shippingFee: 25000,
-    cart: [
-      {
-        id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-          id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-          name: "Chân Váy Caro Nữ Sinh Nhật 589",
-          price: 245000,
-          discount: 20000,
-          size: "L",
-          url: "/product/60af5e60dbc87f8dfa279f39"
-        },
-        quantity: 1
-      },
-      {
-        id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-          id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-          name: "Áo Thun Hoodie Nữ Baby K252",
-          price: 240000,
-          discount: 10000,
-          size: "Freesize",
-          url: "/product/60af5e5f4c6dd49b6d98882b"
-        },
-        quantity: 2
-      },
-      {
-        id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-          price: 245000,
-          discount: 5000,
-          size: "Freesize",
-          url: "/product/60af5e5d303b111c3144e31c"
-        },
-        quantity: 1
-      },
-      {
-        id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-          price: 245000,
-          discount: 0,
-          size: "Freesize",
-          url: "/product/60af5e5d303b111c3144e31c"
-        },
-        quantity: 1
-      },
-      {
-        id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-        product: {
-          color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-          name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-          price: 245000,
-          discount: 30000,
-          size: "Freesize",
-          url: "/product/60af5e5d303b111c3144e31c"
-        },
-        quantity: 1
-      }
-    ]
+// const orders = [
+//   {
+//     id: 19815898,
+//     date: '21/01/2021',
+//     totalPrice: 1950000,
+//     status: 1,
+//     name: 'Phương Thùy',
+//     phone: '0187264727',
+//     email: 'phuongthuy@gmail.com',
+//     address: '53 Nguyễn Du, Thành phố Dĩ An, Bình Dương',
+//     note: 'Giao giờ hành chính',
+//     paymentMethod: 'Thanh toán tiền mặt khi nhận hàng',
+//     shippingFee: 25000,
+//     cart: [
+//       {
+//         id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
+//         product: {
+//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
+//           id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
+//           name: "Chân Váy Caro Nữ Sinh Nhật 589",
+//           price: 245000,
+//           discount: 20000,
+//           size: "L",
+//           url: "/product/60af5e60dbc87f8dfa279f39"
+//         },
+//         quantity: 1
+//       },
+//       {
+//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
+//         product: {
+//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
+//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
+//           name: "Áo Thun Hoodie Nữ Baby K252",
+//           price: 240000,
+//           discount: 10000,
+//           size: "Freesize",
+//           url: "/product/60af5e5f4c6dd49b6d98882b"
+//         },
+//         quantity: 2
+//       },
+//       {
+//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//         product: {
+//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
+//           price: 245000,
+//           discount: 5000,
+//           size: "Freesize",
+//           url: "/product/60af5e5d303b111c3144e31c"
+//         },
+//         quantity: 1
+//       },
+//       {
+//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//         product: {
+//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
+//           price: 245000,
+//           discount: 0,
+//           size: "Freesize",
+//           url: "/product/60af5e5d303b111c3144e31c"
+//         },
+//         quantity: 1
+//       },
+//       {
+//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//         product: {
+//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
+//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
+//           price: 245000,
+//           discount: 30000,
+//           size: "Freesize",
+//           url: "/product/60af5e5d303b111c3144e31c"
+//         },
+//         quantity: 1
+//       }
+//     ]
+//   }
+// ];
+
+const orderStatus = {
+  0: {
+    key: 'pending',
+    value: 'Chờ xác nhận'
+  },
+
+  1: {
+    key: 'confirmed',
+    value: 'Đã xác nhận'
+  },
+
+  2: {
+    key: 'paid',
+    value: 'Đã thanh toán'
+  },
+
+  3: {
+    key: 'success',
+    value: 'Thành công'
+  },
+
+  4: {
+    key: 'canceled',
+    value: 'Đã hủy'
   }
-];
+}
 
 function OrderManagement() {
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
-  const [filterQuery, setFilterQuery] = useState('');
-  const [currentOrder, setCurrentOrder] = useState(orders[0]);
+  const [filterQuery, setFilterQuery] = useState('get-all?');
+  const [currentOrder, setCurrentOrder] = useState();
 
-  const filterRef = useRef(null);
+  const statusFilterRef = useRef(null);
   const searchRef = useRef(null);
+  const dateFilterRef = useRef(null);
 
   const pendingStatusRef = useRef(null);
   const confirmedStatusRef = useRef(null);
@@ -118,24 +149,62 @@ function OrderManagement() {
   const [orderDisplay, setOrderDisplay] = useRecoilState(orderDisplayState);
   const [orderEditDisplay, setOrderEditDisplay] = useRecoilState(orderEditDisplayState);
 
+  const { data: orders, isLoading, refetch } = useQuery(['managedOrders', page, filterQuery], async () => {
+    const config = {
+      headers: {
+        Authorization: user.accessToken
+      }
+    }
+
+    const data = {
+      timeStart: '22/06/2021',
+      timeEnd: '24/06/2021'
+    }
+
+    const response = await axios.get(`http://localhost:5000/api/order/${filterQuery}page=${page + 1}&limit=8`, {
+      params: data,
+      headers: {
+        Authorization: user.accessToken
+      }
+    });
+    // const response = await axios.get(`http://localhost:5000/api/order/get-all?page=1&limit=9`, config);
+    setTotalPages(response.data.totalPages);
+    console.log(response.data);
+    return response.data.orders;
+  });
+
   const handlePageChange = ({ selected }) => {
     // console.log('page click: ', selected);
     setPage(selected);
   };
 
   const handleChangeStatusClick = () => {
+    const dateFilter = new FormData(dateFilterRef.current);
+    const startDate = dateFilter.get('startDate');
+    const endDate = dateFilter.get('endDate');
 
+    const statusFilter = new FormData(statusFilterRef.current);
+    const status = statusFilter.get('orderStatus');
+    console.log(status, startDate, endDate);
   }
 
   const handleFilterChange = () => {
-
+    // const formData = new FormData(otherFilterRef.current);
+    // const status = formData.get('orderStatus');
+    // const search = formData.get('orderSearch');
+    // const startDate = formData.get('startDate');
+    // console.log(status, search, startDate);
   }
 
-  const handleViewProductClick = () => {
+  const handleViewProductClick = (order) => {
+    setCurrentOrder(order);
     setOrderDisplay(true);
   }
 
-  const handleEditProductClick = () => {
+  const handleEditProductClick = (order) => {
+    if (order.status === 4) return;
+
+    setCurrentOrder(order);
     setOrderEditDisplay(true);
   }
 
@@ -153,22 +222,24 @@ function OrderManagement() {
 
   return (
     <React.Fragment>
-      <form className="order-search">
+      <div className="order-search">
         <div className="order-search-bar">
           <IoSearchOutline className="search-icon" />
-          <input type="text" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} />
+          <input type="text" name="orderSearch" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} />
           <button type="submit" onClick={handleSearch} className="search-btn"></button>
         </div>
 
-        <div className="date-picker">
-          <DatePickerComponent id="date-picker-start" placeholder="Từ ngày" max={maxDate} format="dd/MM/yyyy" />
-        </div>
-        <div className="date-picker">
-          <DatePickerComponent id="date-picker-end" placeholder="Đến ngày" max={maxDate} format="dd/MM/yyyy" />
-        </div>
-      </form>
-      <div className="order-table">
-        <form className="title-list" ref={filterRef} onChange={handleFilterChange}>
+        <form ref={dateFilterRef} className="date-picker-group">
+          <div className="date-picker">
+            <DatePickerComponent name="startDate" id="date-picker-start" placeholder="Từ ngày" max={maxDate} format="dd/MM/yyyy" />
+          </div>
+          <div className="date-picker">
+            <DatePickerComponent name="endDate" id="date-picker-end" placeholder="Đến ngày" max={maxDate} format="dd/MM/yyyy" />
+          </div>
+        </form>
+      </div>
+      <div className={orders?.length === 9 ? "order-table" : "order-table offset"}>
+        <form className="title-list" ref={statusFilterRef} onChange={handleChangeStatusClick}>
           <div className="id-title fl-14 title">Mã đơn hàng</div>
           <div className="recipient-name-title fl-25 title">Người nhận</div>
           <div className="recipient-phone-title fl-15 title">Điện thoại</div>
@@ -198,32 +269,60 @@ function OrderManagement() {
         </form>
 
         <div className="order-list">
-          {/* {isLoading && <EatLoading color="#ff7eae" />} */}
-          <div className="order-item">
-            <div className="order-id fl-14">{orders[0].id}</div>
-            <div className="order-recipient-name fl-25">Phạm Hoàng Phượng Trinh</div>
-            <div className="order-recipient-phone fl-15">{orders[0].phone}</div>
-            <div className="order-date fl-11">{orders[0].date}</div>
-            <div className="order-total-price fl-13">{orders[0].totalPrice}</div>
-            <div className="order-status fl-12">
-              <label className="status-label paid">Đã thanh toán</label>
-            </div>
-            <div className="order-manipulation fl-10">
-              <div className="view-btn" onClick={() => handleViewProductClick(orders[0])}>
-                <img src={viewIcon} className="btn-icon" alt="" />
+          {isLoading && <EatLoading color="#ff7eae" />}
+          {orders?.map(order => (
+            <div key={order._id} className="order-item">
+              <div className="order-id fl-14">{order.idOrder}</div>
+              <div className="order-recipient-name fl-25">{order.receiverInfo.name}</div>
+              <div className="order-recipient-phone fl-15">{order.receiverInfo.phone}</div>
+              <div className="order-date fl-11">{new Date(order.date).toLocaleString("en-GB").slice(0, 10)}</div>
+              <div className="order-total-price fl-13">{order.total.toLocaleString()}đ</div>
+              <div className="order-status fl-12">
+                <label className={'status-label ' + orderStatus[order.status].key}>{orderStatus[order.status].value}</label>
               </div>
-              <div className="edit-btn" onClick={() => handleEditProductClick(orders[0])}>
-                <img src={editIcon} className="btn-icon" alt="" />
+              <div className="order-manipulation fl-10">
+                <div className="view-btn" onClick={() => handleViewProductClick(order)}>
+                  <img src={viewIcon} className="btn-icon" alt="" />
+                </div>
+                <div className={order.status === 4 ? "edit-btn disabled" : "edit-btn"} onClick={() => handleEditProductClick(order)}>
+                  <img src={editIcon} className="btn-icon" alt="" />
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
+      {orders?.length > 0 && <ReactPaginate
+        previousLabel={<GrFormPrevious className="prev-icon" />}
+        nextLabel={<GrFormNext className="next-icon" />}
+        pageCount={totalPages}
+        onPageChange={handlePageChange}
+        containerClassName={"pagination"}
+        pageClassName={"paginated-btn"}
+        breakClassName={"paginated-btn"}
+        previousClassName={"prev-btn"}
+        nextClassName={"next-btn"}
+        disabledClassName={"disabled-btn"}
+        activeClassName={"active-btn"}
+        forcePage={page}
+      />}
+
       {orderDisplay && <OrderDetail order={currentOrder} />}
-      {orderEditDisplay && <EditOrder order={currentOrder} />}
+      {orderEditDisplay && <EditOrder order={currentOrder} refetch={refetch} />}
     </React.Fragment>
   );
+}
+
+const getStatus = (status) => {
+  switch (status) {
+    case 0: return 'Chờ xác nhận';
+    case 1: return 'Đã xác nhận';
+    case 2: return 'Đã thanh toán';
+    case 3: return 'Giao thành công';
+    case 4: return 'Đã hủy';
+    default: return null;
+  }
 }
 
 export default OrderManagement;

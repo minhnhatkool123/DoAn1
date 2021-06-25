@@ -43,7 +43,7 @@ function OrderDetail({ order }) {
             <li className="name">Tên người nhận: <span>{order.receiverInfo.name}</span></li>
             <li className="phone">Điện thoại: <span>{order.receiverInfo.phone}</span></li>
             <li className="email">Email: <span>{order.receiverInfo.email}</span></li>
-            <li className="note">Ghi chú: <span>{order.receiverInfo.note}</span></li>
+            <li className="note">Ghi chú: <span>{order.receiverInfo.note ? order.receiverInfo.note : 'Không có'}</span></li>
             <li className="address">Địa chỉ giao hàng: <span>{order.receiverInfo.address}</span></li>
           </ul>
           <ul className="payment-info col-40">
