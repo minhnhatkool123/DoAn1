@@ -2,10 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../scss/productCard.scss';
 
-const calcSalePrice = (originalPrice, discount) => {
-  return (originalPrice - discount).toLocaleString();
-};
-
 function ProductCard({ product }) {
   return (
     <div className="product-container col l-3">

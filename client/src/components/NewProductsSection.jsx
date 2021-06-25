@@ -34,7 +34,7 @@ function NewProductsSection() {
             <TransverseLoading color='#ffb0bd' size='large' />
           </div>}
 
-          {products && products.map(product => <ProductCard product={product} key={product._id} />)}
+          {products?.map(product => <ProductCard product={product} key={product._id} />)}
         </div>
 
         {(products.length !== 0 && page < totalPages) && <div className="load-more-btn" onClick={showMoreItems}>

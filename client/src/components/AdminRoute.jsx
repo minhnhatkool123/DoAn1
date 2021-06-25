@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';

@@ -49,7 +49,7 @@ function Footer() {
           </div>
 
           <div className="logo-and-socials col l-2">
-            <div className="logo"><img src="/img/footerlogo.png"/></div>
+            <div className="logo"><img src="/img/footerlogo.png" alt="" /></div>
             <div className="socials">
               <Link to={{pathname: 'https://www.facebook.com/zshopfashionita'}} target='_blank'><FaFacebookSquare className="facebook-icon" /></Link>
               <RiInstagramFill className="instagram-icon" />

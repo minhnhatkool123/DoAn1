@@ -1,6 +1,6 @@
 import '../scss/productDetail.scss';
-import React, { useState, useEffect, useRef } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import React, { useState, useEffect } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { addToCart, cartState, getProductQuantityInCart } from '../recoil/cartState';
 import { toastDisplayState } from '../recoil/toastDisplayState';
 import { MdLocalShipping } from "react-icons/md";

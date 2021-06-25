@@ -3,105 +3,141 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../recoil/userState';
 import axios from 'axios';
-import { statisticsByMonth, statisticsByCategory, soldQuantityByCategory, soldCategoryMonthly } from '../data/statistics';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Legend, Bar } from 'recharts';
+import { useQuery } from 'react-query';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Legend, Bar } from 'recharts';
+import { EatLoading } from 'react-loadingg';
 
 function Statistics() {
   const user = useRecoilValue(userState);
 
+  const { data, isLoading } = useQuery('statistics', async () => {
+    const config = {
+      headers: {
+        Authorization: user.accessToken
+      }
+    }
+
+    let [categorySales, categorySold, monthlySales, monthlySold] = await Promise.all([
+      axios.get('http://localhost:5000/api/order/gettotalcategory', config),
+      axios.get('http://localhost:5000/api/order/gettotalsoldcategory', config),
+      axios.get('http://localhost:5000/api/order/gettotalonemonth', config),
+      axios.get('http://localhost:5000/api/order/gettotalsoldcategory-followmonth', config)
+    ]);
+
+    // console.log(categorySales.data.result, categorySold.data.result, monthlySales.data.data, monthlySold.data.data);
+
+    categorySales = categorySales.data.result;
+    categorySold = categorySold.data.result;
+    monthlySales = monthlySales.data.data.map(datum => ({ 'Tháng': datum.month, 'Doanh thu': datum.total }));
+    monthlySold = monthlySold.data.data.map(datum => ({
+      'Tháng': datum.Month,
+      'Áo': datum.Ao,
+      'Quần': datum.Quan,
+      'Đầm váy': datum.DamVay
+    }));
+
+    return {
+      categorySales,
+      categorySold,
+      monthlySales,
+      monthlySold
+    }
+  });
+
   return (
-    <div className="statistics">
-      <div className="chart-zone">
-        <div className="monthly-sales">
-          <ResponsiveContainer>
-            <AreaChart
-              data={statisticsByMonth.data}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0
-              }}
-            >
-              <defs>
-                <linearGradient id="monthlySalesColor" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              {/* <CartesianGrid strokeDasharray="3 3" /> */}
-              <XAxis dataKey="month" />
-              <YAxis width={80} />
-              <Tooltip />
-              <Area type="monotone" dataKey="total" stroke="#8884d8" fill="url(#monthlySalesColor)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="sold-category-monthly">
-          <ResponsiveContainer>
-            <BarChart
-              width={500}
-              height={300}
-              data={soldCategoryMonthly.data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              {/* <CartesianGrid strokeDasharray="3 3" /> */}
-              <XAxis dataKey="Month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Ao" fill="#8884d8" />
-              <Bar dataKey="Quan" fill="#ffc355" />
-              <Bar dataKey="DamVay" fill="#ff7eae" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="overview">
-        <div className="category-overview shirt">
-          <div className="category-name">Áo</div>
-          <div className="total-control">
-            <div className="total-title">Tổng doanh thu</div>
-            <div className="total-value">20,455,000đ</div>
+    <React.Fragment>
+      {isLoading && <EatLoading color="#ff7eae" />}
+      {data && <div className="statistics">
+        <div className="chart-zone">
+          <div className="monthly-sales">
+            <ResponsiveContainer>
+              <AreaChart
+                data={data.monthlySales}
+                margin={{
+                  top: 10,
+                  right: 30,
+                  left: 0,
+                  bottom: 0
+                }}
+              >
+                <defs>
+                  <linearGradient id="monthlySalesColor" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="Tháng" />
+                <YAxis width={80} />
+                <Tooltip />
+                <Area type="monotone" dataKey="Doanh thu" stroke="#8884d8" fill="url(#monthlySalesColor)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-          <div className="total-control">
-            <div className="total-title">Tổng số lượng bán</div>
-            <div className="total-value">219</div>
+
+          <div className="sold-category-monthly">
+            <ResponsiveContainer>
+              <BarChart
+                width={500}
+                height={300}
+                data={data.monthlySold}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <XAxis dataKey="Tháng" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="Áo" fill="#8884d8" />
+                <Bar dataKey="Quần" fill="#ffc355" />
+                <Bar dataKey="Đầm váy" fill="#ff7eae" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="category-overview pants">
-          <div className="category-name">Quần</div>
-          <div className="total-control">
-            <div className="total-title">Tổng doanh thu</div>
-            <div className="total-value">20,455,000đ</div>
+        <div className="overview">
+          <div className="category-overview shirt">
+            <div className="category-name">Áo</div>
+            <div className="total-control">
+              <div className="total-title">Tổng doanh thu</div>
+              <div className="total-value">{data.categorySales[0].total.toLocaleString()}đ</div>
+            </div>
+            <div className="total-control">
+              <div className="total-title">Tổng số lượng bán</div>
+              <div className="total-value">{data.categorySold[0].total.toLocaleString()}</div>
+            </div>
           </div>
-          <div className="total-control">
-            <div className="total-title">Tổng số lượng bán</div>
-            <div className="total-value">219</div>
-          </div>
-        </div>
 
-        <div className="category-overview dress-skirt">
-          <div className="category-name">Đầm váy</div>
-          <div className="total-control">
-            <div className="total-title">Tổng doanh thu</div>
-            <div className="total-value">20,455,000đ</div>
+          <div className="category-overview pants">
+            <div className="category-name">Quần</div>
+            <div className="total-control">
+              <div className="total-title">Tổng doanh thu</div>
+              <div className="total-value">{data.categorySales[1].total.toLocaleString()}đ</div>
+            </div>
+            <div className="total-control">
+              <div className="total-title">Tổng số lượng bán</div>
+              <div className="total-value">{data.categorySold[1].total.toLocaleString()}</div>
+            </div>
           </div>
-          <div className="total-control">
-            <div className="total-title">Tổng số lượng bán</div>
-            <div className="total-value">219</div>
+
+          <div className="category-overview dress-skirt">
+            <div className="category-name">Đầm váy</div>
+            <div className="total-control">
+              <div className="total-title">Tổng doanh thu</div>
+              <div className="total-value">{data.categorySales[2].total.toLocaleString()}đ</div>
+            </div>
+            <div className="total-control">
+              <div className="total-title">Tổng số lượng bán</div>
+              <div className="total-value">{data.categorySold[2].total.toLocaleString()}</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>}
+    </React.Fragment>
   );
 }
 
