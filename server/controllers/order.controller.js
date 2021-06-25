@@ -10,26 +10,26 @@ const getOrder = async (req, res) => {
 		let queryObj = {
 			user: req.params.id,
 		};
-		if (Object.values(req.body).length !== 0) {
-			if (req.body.timeStart && req.body.timeEnd) {
-				console.log('co time');
-				queryObj = {
-					user: req.params.id,
-					status: req.body.status,
-					date: {
-						$gte: new Date(req.body.timeStart),
-						$lte: new Date(req.body.timeEnd),
-					},
-				};
-			} else {
-				console.log('khong time');
-				queryObj = {
-					user: req.params.id,
-					status: req.body.status,
-				};
-			}
-		}
-
+		// if (Object.values(req.body).length !== 0) {
+		// 	if (req.body.timeStart && req.body.timeEnd) {
+		// 		console.log('co time');
+		// 		queryObj = {
+		// 			user: req.params.id,
+		// 			status: req.body.status,
+		// 			date: {
+		// 				$gte: new Date(req.body.timeStart),
+		// 				$lte: new Date(req.body.timeEnd),
+		// 			},
+		// 		};
+		// 	} else {
+		// 		console.log('khong time');
+		// 		queryObj = {
+		// 			user: req.params.id,
+		// 			status: req.body.status,
+		// 		};
+		// 	}
+		// }
+		console.log(queryObj);
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
 
@@ -40,6 +40,7 @@ const getOrder = async (req, res) => {
 				path: 'user',
 				select: 'name type district city address phone email',
 			})
+			.sort({ date: -1 })
 			.skip(startIndex)
 			.limit(limit);
 
@@ -64,16 +65,26 @@ const getAllOrders = async (req, res) => {
 		let queryObj = null;
 		if (Object.values(req.body).length !== 0) {
 			if (req.body.timeStart && req.body.timeEnd) {
-				console.log('co time');
-				queryObj = {
-					status: req.body.status,
-					date: {
-						$gte: new Date(req.body.timeStart),
-						$lte: new Date(req.body.timeEnd),
-					},
-				};
+				if (req.body.status) {
+					console.log('co time va co status');
+					queryObj = {
+						status: req.body.status,
+						date: {
+							$gte: new Date(req.body.timeStart),
+							$lte: new Date(`${req.body.timeEnd}T23:59:59.000Z`),
+						},
+					};
+				} else {
+					console.log('co time va ko co status');
+					queryObj = {
+						date: {
+							$gte: new Date(req.body.timeStart),
+							$lte: new Date(`${req.body.timeEnd}T23:59:59.000Z`),
+						},
+					};
+				}
 			} else {
-				console.log('khong time');
+				console.log('co status khong co time');
 				queryObj = {
 					status: req.body.status,
 				};
@@ -83,15 +94,18 @@ const getAllOrders = async (req, res) => {
 		const startIndex = (page - 1) * limit;
 		const endIndex = page * limit;
 
-		console.log(req.body.timeStart);
+		console.log(new Date(req.body.timeStart));
+		console.log(new Date(req.body.timeEnd));
 
 		let countOrders = await Orders.countDocuments(queryObj);
+		console.log('tong so hoa don', countOrders);
 		countOrders = Math.ceil(countOrders / limit);
 		const orders = await Orders.find(queryObj)
 			.populate({
 				path: 'user',
 				select: 'name type district city address phone email',
 			})
+			.sort({ date: -1 })
 			.skip(startIndex)
 			.limit(limit);
 
@@ -198,7 +212,7 @@ const updateOrder = async (req, res) => {
 			{ new: true }
 		);
 
-		if (req.body.status === 5) {
+		if (req.body.status === 4) {
 			const productOrder = order.products;
 			console.log(productOrder.length);
 
@@ -295,10 +309,21 @@ const getTotalOneMonth = async (req, res) => {
 			const allPrice = await Orders.aggregate([
 				{
 					$match: {
-						date: {
-							$gte: new Date(`2021-${i}`),
-							$lt: new Date(`2021-${i + 1}`),
-						},
+						$and: [
+							{
+								status: 3,
+							},
+							{
+								date: {
+									$gte: new Date(`2021-${i}`),
+									$lt: new Date(`2021-${i + 1}`),
+								},
+							},
+						],
+						// date: {
+						// 	$gte: new Date(`2021-${i}`),
+						// 	$lt: new Date(`2021-${i + 1}`),
+						// },
 					},
 				},
 				{
@@ -340,15 +365,11 @@ const getTotalOneMonth = async (req, res) => {
 const getTotalCategory = async (req, res) => {
 	try {
 		const allPrice = await Orders.aggregate([
-			// {
-			// 	$match: {
-			// 		products: {
-			// 			$elemMatch: {
-			// 				category: 'Quần',
-			// 			},
-			// 		},
-			// 	},
-			// },
+			{
+				$match: {
+					status: 3,
+				},
+			},
 			{
 				$unwind: '$products',
 			},
@@ -402,6 +423,11 @@ const getNumberSoldCategory = async (req, res) => {
 	try {
 		const allPrice = await Orders.aggregate([
 			{
+				$match: {
+					status: 3,
+				},
+			},
+			{
 				$unwind: '$products',
 			},
 		]);
@@ -442,10 +468,17 @@ const getNumberSoldCategoryFollowMonth = async (req, res) => {
 			const allPrice = await Orders.aggregate([
 				{
 					$match: {
-						date: {
-							$gte: new Date(`2021-${i}`),
-							$lt: new Date(`2021-${i + 1}`),
-						},
+						$and: [
+							{
+								status: 3,
+							},
+							{
+								date: {
+									$gte: new Date(`2021-${i}`),
+									$lt: new Date(`2021-${i + 1}`),
+								},
+							},
+						],
 					},
 				},
 				{

@@ -3,7 +3,6 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
-import { dialogState } from '../recoil/dialogState';
 import { userState } from '../recoil/userState';
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoSearchOutline } from "react-icons/io5";
@@ -132,6 +131,7 @@ function OrderManagement() {
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(0);
   const [filterQuery, setFilterQuery] = useState('get-all?');
+  const [data, setData] = useState({});
   const [currentOrder, setCurrentOrder] = useState();
 
   const statusFilterRef = useRef(null);
@@ -145,56 +145,27 @@ function OrderManagement() {
   const canceledStatusRef = useRef(null);
 
   const user = useRecoilValue(userState);
-  const setDialog = useSetRecoilState(dialogState);
   const [orderDisplay, setOrderDisplay] = useRecoilState(orderDisplayState);
   const [orderEditDisplay, setOrderEditDisplay] = useRecoilState(orderEditDisplayState);
 
-  const { data: orders, isLoading, refetch } = useQuery(['managedOrders', page, filterQuery], async () => {
+  const { data: orders, isLoading, refetch } = useQuery(['managedOrders', page, data, filterQuery], async () => {
     const config = {
       headers: {
         Authorization: user.accessToken
       }
     }
 
-    const data = {
-      timeStart: '22/06/2021',
-      timeEnd: '24/06/2021'
-    }
-
-    const response = await axios.get(`http://localhost:5000/api/order/${filterQuery}page=${page + 1}&limit=8`, {
-      params: data,
-      headers: {
-        Authorization: user.accessToken
-      }
-    });
+    const response = await axios.post(`http://localhost:5000/api/order/${filterQuery}page=${page + 1}&limit=8`, data, config);
     // const response = await axios.get(`http://localhost:5000/api/order/get-all?page=1&limit=9`, config);
     setTotalPages(response.data.totalPages);
+    setPage(0);
     console.log(response.data);
     return response.data.orders;
   });
 
   const handlePageChange = ({ selected }) => {
-    // console.log('page click: ', selected);
     setPage(selected);
   };
-
-  const handleChangeStatusClick = () => {
-    const dateFilter = new FormData(dateFilterRef.current);
-    const startDate = dateFilter.get('startDate');
-    const endDate = dateFilter.get('endDate');
-
-    const statusFilter = new FormData(statusFilterRef.current);
-    const status = statusFilter.get('orderStatus');
-    console.log(status, startDate, endDate);
-  }
-
-  const handleFilterChange = () => {
-    // const formData = new FormData(otherFilterRef.current);
-    // const status = formData.get('orderStatus');
-    // const search = formData.get('orderSearch');
-    // const startDate = formData.get('startDate');
-    // console.log(status, search, startDate);
-  }
 
   const handleViewProductClick = (order) => {
     setCurrentOrder(order);
@@ -208,16 +179,54 @@ function OrderManagement() {
     setOrderEditDisplay(true);
   }
 
+  const handleStatusChange = () => {
+    const statusFilter = new FormData(statusFilterRef.current);
+    const status = parseInt(statusFilter.get('orderStatus'));
+    if (!status) return;
+
+    const request = { status };
+
+    const dateFilter = new FormData(dateFilterRef.current);
+    const startDate = dateFilter.get('startDate');
+    const endDate = dateFilter.get('endDate');
+    if (startDate && endDate) { //format date nữa nha
+      request.timeStart = startDate;
+      request.timeEnd = endDate;
+    }
+
+    setFilterQuery(`get-all?`);
+    setData(request);
+  }
+
+  const handleDateChange = () => {
+    const request = {}
+
+    const statusFilter = new FormData(statusFilterRef.current);
+    const status = parseInt(statusFilter.get('orderStatus'));
+    if (status) request.status = status;
+
+    const dateFilter = new FormData(dateFilterRef.current);
+    const startDate = dateFilter.get('startDate');
+    const endDate = dateFilter.get('endDate');
+
+    if (startDate || endDate) {// format date: split by / -> reverse array -> join by -
+      request.timeStart = startDate;
+      request.timeEnd = endDate;
+    }
+
+    setFilterQuery(`get-all?`);
+    setData(request);
+  }
+
   const handleSearch = (e) => {
     e.preventDefault();
-    // const search = searchRef.current.value;
+    const search = searchRef.current.value;
 
     // resetFilterOptions();
     // setPage(0);
-    // setFilterQuery(`search?name=${search}&`);
+    setFilterQuery(`search?q=${search}&`);
   }
 
-  // const maxDate = new Date(new Date().getFullYear(), new Date().getMonth());
   const maxDate = new Date(Date.now());
 
   return (
@@ -225,11 +234,11 @@ function OrderManagement() {
       <div className="order-search">
         <div className="order-search-bar">
           <IoSearchOutline className="search-icon" />
-          <input type="text" name="orderSearch" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} />
+          <input type="text" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} />
           <button type="submit" onClick={handleSearch} className="search-btn"></button>
         </div>
 
-        <form ref={dateFilterRef} className="date-picker-group">
+        <form ref={dateFilterRef} className="date-picker-group" onChange={handleDateChange}>
           <div className="date-picker">
             <DatePickerComponent name="startDate" id="date-picker-start" placeholder="Từ ngày" max={maxDate} format="dd/MM/yyyy" />
           </div>
@@ -239,7 +248,7 @@ function OrderManagement() {
         </form>
       </div>
       <div className={orders?.length === 9 ? "order-table" : "order-table offset"}>
-        <form className="title-list" ref={statusFilterRef} onChange={handleChangeStatusClick}>
+        <form className="title-list" ref={statusFilterRef} onChange={handleStatusChange}>
           <div className="id-title fl-14 title">Mã đơn hàng</div>
           <div className="recipient-name-title fl-25 title">Người nhận</div>
           <div className="recipient-phone-title fl-15 title">Điện thoại</div>
@@ -249,20 +258,23 @@ function OrderManagement() {
             <span className="status-title">Trạng thái</span>
             <TiArrowSortedDown className="dropdown-icon" />
             <div className="status-options">
-              <input type="radio" name="orderStatus" id="pending-status" value="status=0&" ref={pendingStatusRef} />
+              <input type="radio" name="orderStatus" id="pending-status" value="0" ref={pendingStatusRef} />
               <label htmlFor="pending-status">Chờ xác nhận</label>
 
-              <input type="radio" name="orderStatus" id="confirmed-status" value="status=1&" ref={confirmedStatusRef} />
+              <input type="radio" name="orderStatus" id="confirmed-status" value="1" ref={confirmedStatusRef} />
               <label htmlFor="confirmed-status">Đã xác nhận</label>
 
-              <input type="radio" name="orderStatus" id="paid-status" value="status=2&" ref={paidStatusRef} />
+              <input type="radio" name="orderStatus" id="paid-status" value="2" ref={paidStatusRef} />
               <label htmlFor="paid-status">Đã thanh toán</label>
 
-              <input type="radio" name="orderStatus" id="success-status" value="status=3&" ref={successStatusRef} />
+              <input type="radio" name="orderStatus" id="success-status" value="3" ref={successStatusRef} />
               <label htmlFor="success-status">Thành công</label>
 
-              <input type="radio" name="orderStatus" id="canceled-status" value="status=4&" ref={canceledStatusRef} />
+              <input type="radio" name="orderStatus" id="canceled-status" value="4" ref={canceledStatusRef} />
               <label htmlFor="canceled-status">Đã hủy</label>
+
+              <input type="radio" name="orderStatus" id="all-status" value="" defaultChecked />
+              <label htmlFor="all-status">Tất cả</label>
             </div>
           </div>
           <div className="manipulation fl-10 title"></div>

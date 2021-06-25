@@ -7,11 +7,11 @@ router.post('/add', auth, orderController.addOrder);
 
 router.get('/get-by-user/:id', auth, orderController.getOrder);
 
-router.get('/get-all', auth, authAdmin, orderController.getAllOrders);
+router.post('/get-all', auth, authAdmin, orderController.getAllOrders);
 
 router.get('/search', orderController.searchOrder);
 
-router.patch('/update', orderController.updateOrder);
+router.patch('/update', auth, authAdmin, orderController.updateOrder);
 
 router.get(
 	'/gettotalonemonth',

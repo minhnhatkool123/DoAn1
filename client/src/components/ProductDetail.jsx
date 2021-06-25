@@ -109,12 +109,12 @@ function ProductDetail() {
         show: true,
         message: 'Bạn chưa chọn màu cho sản phẩm'
       });
-    } /*else if (quantity + getProductQuantityInCart(cart, product._id) > product.quantity) {
+    } else if (quantity + getProductQuantityInCart(cart, product._id) > product.quantity) {
       setToastDisplay({
         show: true,
         message: <span><strong>{product.name}</strong> hiện chỉ còn <strong>{product.quantity}</strong> sản phẩm</span>
       });
-    }*/ else {
+    } else {
       addProductToCart(sizeLabel, buttonType);
     }
   }

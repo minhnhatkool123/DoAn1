@@ -95,10 +95,13 @@ function CheckoutSection() {
         setOrderSuccessfully(true)
       })
       .catch(error => {
-        console.log(error);
+        console.log(error.response.data.error);
+
+        const errorProducts = error.response.data.error;
+
         setToastDisplay({
           show: true,
-          message: 'Giỏ hàng có sản phẩm vượt quá số lượng'
+          message: errorProducts.map(errProduct => <div><strong>{errProduct.name}</strong> hiện chỉ còn <strong>{errProduct.quantity}</strong> sản phẩm</div>)
         });
       })
   };
