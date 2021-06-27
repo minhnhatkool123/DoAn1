@@ -13,13 +13,13 @@ import CheckoutPage from './pages/CheckoutPage'
 import DashboardPage from './pages/DashboardPage';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
-import MessengerCustomerChat from 'react-messenger-customer-chat';
 import ToastMessage from './components/ToastMessage';
 import AdminAuthenticationPage from './pages/AdminAuthenticationPage';
 import Dialog from './components/Dialog';
 import ResultMessage from './components/ResultMessage';
 import ScrollToTop from './components/ScrollToTop';
 import AdminRoute from './components/AdminRoute';
+import Messenger from './components/Messenger';
 
 const queryClient = new QueryClient();
 
@@ -57,7 +57,7 @@ function App() {
 						<Route path='/admin/login' component={AdminAuthenticationPage} />
 						<AdminRoute path='/admin' component={DashboardPage} redirect='/admin/login' />
 					</Switch>
-					<MessengerCustomerChat pageId="107987698119089" appId="466417401239652" />
+					<Messenger />
 					<ResultMessage />
 					<Dialog />
 					{toastDisplay.show && <ToastMessage />}
