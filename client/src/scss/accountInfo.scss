@@ -28,8 +28,7 @@
         cursor: pointer;
 
         &:not(:last-child) {
-          box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px,
-            rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+          box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
         }
 
         &:hover {
@@ -136,7 +135,8 @@
       border-collapse: collapse;
       margin-top: 22px;
 
-      th, td {
+      th,
+      td {
         // width: 20%;
 
         &:first-child {
@@ -176,7 +176,8 @@
           border-bottom: 1px solid #dee2e6;
           padding: 12px 0;
 
-          &:nth-child(1), &:nth-child(5) {
+          &:nth-child(1),
+          &:nth-child(5) {
             color: $lightskyblue;
           }
 
@@ -188,6 +189,73 @@
             cursor: pointer;
           }
         }
+      }
+    }
+
+    .pagination {
+      color: $darkslategrey;
+      margin-top: 22px;
+      display: flex;
+      list-style: none;
+      justify-content: center;
+
+      .paginated-btn,
+      .prev-btn,
+      .next-btn {
+        a {
+          cursor: pointer;
+          font-size: 16px;
+          min-width: 32px;
+          text-align: center;
+          display: block;
+        }
+      }
+
+      .paginated-btn a {
+        padding: 5px 8px;
+        border-left: none;
+        border-radius: 4px;
+        margin: 0 4px;
+        border-radius: 50%;
+
+        &:hover {
+          background: $lightpink;
+          color: $white;
+        }
+      }
+
+      .prev-btn,
+      .next-btn {
+        a {
+          width: 32px;
+          height: 32px;
+          border-radius: 4px;
+        }
+      }
+
+      .prev-icon,
+      .next-icon {
+        width: 20px;
+        height: 31.5px;
+      }
+
+      .prev-btn a {
+        margin-right: 4px;
+      }
+
+      .next-btn a {
+        margin-left: 4px;
+      }
+
+      .disabled-btn a {
+        cursor: default;
+        opacity: 1;
+        color: rgba($color: $silver, $alpha: 1);
+      }
+
+      .active-btn a {
+        background: $lightpink;
+        color: $white;
       }
     }
   }

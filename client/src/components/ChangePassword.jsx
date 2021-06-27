@@ -29,7 +29,7 @@ function ChangePassword() {
   const setDialog = useSetRecoilState(dialogState);
   const setResultMessage = useSetRecoilState(resultMessageState);
 
-  const onSubmit = values => {
+  const onSubmit = (values, { resetForm }) => {
     const data = {
       newPassword: values.newPassword,
       currentPassword: values.password
@@ -49,6 +49,7 @@ function ChangePassword() {
         axios.patch('http://localhost:5000/user/update-pass', data, config)
           .then(response => {
             console.log(response.data.message);
+            resetForm();
             setResultMessage({
               show: true,
               type: SUCCESS,

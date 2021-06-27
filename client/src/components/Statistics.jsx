@@ -13,7 +13,7 @@ function Statistics() {
   const { data, isLoading } = useQuery('statistics', async () => {
     const config = {
       headers: {
-        Authorization: user.accessToken
+        Authorization: localStorage.getItem('accessToken')
       }
     }
 
@@ -57,7 +57,7 @@ function Statistics() {
                   top: 10,
                   right: 30,
                   left: 0,
-                  bottom: 0
+                  bottom: 30
                 }}
               >
                 <defs>
@@ -72,6 +72,7 @@ function Statistics() {
                 <Area type="monotone" dataKey="Doanh thu" stroke="#8884d8" fill="url(#monthlySalesColor)" />
               </AreaChart>
             </ResponsiveContainer>
+            <div className="chart-name">Biểu đồ doanh thu hàng tháng</div>
           </div>
 
           <div className="sold-category-monthly">
@@ -84,7 +85,7 @@ function Statistics() {
                   top: 5,
                   right: 30,
                   left: 20,
-                  bottom: 5,
+                  bottom: 40,
                 }}
               >
                 <XAxis dataKey="Tháng" />
@@ -96,6 +97,7 @@ function Statistics() {
                 <Bar dataKey="Đầm váy" fill="#ff7eae" />
               </BarChart>
             </ResponsiveContainer>
+            <div className="chart-name">Biểu đồ số lượng bán hàng tháng</div>
           </div>
         </div>
 

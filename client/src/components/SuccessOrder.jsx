@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import '../scss/successOrder.scss';
 
 function SuccessOrder() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [])
+
   return (
     <div className="success-order">
       <img src="/img/congrats.png" alt="" />

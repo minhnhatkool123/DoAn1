@@ -78,7 +78,7 @@ const sendMail = (to, url) => {
 	});
 
 	const mailOptions = {
-		from: process.env.USERNAME_GMAIL,
+		from: `"ZShop" <${process.env.USERNAME_GMAIL}>`,//process.env.USERNAME_GMAIL,
 		to: to,
 		subject: 'Confirm Email',
 		html: ` <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
@@ -114,7 +114,7 @@ const sendMailOTP = (to, otp) => {
 	});
 
 	const mailOptions = {
-		from: process.env.USERNAME_GMAIL,
+		from: `"ZShop" <${process.env.USERNAME_GMAIL}>`,
 		to: to,
 		subject: 'Confirm Email',
 		html: ` <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">

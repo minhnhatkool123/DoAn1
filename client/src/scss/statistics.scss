@@ -1,4 +1,4 @@
-@import './color.scss';
+@import "./color.scss";
 
 .statistics {
   display: flex;
@@ -10,22 +10,34 @@
     height: 100%;
 
     .monthly-sales {
+      position: relative;
       background: $white;
       width: 100%;
-      height: 48%;
-      padding: 24px 30px;
+      height: 44%;
+      padding: 16px 24px;
       border-radius: 8px;
       box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     }
 
     .sold-category-monthly {
+      position: relative;
       margin-top: 3%;
       background: $white;
       width: 100%;
-      height: 48%;
-      padding: 24px 30px;
+      height: 52%;
+      padding: 16px 24px;
       border-radius: 8px;
       box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    }
+
+    .chart-name {
+      position: absolute;
+      font-size: 19px;
+      font-weight: 600;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: lighten($lightslategray, 15);
     }
   }
 

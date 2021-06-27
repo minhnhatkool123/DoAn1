@@ -17,12 +17,12 @@
     margin: 0 auto;
     margin-bottom: 20px;
     display: flex;
-    align-items: center;
+    // align-items: center;
 
     .order-search-bar {
-      height: 36px;
+      height: 37px;
       flex-grow: 1;
-      border: 1px solid $hotpink;
+      border: 1px solid lighten($hotpink, 10);
       border-radius: 30px;
       padding: 0 12px;
       display: flex;
@@ -35,12 +35,12 @@
         margin-left: 6px;
         flex-grow: 1;
         font-size: 14px;
+        margin-top: 0.5px;
       }
 
       .search-icon {
         height: 100%;
         width: 20px;
-        margin-top: -1px;
       }
 
       .search-btn {
@@ -53,8 +53,53 @@
     }
 
     .date-picker {
-      width: 220px;
-      margin-left: 24px;
+      .DateRangePickerInput {
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .DateInput_input {
+        font-size: 14px;
+        line-height: 14px;
+        padding: 8px 18px 6px;
+      }
+
+      .DateRangePickerInput__withBorder {
+        // border-color: $hotpink;
+      }
+
+      .DateInput_input__focused {
+        border-color: $hotpink;
+      }
+
+      .DateRangePickerInput_arrow_svg {
+        height: 20px;
+        width: 20px;
+      }
+
+      .CalendarDay__selected,
+      .CalendarDay__selected:active,
+      .CalendarDay__selected:hover {
+        background: $hotpink;
+        border: 1px double $hotpink;
+      }
+
+      .CalendarDay__selected_span {
+        background: lighten($hotpink, 11);
+        border: 1px double lighten($hotpink, 6);
+      }
+
+      .DayPickerKeyboardShortcuts_show__bottomRight::before {
+        border-top: 26px solid transparent;
+        border-right: 33px solid $hotpink;
+      }
+
+      .CalendarDay__hovered_span,
+      .CalendarDay__hovered_span:hover {
+        background: lighten($hotpink, 12);
+        border: 1px double lighten($hotpink, 6);
+        color: darken($hotpink, 9);
+      }
     }
   }
 
@@ -272,81 +317,6 @@
           }
         }
       }
-    }
-  }
-
-  .pagination {
-    color: $darkslategrey;
-
-    display: flex;
-    list-style: none;
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    .paginated-btn,
-    .prev-btn,
-    .next-btn {
-      a {
-        cursor: pointer;
-        font-size: 16px;
-        min-width: 32px;
-        text-align: center;
-        display: block;
-      }
-    }
-
-    .paginated-btn a {
-      padding: 5px 8px;
-      border-left: none;
-      border-radius: 4px;
-      margin: 0 4px;
-
-      &:hover {
-        background: $hotpink;
-        color: $white;
-      }
-    }
-
-    .prev-btn,
-    .next-btn {
-      a {
-        width: 32px;
-        height: 32px;
-        border-radius: 4px;
-      }
-
-      // &:not(.disabled-btn) {
-      //   a:hover {
-      //     background: #f3b8ce8c;
-      //   }
-      // }
-    }
-
-    .prev-icon,
-    .next-icon {
-      width: 20px;
-      height: 31.5px;
-    }
-
-    .prev-btn a {
-      margin-right: 4px;
-    }
-
-    .next-btn a {
-      margin-left: 4px;
-    }
-
-    .disabled-btn a {
-      cursor: default;
-      opacity: 1;
-      color: rgba($color: $silver, $alpha: 1);
-    }
-
-    .active-btn a {
-      background: $hotpink;
-      color: $white;
     }
   }
 

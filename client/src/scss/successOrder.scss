@@ -1,3 +1,5 @@
+@import "./color.scss";
+
 .success-order {
   position: relative;
 
@@ -15,6 +17,7 @@
     font-size: 22px;
     font-weight: 600;
     color: darken(#e59057, 8);
+    color: $darkslategrey;
 
     span {
       font-weight: 800;

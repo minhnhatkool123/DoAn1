@@ -1,5 +1,5 @@
 import '../scss/orderManagement.scss';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
@@ -10,95 +10,17 @@ import { EatLoading } from 'react-loadingg';
 import { TiArrowSortedDown } from "react-icons/ti";
 import { orderEditDisplayState } from '../recoil/orderEditDisplayState';
 import { orderDisplayState } from '../recoil/orderDisplayState';
-import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
+import { DateRangePicker } from 'react-dates';
+import isAfterDay from 'react-dates/lib/utils/isAfterDay';
+import moment from 'moment';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 import viewIcon from '../svg/visibility.svg';
 import editIcon from '../svg/edit.svg';
 import EditOrder from './EditOrder';
+import CloseButton from './CloseButton';
 import OrderDetail from './OrderDetail';
 import ReactPaginate from "react-paginate";
-
-// const orders = [
-//   {
-//     id: 19815898,
-//     date: '21/01/2021',
-//     totalPrice: 1950000,
-//     status: 1,
-//     name: 'Phương Thùy',
-//     phone: '0187264727',
-//     email: 'phuongthuy@gmail.com',
-//     address: '53 Nguyễn Du, Thành phố Dĩ An, Bình Dương',
-//     note: 'Giao giờ hành chính',
-//     paymentMethod: 'Thanh toán tiền mặt khi nhận hàng',
-//     shippingFee: 25000,
-//     cart: [
-//       {
-//         id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-//         product: {
-//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-//           id: "undefinedLhttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/ChanVay/GV589/18920165882_1159735690.jpg",
-//           name: "Chân Váy Caro Nữ Sinh Nhật 589",
-//           price: 245000,
-//           discount: 20000,
-//           size: "L",
-//           url: "/product/60af5e60dbc87f8dfa279f39"
-//         },
-//         quantity: 1
-//       },
-//       {
-//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-//         product: {
-//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoThun/K252/13888927764_1159735690.jpg",
-//           name: "Áo Thun Hoodie Nữ Baby K252",
-//           price: 240000,
-//           discount: 10000,
-//           size: "Freesize",
-//           url: "/product/60af5e5f4c6dd49b6d98882b"
-//         },
-//         quantity: 2
-//       },
-//       {
-//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//         product: {
-//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-//           price: 245000,
-//           discount: 5000,
-//           size: "Freesize",
-//           url: "/product/60af5e5d303b111c3144e31c"
-//         },
-//         quantity: 1
-//       },
-//       {
-//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//         product: {
-//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-//           price: 245000,
-//           discount: 0,
-//           size: "Freesize",
-//           url: "/product/60af5e5d303b111c3144e31c"
-//         },
-//         quantity: 1
-//       },
-//       {
-//         id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//         product: {
-//           color: "http://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           id: "undefinedFreesizehttp://gaugaushop.com/plugins/responsive_filemanager/source/san%20pham/AoKhoacNu/GAK999/O1CN016kpUKs1y6mubo5EJ9_!!1950826530.jpg",
-//           name: "Áo Khoác Nhẹ In Hình Cô Gái 999",
-//           price: 245000,
-//           discount: 30000,
-//           size: "Freesize",
-//           url: "/product/60af5e5d303b111c3144e31c"
-//         },
-//         quantity: 1
-//       }
-//     ]
-//   }
-// ];
 
 const orderStatus = {
   0: {
@@ -132,7 +54,12 @@ function OrderManagement() {
   const [page, setPage] = useState(0);
   const [filterQuery, setFilterQuery] = useState('get-all?');
   const [data, setData] = useState({});
+  const [method, setMethod] = useState('post');
   const [currentOrder, setCurrentOrder] = useState();
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const statusFilterRef = useRef(null);
   const searchRef = useRef(null);
@@ -143,6 +70,7 @@ function OrderManagement() {
   const paidStatusRef = useRef(null);
   const successStatusRef = useRef(null);
   const canceledStatusRef = useRef(null);
+  const allStatusRef = useRef(null);
 
   const user = useRecoilValue(userState);
   const [orderDisplay, setOrderDisplay] = useRecoilState(orderDisplayState);
@@ -150,15 +78,16 @@ function OrderManagement() {
 
   const { data: orders, isLoading, refetch } = useQuery(['managedOrders', page, data, filterQuery], async () => {
     const config = {
-      headers: {
-        Authorization: user.accessToken
-      }
+      method: method,
+      url: `http://localhost:5000/api/order/${filterQuery}page=${page + 1}&limit=9`,
+      headers: { Authorization: user.accessToken },
+      data: data
     }
 
-    const response = await axios.post(`http://localhost:5000/api/order/${filterQuery}page=${page + 1}&limit=8`, data, config);
-    // const response = await axios.get(`http://localhost:5000/api/order/get-all?page=1&limit=9`, config);
+    console.log(config);
+
+    const response = await axios(config);
     setTotalPages(response.data.totalPages);
-    setPage(0);
     console.log(response.data);
     return response.data.orders;
   });
@@ -180,72 +109,100 @@ function OrderManagement() {
   }
 
   const handleStatusChange = () => {
+    console.log('status change')
+    const request = {}
+
     const statusFilter = new FormData(statusFilterRef.current);
     const status = parseInt(statusFilter.get('orderStatus'));
-    if (!status) return;
+    if (!isNaN(status)) request.status = status;
 
-    const request = { status };
-
-    const dateFilter = new FormData(dateFilterRef.current);
-    const startDate = dateFilter.get('startDate');
-    const endDate = dateFilter.get('endDate');
-    if (startDate && endDate) { //format date nữa nha
-      request.timeStart = startDate;
-      request.timeEnd = endDate;
+    if (startDate && endDate) {
+      request.timeStart = startDate._d.toISOString().slice(0, 10);
+      request.timeEnd = endDate._d.toISOString().slice(0, 10);
     }
 
+    console.log(request);
+    searchRef.current.value = '';
+    setMethod('post')
+    setPage(0);
     setFilterQuery(`get-all?`);
     setData(request);
   }
 
-  const handleDateChange = () => {
+  useEffect(() => {
+    console.log('date change');
     const request = {}
 
     const statusFilter = new FormData(statusFilterRef.current);
     const status = parseInt(statusFilter.get('orderStatus'));
     if (status) request.status = status;
 
-    const dateFilter = new FormData(dateFilterRef.current);
-    const startDate = dateFilter.get('startDate');
-    const endDate = dateFilter.get('endDate');
-
-    if (startDate || endDate) {// format date: split by / -> reverse array -> join by -
-      request.timeStart = startDate;
-      request.timeEnd = endDate;
+    if (startDate && endDate) {
+      request.timeStart = startDate._d.toISOString().slice(0, 10);
+      request.timeEnd = endDate._d.toISOString().slice(0, 10);
     }
 
+    console.log(request);
+    searchRef.current.value = '';
+    setMethod('post');
+    setPage(0);
     setFilterQuery(`get-all?`);
     setData(request);
-  }
+  }, [startDate, endDate]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     const search = searchRef.current.value;
 
-    // resetFilterOptions();
-    // setPage(0);
+    resetStatusOptions();
+    setStartDate(null);
+    setEndDate(null);
+    setMethod('get')
+    setPage(0);
     setFilterQuery(`search?q=${search}&`);
   }
 
-  const maxDate = new Date(Date.now());
+  const resetStatusOptions = () => {
+    allStatusRef.current.checked = true;
+    pendingStatusRef.current.checked = false;
+    confirmedStatusRef.current.checked = false;
+    paidStatusRef.current.checked = false;
+    successStatusRef.current.checked = false;
+    canceledStatusRef.current.checked = false;
+  }
+
+  const handleDatesChange = ({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }
 
   return (
     <React.Fragment>
       <div className="order-search">
-        <div className="order-search-bar">
+        <form className="order-search-bar">
           <IoSearchOutline className="search-icon" />
-          <input type="text" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} />
+          <input type="text" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} onChange={handleSearch} />
           <button type="submit" onClick={handleSearch} className="search-btn"></button>
-        </div>
-
-        <form ref={dateFilterRef} className="date-picker-group" onChange={handleDateChange}>
-          <div className="date-picker">
-            <DatePickerComponent name="startDate" id="date-picker-start" placeholder="Từ ngày" max={maxDate} format="dd/MM/yyyy" />
-          </div>
-          <div className="date-picker">
-            <DatePickerComponent name="endDate" id="date-picker-end" placeholder="Đến ngày" max={maxDate} format="dd/MM/yyyy" />
-          </div>
         </form>
+
+        <div className="date-picker">
+          <DateRangePicker
+            startDateId="startDate"
+            endDateId="endDate"
+            startDate={startDate}
+            endDate={endDate}
+            onDatesChange={handleDatesChange}
+            focusedInput={focusedInput}
+            onFocusChange={(focusedInputValue) => setFocusedInput(focusedInputValue)}
+            startDatePlaceholderText="Từ ngày"
+            endDatePlaceholderText="Đến ngày"
+            customCloseIcon={<CloseButton />}
+            isOutsideRange={day => isAfterDay(day, moment())}
+            displayFormat={() => "DD/MM/YYYY"}
+            showClearDates
+            block
+          />
+        </div>
       </div>
       <div className={orders?.length === 9 ? "order-table" : "order-table offset"}>
         <form className="title-list" ref={statusFilterRef} onChange={handleStatusChange}>
@@ -273,7 +230,7 @@ function OrderManagement() {
               <input type="radio" name="orderStatus" id="canceled-status" value="4" ref={canceledStatusRef} />
               <label htmlFor="canceled-status">Đã hủy</label>
 
-              <input type="radio" name="orderStatus" id="all-status" value="" defaultChecked />
+              <input type="radio" name="orderStatus" id="all-status" value="" defaultChecked ref={allStatusRef} />
               <label htmlFor="all-status">Tất cả</label>
             </div>
           </div>

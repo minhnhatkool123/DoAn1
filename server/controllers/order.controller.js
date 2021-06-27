@@ -71,7 +71,7 @@ const getAllOrders = async (req, res) => {
 						status: req.body.status,
 						date: {
 							$gte: new Date(req.body.timeStart),
-							$lte: new Date(`${req.body.timeEnd}T23:59:59.000Z`),
+							$lte: new Date(`${req.body.timeEnd}T23:59:59`),
 						},
 					};
 				} else {
@@ -79,7 +79,7 @@ const getAllOrders = async (req, res) => {
 					queryObj = {
 						date: {
 							$gte: new Date(req.body.timeStart),
-							$lte: new Date(`${req.body.timeEnd}T23:59:59.000Z`),
+							$lte: new Date(`${req.body.timeEnd}T23:59:59`),
 						},
 					};
 				}
@@ -182,12 +182,14 @@ const addOrder = async (req, res) => {
 				// }
 			);
 		}
+		let timeNow = new Date();
+		let timeAddGMT = new Date(timeNow.getTime() + -timeNow.getTimezoneOffset() * 60000);
 		let idOrder = new Date().valueOf().toString().substring(6, 13);
 		const newOrder = new Orders({
 			user,
 			idOrder,
 			products,
-			date: new Date(),
+			date: timeAddGMT,//new Date(),
 			total,
 			receiverInfo,
 			paymentMethod,
@@ -281,6 +283,7 @@ const searchOrder = async (req, res) => {
 				path: 'user',
 				select: 'name type district city address phone email',
 			})
+			.sort({ date: -1 })
 			.skip(startIndex)
 			.limit(limit);
 
