@@ -111,12 +111,12 @@ function AddNewProduct({ refetch }) {
       colors: uploadedColors.data.images
     }
 
-    console.log(product);
+    // console.log(product);
 
     axios.post('http://localhost:5000/api/product/add', product, config)
       .then((response) => {
-        console.log('Them thanh cong');
-        console.log(response.data);
+        // console.log('Them thanh cong');
+        // console.log(response.data);
 
         resetForm();
         resetSelections();

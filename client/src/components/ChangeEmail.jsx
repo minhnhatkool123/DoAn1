@@ -38,7 +38,7 @@ function ChangeEmail() {
 
     axios.patch('http://localhost:5000/user/update-email', data, config)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         OTPVerificationRef.current.classList.add('active');
         setUser({ ...user, emailToken: response.data.token });
       })
@@ -63,7 +63,7 @@ function ChangeEmail() {
 
     axios.patch('http://localhost:5000/user/update-email', data, config)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         setUser({ ...user, emailToken: response.data.token });
       })
       .catch(error => console.log(error.response.data.message))

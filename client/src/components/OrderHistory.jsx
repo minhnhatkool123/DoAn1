@@ -25,7 +25,7 @@ function OrderHistory() {
     }
     const response = await axios.get(`http://localhost:5000/api/order/get-by-user/${user._id}?page=${page + 1}&limit=8`, config);
     setTotalPages(response.data.totalPages);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data.orders;
   });
 
@@ -35,7 +35,7 @@ function OrderHistory() {
 
   const handleViewDetailClick = (order) => {
     setCurrentOrder(order);
-    console.log({ order });
+    // console.log({ order });
     setOrderDisplay(true);
   }
 

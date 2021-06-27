@@ -77,7 +77,7 @@ function CommentSection() {
 
     axios.post('http://localhost:5000/api/comment/add', comment, config)
       .then(response => {
-        console.log(response.data.message);
+        // console.log(response.data.message);
         refetch();
         commentBoxRef.current.innerText = '';
       })

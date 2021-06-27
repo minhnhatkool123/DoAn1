@@ -46,14 +46,14 @@ function SignUpForm() {
   const setResultMessage = useSetRecoilState(resultMessageState);
 
   const responseSuccessGoogle = (res) => {
-    console.log(res);
+    // console.log(res);
 
     axios({
       method: 'POST',
       url: 'http://localhost:5000/user/login-google',
       data: { tokenId: res.tokenId },
     }).then((response) => {
-      console.log(response);
+      // console.log(response);
 
       const userAccessToken = response.data.accessToken;
 
@@ -104,7 +104,7 @@ function SignUpForm() {
 
     axios.post('http://localhost:5000/user/register', request)
       .then(response => {
-        console.log(response.data.message);
+        // console.log(response.data.message);
         setSignUp(false);
         setResultMessage({
           show: true,

@@ -133,12 +133,12 @@ function EditProduct({ product, refetch }) {
       colors: completeColors.map(image => image.url).concat(uploadedColors.data.images)
     }
 
-    console.log(data);
+    // console.log(data);
 
     axios.put(`http://localhost:5000/api/product/update/${product._id}`, data, config)
       .then((response) => {
-        console.log('Luu thanh cong');
-        console.log(response.data);
+        // console.log('Luu thanh cong');
+        // console.log(response.data);
 
         refetch();
 

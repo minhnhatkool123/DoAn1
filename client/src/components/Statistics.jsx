@@ -1,15 +1,11 @@
 import '../scss/statistics.scss';
 import React from 'react';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../recoil/userState';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Legend, Bar } from 'recharts';
 import { EatLoading } from 'react-loadingg';
 
 function Statistics() {
-  const user = useRecoilValue(userState);
-
   const { data, isLoading } = useQuery('statistics', async () => {
     const config = {
       headers: {

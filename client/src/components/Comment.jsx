@@ -39,7 +39,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
 
       axios.post(`http://localhost:5000/api/comment/add?reply=1&id=${commentId}`, data, config)
         .then(response => {
-          console.log(response.data.message);
+          // console.log(response.data.message);
           replyCommentBoxRef.current.innerText = '';
           replyBoxRef.current.classList.remove('active');
           refetch();
@@ -102,7 +102,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
 
         axios.delete(`http://localhost:5000/api/comment/delete?${query}`, config)
           .then(response => {
-            console.log(response.data.message);
+            // console.log(response.data.message);
             refetch();
           })
           .catch(error => {
@@ -133,7 +133,7 @@ function Comment({ comment, refetch, commentId, reply = false, parentId }) {
       func: () => {
         axios.patch('http://localhost:5000/user/update-mute', data, config)
           .then(response => {
-            console.log(response.data.message);
+            // console.log(response.data.message);
             refetch();
           })
           .catch(error => {

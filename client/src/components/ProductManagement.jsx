@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import '../scss/productManagement.scss';
 import viewIcon from '../svg/visibility.svg';
 import editIcon from '../svg/edit.svg';
@@ -64,7 +64,7 @@ function ProductManagement() {
   const [productAddDisplay, setProductAddDisplay] = useRecoilState(productAddDisplayState);
 
   const { data, isLoading, refetch } = useQuery(['managedProducts', page, filterQuery], async () => {
-    console.log(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
+    // console.log(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     const response = await axios.get(`http://localhost:5000/api/product/${filterQuery}page=${page + 1}&limit=8`);
     setTotalPages(response.data.totalPages);
     // console.log(response.data);
@@ -100,7 +100,7 @@ function ProductManagement() {
 
         axios.delete(`http://localhost:5000/api/product/delete/${id}`, config)
           .then(response => {
-            console.log(response.data.message);
+            // console.log(response.data.message);
             refetch();
           })
           .catch(error => {
@@ -111,7 +111,7 @@ function ProductManagement() {
   }
 
   const handlePageChange = ({ selected }) => {
-    console.log('page click: ', selected);
+    // console.log('page click: ', selected);
     setPage(selected);
   };
 

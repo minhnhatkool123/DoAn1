@@ -35,7 +35,7 @@ const OTPVerification = React.forwardRef(({ resendOTP }, ref) => {
 
     axios.post('http://localhost:5000/user/confirm-update-mail', data, config)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
 
         bodyRef.current.classList.add('disabled');
 

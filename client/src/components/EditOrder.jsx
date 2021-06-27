@@ -49,12 +49,12 @@ function EditOrder({ order, refetch }) {
       status: currentStep
     }
 
-    console.log(data)
+    // console.log(data);
 
     axios.patch(`http://localhost:5000/api/order/update`, data, config)
       .then((response) => {
-        console.log('Luu thanh cong');
-        console.log(response.data);
+        // console.log('Luu thanh cong');
+        // console.log(response.data);
 
         refetch();
 
@@ -88,8 +88,8 @@ function EditOrder({ order, refetch }) {
 
         axios.patch(`http://localhost:5000/api/order/update`, data, config)
           .then((response) => {
-            console.log('Luu thanh cong');
-            console.log(response.data);
+            // console.log('Luu thanh cong');
+            // console.log(response.data);
 
             refetch();
 

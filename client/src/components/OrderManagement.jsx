@@ -2,7 +2,7 @@ import '../scss/orderManagement.scss';
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import { userState } from '../recoil/userState';
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoSearchOutline } from "react-icons/io5";
@@ -63,7 +63,6 @@ function OrderManagement() {
 
   const statusFilterRef = useRef(null);
   const searchRef = useRef(null);
-  const dateFilterRef = useRef(null);
 
   const pendingStatusRef = useRef(null);
   const confirmedStatusRef = useRef(null);
@@ -84,11 +83,11 @@ function OrderManagement() {
       data: data
     }
 
-    console.log(config);
+    // console.log(config);
 
     const response = await axios(config);
     setTotalPages(response.data.totalPages);
-    console.log(response.data);
+    // console.log(response.data);
     return response.data.orders;
   });
 
@@ -109,7 +108,7 @@ function OrderManagement() {
   }
 
   const handleStatusChange = () => {
-    console.log('status change')
+    // console.log('status change');
     const request = {}
 
     const statusFilter = new FormData(statusFilterRef.current);
@@ -121,7 +120,7 @@ function OrderManagement() {
       request.timeEnd = endDate._d.toISOString().slice(0, 10);
     }
 
-    console.log(request);
+    // console.log(request);
     searchRef.current.value = '';
     setMethod('post')
     setPage(0);
@@ -130,7 +129,7 @@ function OrderManagement() {
   }
 
   useEffect(() => {
-    console.log('date change');
+    // console.log('date change');
     const request = {}
 
     const statusFilter = new FormData(statusFilterRef.current);
@@ -142,7 +141,7 @@ function OrderManagement() {
       request.timeEnd = endDate._d.toISOString().slice(0, 10);
     }
 
-    console.log(request);
+    // console.log(request);
     searchRef.current.value = '';
     setMethod('post');
     setPage(0);
@@ -281,17 +280,6 @@ function OrderManagement() {
       {orderEditDisplay && <EditOrder order={currentOrder} refetch={refetch} />}
     </React.Fragment>
   );
-}
-
-const getStatus = (status) => {
-  switch (status) {
-    case 0: return 'Chờ xác nhận';
-    case 1: return 'Đã xác nhận';
-    case 2: return 'Đã thanh toán';
-    case 3: return 'Giao thành công';
-    case 4: return 'Đã hủy';
-    default: return null;
-  }
 }
 
 export default OrderManagement;

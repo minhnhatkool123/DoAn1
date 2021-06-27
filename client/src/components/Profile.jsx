@@ -60,7 +60,7 @@ function Profile() {
       func: () => {
         axios.patch('http://localhost:5000/user/update-info', data, config)
           .then(response => {
-            console.log(response.data.message);
+            // console.log(response.data.message);
 
             setUser({ ...user, ...data });
 

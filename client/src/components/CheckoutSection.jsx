@@ -85,11 +85,11 @@ function CheckoutSection() {
       }
     }
 
-    console.log(data);
+    // console.log(data);
 
     axios.post('http://localhost:5000/api/order/add', data, config)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         setCart([]);
         localStorage.removeItem('cart');
         setOrderSuccessfully(true)

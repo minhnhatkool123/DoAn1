@@ -36,7 +36,7 @@ function AdminLogin() {
 
     axios.post('http://localhost:5000/user/login', request)
       .then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         const userAccessToken = response.data.accessToken;
 
         const config = {
@@ -47,7 +47,7 @@ function AdminLogin() {
 
         axios.get('http://localhost:5000/user/info', config)
           .then(res => {
-            console.log(res.data.user);
+            // console.log(res.data.user);
             if (res.data.user.type === 1) {
               localStorage.setItem('accessToken', userAccessToken);
               setUser({

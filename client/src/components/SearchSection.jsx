@@ -48,8 +48,8 @@ function SearchSection() {
         break;
     }
 
-    console.log(categoryKey)
-    console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`)
+    // console.log(categoryKey);
+    // console.log(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`);
 
     const response = await axios.get(`http://localhost:5000/api/product/${categoryKey}page=${page + 1}&limit=16`);
     setTotalPages(response.data.totalPages);
@@ -58,16 +58,12 @@ function SearchSection() {
   });
 
   useEffect(() => {
-    console.log('set page 0')
+    // console.log('set page 0');
     setPage(0);
   }, [category, filter]);
 
-  useEffect(() => {
-    console.log('pathname', pathname)
-  }, [pathname])
-
   const handlePageChange = ({ selected }) => {
-    console.log('page click: ', selected);
+    // console.log('page click: ', selected);
     setPage(selected);
     window.scrollTo({
       top: 0,

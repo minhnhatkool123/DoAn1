@@ -28,14 +28,6 @@ export const cartTotalQuantity = selector({
   }
 });
 
-function* idGenerator() {
-  let i = 0;
-
-  while (true) {
-    yield i++;
-  }
-}
-
 export const addToCart = (cart, product, quantity = 1, uid) => {
   const newCart = [...cart];
   const foundIndex = cart.findIndex(x => x.product.id === product.id && x.product.size === product.size && x.product.color === product.color);

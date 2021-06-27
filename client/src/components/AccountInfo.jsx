@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import React, { useState, useRef } from 'react';
 import '../scss/accountInfo.scss';
 import { IoPersonCircle } from "react-icons/io5";
 import Profile from './Profile';

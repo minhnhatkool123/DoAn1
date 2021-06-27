@@ -48,7 +48,7 @@ function ChangePassword() {
       func: () => {
         axios.patch('http://localhost:5000/user/update-pass', data, config)
           .then(response => {
-            console.log(response.data.message);
+            // console.log(response.data.message);
             resetForm();
             setResultMessage({
               show: true,
