@@ -160,8 +160,8 @@ function ProductManagement() {
         <span className="title">Danh sách sản phẩm</span>
         <form className="product-search">
           <IoSearchOutline className="search-icon" />
-          <input type="text" placeholder="Tìm kiếm sản phẩm..." className="search-input" ref={searchRef} />
-          <button type="submit" onClick={handleSearch} className="search-btn"></button>
+          <input type="text" placeholder="Tìm kiếm sản phẩm..." className="search-input" ref={searchRef} onChange={handleSearch} />
+          {/* <button type="submit" onClick={handleSearch} className="search-btn"></button> */}
         </form>
 
         <div className="add-product-btn" onClick={handleAddProductClick}><AiOutlinePlus className="add-icon" /></div>

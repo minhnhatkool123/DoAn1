@@ -15,6 +15,7 @@ services:
     volumes:
       - ./client/src:/app/client/src
       - ./client/public:/app/client/public
+      ## - ./client/build:/app/client/build
   api-server:
     container_name: "nodebackend"
     build:

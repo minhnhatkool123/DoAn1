@@ -16,7 +16,7 @@ function NewProductsSection() {
     const updatedProducts = [...products].concat(response.data.products);
     setProducts(updatedProducts);
     setTotalPages(response.data.totalPages);
-  });
+  }, { refetchOnWindowFocus: false });
 
   const showMoreItems = () => {
     setPage(prevPage => prevPage + 1);

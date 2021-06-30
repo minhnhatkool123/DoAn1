@@ -1,0 +1,11 @@
+get http://localhost:5000/api/product/home?page=1&limit=16
+
+################################
+
+post http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+  "username": "koalaciu10x",
+  "password": "123456"
+}
