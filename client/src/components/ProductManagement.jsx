@@ -158,11 +158,10 @@ function ProductManagement() {
     <React.Fragment>
       <div className="product-other-features">
         <span className="title">Danh sách sản phẩm</span>
-        <form className="product-search">
+        <div className="product-search">
           <IoSearchOutline className="search-icon" />
           <input type="text" placeholder="Tìm kiếm sản phẩm..." className="search-input" ref={searchRef} onChange={handleSearch} />
-          {/* <button type="submit" onClick={handleSearch} className="search-btn"></button> */}
-        </form>
+        </div>
 
         <div className="add-product-btn" onClick={handleAddProductClick}><AiOutlinePlus className="add-icon" /></div>
       </div>

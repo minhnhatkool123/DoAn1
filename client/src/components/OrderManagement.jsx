@@ -178,11 +178,10 @@ function OrderManagement() {
   return (
     <React.Fragment>
       <div className="order-search">
-        <form className="order-search-bar">
+        <div className="order-search-bar">
           <IoSearchOutline className="search-icon" />
           <input type="text" placeholder="Tìm kiếm: Mã đơn hàng, Tên người nhận hoặc SĐT" className="search-input" ref={searchRef} onChange={handleSearch} />
-          {/* <button type="submit" onClick={handleSearch} className="search-btn"></button> */}
-        </form>
+        </div>
 
         <div className="date-picker">
           <DateRangePicker
